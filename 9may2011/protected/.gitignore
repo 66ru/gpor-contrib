@@ -1,3 +1,5 @@
 /config/main.php
 /runtime/*
 /www/index.php
+/www/assets/*
+/data/9may.db

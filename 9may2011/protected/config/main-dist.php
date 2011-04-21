@@ -45,13 +45,13 @@ return array(
 			'rules'=>array(
 //				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 //				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
-				'<action:\w+>'=>'site/<action>',
+//				'<action:\w+>'=>'site/<action>',
 			),
 		),
 
-//		'db'=>array(
-//			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/testdrive.db',
-//		),
+		'db'=>array(
+			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/9may.db',
+		),
 		// uncomment the following to use a MySQL database
 		/*
 		'db'=>array(
@@ -88,6 +88,9 @@ return array(
 	'params'=>array(
 		'gpor_server_url' => '',
 		'gpor_secret_key' => '',
+		'gpor_server_uid'=> '', // Добавляется к profileLink: gpor_server_url/user/userId
+
+		'plainCommentsCount' => 10,
 		// this is used in contact page
 //		'adminEmail'=>'webmaster@example.com',
 	),

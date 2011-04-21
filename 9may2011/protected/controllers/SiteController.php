@@ -8,6 +8,15 @@ class SiteController extends Controller
 			$identity=new RAuthUserIdentity();
 			$identity->authenticate();
 			if ($identity->errorCode===$identity::ERROR_NONE) {
+				$user = User::model()->findByPk($identity->getId());
+				if (empty($user)) {
+					$user = new User();
+					$user->id = $identity->gpor_userid;
+					$user->name = $identity->name;
+					$user->profileLink = $identity->profileLink;
+					$user->image = $identity->image;
+					$user->save();
+				}
 				Yii::app()->user->login($identity, 30*60);
 			}
 		}
