@@ -2,15 +2,22 @@
  
 class PlainCommentsWidget extends Widget {
 
-	public $offset = 0;
+	public $lastId = 0;
 
 	public function run() {
-		$comments = Comment::model()->findAll(array(
-			'offset' => $this->offset,
-		));
-		
-		$this->render('index',array(
+		if (!$this->lastId) {
+			$comments = Comment::model()->limitDefault()->findAll();
+			$commentsCount = Comment::model()->count();
+			$view = 'index';
+		} else {
+			$comments = Comment::model()->limitDefault()->beforeId($this->lastId)->findAll();
+			$commentsCount = Comment::model()->beforeId($this->lastId)->count();
+			$view = 'block';
+		}
+
+		$this->render($view,array(
 			'comments' => $comments,
+			'moreComments' => $commentsCount > Yii::app()->params['plainCommentsCount'],
 		));
 	}
 

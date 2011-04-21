@@ -31,10 +31,25 @@ class Comment extends CActiveRecord
 		);
 	}
 
+	public function beforeId($id)
+	{
+		$this->getDbCriteria()->mergeWith(array(
+		   'condition' => 'id <'.$id,
+		));
+		return $this;
+	}
+
+	public function scopes() {
+		return array(
+			'limitDefault' => array(
+				'limit' => Yii::app()->params['plainCommentsCount'],
+			),
+		);
+	}
+
 	public function defaultScope() {
 		return array(
-			'order'=> 'date DESC',
-			'limit' => Yii::app()->params['plainCommentsCount'],
+			'order'=> 'id DESC',
 		);
 	}
 }

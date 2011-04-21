@@ -38,4 +38,15 @@ class SiteController extends Controller
 				$this->render('error', $error);
 		}
 	}
+
+	public function actionLoadComments() {
+		$lastId = intval($_GET['lastId']);
+		if (!$lastId)
+			throw new CHttpException(404);
+
+		$PlainCommentsWidget = new PlainCommentsWidget();
+		$PlainCommentsWidget->lastId = $lastId;
+		$PlainCommentsWidget->run();
+		Yii::app()->end();
+	}
 }

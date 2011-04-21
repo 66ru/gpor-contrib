@@ -2,4 +2,4 @@ You guest? <?=var_dump($user->isGuest)?><br>
 <?=$user->name?>(<?=$user->id?>)
 
 <br>
-<?$this->widget('PlainCommentsWidget', array('offset'=>0));?>
+<? $this->widget('PlainCommentsWidget') ?>
