@@ -42,12 +42,12 @@ abstract class RAuthHelper
 
 	static function setCookieHash($hash, $remember_me = false) {
 		if($remember_me) {
-			$lifetime = 365 * 24 * 3600;
+			$time = time() + (365 * 24 * 3600);
 		} else {
-			$lifetime = false;
+			$time = false;
 		}
 		$cookie = new CHttpCookie("rauthhash", $hash);
-		$cookie->expire = time() + $lifetime;
+		$cookie->expire = $time;
 		Yii::app()->request->cookies["rauthhash"] = $cookie;
 	}
 
