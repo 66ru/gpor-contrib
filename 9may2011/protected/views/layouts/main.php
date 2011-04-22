@@ -18,6 +18,7 @@
 <script type="text/javascript" src="/js/commands.js"></script>
 <script type="text/javascript" src="/js/buildForm.js"></script>
 <script type="text/javascript" src="/js/config.js"></script>
+<script type="text/javascript" src="/js/socialBloks.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function () {
