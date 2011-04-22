@@ -20,7 +20,8 @@
 
 	<div id="plainCommentsWidget-comments">
 	<? foreach($comments as $comment) { ?>
-		<? $this->render('_comment', array('comment'=>$comment)) ?>
+		<? include('_comment.php') ?>
+		<? #$this->render('_comment', array('comment'=>$comment)) ?>
 	<? } ?>
 	</div>
 	<? if ($moreComments) { ?>
@@ -52,5 +53,17 @@
 
 			return false;
 		})
+
+		$('#plainCommentsWidget-comments').delegate('a.deletecomment','click', function() {
+			$.get($(this).attr('href'), function (data) {
+				if (!data.errCode) {
+					$('#plainCommentsWidget-comments div[commentId='+data.commentId+']').hide(300);
+				} else {
+					alert(data.errMsg);
+				}
+			}, 'json');
+
+			return false;
+		});
 	</script>
 </div>

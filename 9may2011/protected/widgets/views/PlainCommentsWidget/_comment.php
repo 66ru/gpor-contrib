@@ -4,7 +4,7 @@
 		<a href="<?=$comment->user->profileLink?>" class=" js_user"><?=CHtml::encode($comment->user->name)?></a>
 		<i class="comment_head_date"><?=DateHelper::formatRusDate($comment->datetime)?></i>
 		<? if ($user->isAdmin) { ?>
-			<a href="#" title="Пожаловаться модератору" class="buttons_report_small comment_head_icon">Пожаловаться модератору</a>
+			<a href="<?=CHtml::normalizeUrl(array('/comments/delete','commentId'=>$comment->id))?>" title="Удалить комментарий" class="buttons_report_small comment_head_icon deletecomment">Удалить комментарий</a>
 		<? } ?>
 	</div>
 	<div class="comment_content content">
