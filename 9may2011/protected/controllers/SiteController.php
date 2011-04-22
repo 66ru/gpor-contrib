@@ -4,7 +4,8 @@ class SiteController extends Controller
 {
 	public function init()
 	{
-		if (Yii::app()->user->isGuest) {
+		if (Yii::app()->user->isGuest ||
+				!User::model()->findByPk(Yii::app()->user->getId())) {
 			$identity=new RAuthUserIdentity();
 			$identity->authenticate();
 			if ($identity->errorCode===$identity::ERROR_NONE) {

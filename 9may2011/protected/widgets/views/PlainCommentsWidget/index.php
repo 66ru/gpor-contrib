@@ -5,7 +5,7 @@
 <? } ?>
 <ul id="plainCommentsWidget-comments">
 <? foreach($comments as $comment) { ?>
-	<? $this->render('//comments/_comment', array('comment'=>$comment)) ?>
+	<? $this->render('_comment', array('comment'=>$comment)) ?>
 <? } ?>
 </ul>
 <? if ($moreComments) { ?>

@@ -1,4 +1,4 @@
-<? foreach($comments as $comment) { ?><? $this->render('//comments/_comment', array('comment'=>$comment)) ?><? } ?>
+<? foreach($comments as $comment) { ?><? $this->render('_comment', array('comment'=>$comment)) ?><? } ?>
 
 <? if (!$moreComments) { ?>
 <script type="text/javascript">

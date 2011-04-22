@@ -10,10 +10,10 @@ class CommentsController extends Controller {
 		$comment->text = $_POST['newComment'];
 		$comment->datetime = time();
 		$comment->userId = Yii::app()->user->getId();
-		if ($comment->save())
-			$this->renderPartial('_comment', array(
-				'comment' => $comment,
-			));
+		if ($comment->save()) {
+			$this->widget('PlainCommentsWidget',array('commentId'=>$comment->id));
+			Yii::app()->end();
+		}
 	}
 
 	public function actionLoad() {
@@ -21,9 +21,7 @@ class CommentsController extends Controller {
 		if (!$lastId)
 			throw new CHttpException(404);
 
-		$PlainCommentsWidget = new PlainCommentsWidget();
-		$PlainCommentsWidget->lastId = $lastId;
-		$PlainCommentsWidget->run();
+		$this->widget('PlainCommentsWidget',array('lastId'=>$lastId));
 		Yii::app()->end();
 	}
 }

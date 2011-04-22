@@ -94,6 +94,7 @@ return array(
 		'gpor_server_uid'=> '', // Добавляется к profileLink: gpor_server_url/user/userId
 
 		'plainCommentsCount' => 10,
+		'adminIds' => array(65266),
 		// this is used in contact page
 //		'adminEmail'=>'webmaster@example.com',
 	),

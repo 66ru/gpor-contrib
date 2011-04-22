@@ -3,9 +3,17 @@
 class PlainCommentsWidget extends Widget {
 
 	public $lastId = 0;
+	public $commentId = 0;
 
 	public function run() {
-		if (!$this->lastId) {
+		if ($this->commentId) {
+			$this->render('_comment',array(
+				'comment' => Comment::model()->findByPk($this->commentId),
+				'user' => Yii::app()->user,
+			));
+
+			return;
+		} else if (!$this->lastId) {
 			$comments = Comment::model()->limitDefault()->findAll();
 			$commentsCount = Comment::model()->count();
 			$view = 'index';
