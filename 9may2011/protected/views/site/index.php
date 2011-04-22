@@ -148,65 +148,8 @@
 
             <div class="orange-brd"></div>
 
+            <? $this->widget('PlainCommentsWidget') ?>
 
-            <div class="list-greet">
-
-                <h3>Поздравления от посетителей</h3>
-
-
-                <div class="leave-greeting-block">
-                    <i class="lt"></i><i class="lb"></i><i class="rt"></i><i class="rb"></i>
-                    <table class="leave-greeting">
-                        <tr>
-                            <td class="leave-greeting__link"><a id="linkOpenFormGreeting" href="#">Оставить свое поздравление</a></td>
-                            <td class="leave-greeting__stat">на сайте уже <b>326</b> поздравлений</td>
-                        </tr>
-                        <tr style="display: none" id="leaveGreetingFormRow">
-                            <td colspan="2">
-                                <form action="" method="">
-                                    <fieldset>
-                                        <textarea id="comments_textarea" rows="10" id=""></textarea>
-                                    </fieldset>
-                                </form>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div class="js_comment  ie_layout" style="display: block;">
-                  <div class="comment_head rc5">
-                   <div class="comment_head_avatar"><img alt="" src="http://img.66.ru/img/avatar25/120098.jpg"></div>
-                   <a href="" class=" js_user">ArtemG</a>
-                   <i class="comment_head_date">23 ноября 2010 | 09:28</i>
-                   <a href="#" title="Пожаловаться модератору" class="buttons_report_small comment_head_icon">Пожаловаться модератору</a>
-                  </div>
-                  <div class="comment_content content">
-                    Спасибо деду за победу! Думаю у нас в стране нет семьи которая бы не поучаствовала в этой великой победе
-                  </div>
-                </div>
-
-                <div class="js_comment  ie_layout" style="display: block;">
-                  <div class="comment_head rc5">
-                   <div class="comment_head_avatar"><img alt="" src="http://new66.gpor.ru/static/common/img/avatar-25x25.gif"></div>
-                   <a href="" class=" js_user">Мухабидзе</a>
-                   <i class="comment_head_date">23 ноября 2010 | 09:28</i>
-                   <a href="#" title="Пожаловаться модератору" class="buttons_report_small comment_head_icon">Пожаловаться модератору</a>
-                  </div>
-                  <div class="comment_content content">Победителем первой гонки сезона 2011 года Формулы-1 в Австралии стал Себастьяно Перрейро.</div>
-                </div>
-
-                <div class="leave-greeting-block-bottom">
-                    <i class="lt"></i><i class="lb"></i><i class="rt"></i><i class="rb"></i>
-                    <table class="leave-greeting leave-greeting-last">
-                        <tr>
-                            <td class="leave-greeting__link leave-greeting__link-other"><a href="">Показать еще</a></td>
-                        </tr>
-                    </table>
-                </div>
-
-
-
-            </div>
 
 
 
