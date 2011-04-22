@@ -26,6 +26,7 @@ class PlainCommentsWidget extends Widget {
 		$this->render($view,array(
 			'comments' => $comments,
 			'user' => Yii::app()->user,
+			'commentsCount' => $commentsCount,
 			'moreComments' => $commentsCount > Yii::app()->params['plainCommentsCount'],
 		));
 	}

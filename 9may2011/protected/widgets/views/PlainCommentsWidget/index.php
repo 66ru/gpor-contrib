@@ -1,25 +1,56 @@
-<? if (!$user->isGuest) { ?>
-	<? include('_postCommentForm.php') ?>
-<? } else { ?>
-	<? include('_loginForm.php') ?>
-<? } ?>
-<ul id="plainCommentsWidget-comments">
-<? foreach($comments as $comment) { ?>
-	<? $this->render('_comment', array('comment'=>$comment)) ?>
-<? } ?>
-</ul>
-<? if ($moreComments) { ?>
-	<a id="plainCommentsWidget-loadMore" href="<?=CHtml::normalizeUrl(array('/comments/load'))?>">Загрузить больше!</a>
-<? } ?>
+<div class="list-greet">
+	<h3>Поздравления от посетителей</h3>
 
-<script type="text/javascript">
-	$('#plainCommentsWidget-loadMore').bind('click', function () {
-		$.get($(this).attr('href'), {
-			'lastId' : $('#plainCommentsWidget-comments li:last').attr('commentId')
-		}, function (data) {
-			$('#plainCommentsWidget-comments').append(data);
+	<div class="leave-greeting-block">
+		<i class="lt"></i><i class="lb"></i><i class="rt"></i><i class="rb"></i>
+		<table class="leave-greeting">
+			<tr>
+				<td class="leave-greeting__link"><a id="linkOpenFormGreeting" href="#">Оставить свое поздравление</a>
+				</td>
+				<td class="leave-greeting__stat">на сайте уже <b id="commentsCount"><?=$commentsCount?></b>
+					поздравлен<span id="pluralForm"><?=StringHelper::plural($commentsCount,'ие','ия','ий')?></span></td>
+			</tr>
+			<? if (!$user->isGuest) { ?>
+				<? include('_postCommentForm.php') ?>
+			<? } else { ?>
+				<? include('_loginForm.php') ?>
+			<? } ?>
+		</table>
+	</div>
+
+	<div id="plainCommentsWidget-comments">
+	<? foreach($comments as $comment) { ?>
+		<? $this->render('_comment', array('comment'=>$comment)) ?>
+	<? } ?>
+	</div>
+	<? if ($moreComments) { ?>
+	<div class="leave-greeting-block-bottom">
+		<i class="lt"></i><i class="lb"></i><i class="rt"></i><i class="rb"></i>
+		<table class="leave-greeting leave-greeting-last">
+			<tr>
+				<td class="leave-greeting__link leave-greeting__link-other">
+					<a id="plainCommentsWidget-loadMore" href="<?=CHtml::normalizeUrl(array('/comments/load'))?>">Показать еще</a>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<? } ?>
+
+	<script type="text/javascript">
+		$('#plainCommentsWidget-loadMore').bind('click', function () {
+			$.get($(this).attr('href'), {
+				'lastId' : $('#plainCommentsWidget-comments>div:last').attr('commentId')
+			}, function (data) {
+				$('#plainCommentsWidget-comments').append(data);
+			});
+
+			return false;
 		});
 
-		return false;
-	});
-</script>
+		$('#linkOpenFormGreeting').bind('click', function () {
+			$('#expandForm').show();
+
+			return false;
+		})
+	</script>
+</div>
