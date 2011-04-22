@@ -16,4 +16,26 @@ class Widget extends CWidget {
 		}
 	}
 
+	public function getViewFile($viewName) {
+
+		// позволяет обращатся к общим view через слэш // вначале
+		if($viewName[0]==='/' && strncmp($viewName,'//',2)===0)
+		{
+			if(($renderer=Yii::app()->getViewRenderer())!==null)
+				$extension=$renderer->fileExtension;
+			else
+				$extension='.php';
+
+			$viewFile=Yii::app()->getViewPath().$viewName;
+
+			if(is_file($viewFile.$extension))
+				return Yii::app()->findLocalizedFile($viewFile.$extension);
+			else if($extension!=='.php' && is_file($viewFile.'.php'))
+				return Yii::app()->findLocalizedFile($viewFile.'.php');
+			else
+				return false;
+		}
+
+		return parent::getViewFile($viewName);
+	}
 }

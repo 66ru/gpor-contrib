@@ -1,15 +1,15 @@
+<? if (!$user->isGuest) { ?>
+	<? include('_postCommentForm.php') ?>
+<? } else { ?>
+	<? include('_loginForm.php') ?>
+<? } ?>
 <ul id="plainCommentsWidget-comments">
 <? foreach($comments as $comment) { ?>
-	<li commentId="<?=$comment->id?>">
-		<a href="<?=$comment->user->profileLink?>"><?=CHtml::image($comment->user->image, CHtml::encode($comment->user->name))?></a>
-		<a href="<?=$comment->user->profileLink?>"><?=CHtml::encode($comment->user->name)?></a> :
-		<?=$comment->date?><br>
-		<?=CHtml::encode($comment->text)?>
-	</li>
+	<? $this->render('//comments/_comment', array('comment'=>$comment)) ?>
 <? } ?>
 </ul>
 <? if ($moreComments) { ?>
-	<a id="plainCommentsWidget-loadMore" href="<?=CHtml::normalizeUrl(array('/site/loadComments'))?>">Загрузить больше!</a>
+	<a id="plainCommentsWidget-loadMore" href="<?=CHtml::normalizeUrl(array('/comments/load'))?>">Загрузить больше!</a>
 <? } ?>
 
 <script type="text/javascript">

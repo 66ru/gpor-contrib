@@ -6,8 +6,8 @@
  * The followings are the available columns in table 'comment':
  * @property integer $id
  * @property string $text
- * @property string $date
- * @property string $userId
+ * @property integer $datetime
+ * @property integer $userId
  */
 class Comment extends CActiveRecord
 {
@@ -19,8 +19,8 @@ class Comment extends CActiveRecord
 	public function rules()
 	{
 		return array(
-			array('text, date', 'safe'),
-			array('userId', 'numerical', 'integerOnly'=>true),
+			array('text', 'safe'),
+			array('userId, datetime', 'numerical', 'integerOnly'=>true),
 		);
 	}
 
@@ -37,6 +37,10 @@ class Comment extends CActiveRecord
 		   'condition' => 'id <'.$id,
 		));
 		return $this;
+	}
+
+	public function getFormattedDatetime() {
+		
 	}
 
 	public function scopes() {
