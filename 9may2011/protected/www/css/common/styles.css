@@ -1,0 +1,202 @@
+
+
+
+.newpost {
+	border: 1px solid #d5d5d5;
+	padding: 20px;
+	padding-top: 15px;
+    padding-bottom: 8px;
+	background: #f1f1f1;
+	margin-bottom: 20px;
+    margin-top: 18px;
+}
+
+.form-new-post fieldset {
+	position: relative;
+	margin: 0px;
+	padding: 0px;
+	border: none;
+	margin-bottom :10px;
+}
+
+.newpost h1 {
+	font: 24px/24px Arial, Tahoma, Sans-Serif;
+	padding: 0px;
+	margin: 0px;
+	margin-bottom: 9px;
+}
+
+.form-new-post label {
+	font: 13px/13px Arial, Tahoma, Sans-Serif;
+	margin-bottom: 8px;
+	display: block;
+}
+
+
+.comments_editor__editor-label {
+    width: 60px;
+}
+
+.comments_editor__editor-label,
+.comments_editor__editor-rules{
+    vertical-align: middle;
+}
+
+.comments_editor__editor-label label {
+    margin: 0px;
+}
+
+.comments_editor__editor-rules {
+    text-align: right;
+}
+
+.comments_editor__editor-rules a:link,
+.comments_editor__editor-rules a:visited {
+    text-decoration: none;
+    border-bottom: 1px dotted #037dd3;
+}
+
+.comments_editor__editor-rules a:hover,
+.comments_editor__editor-rules a:active {
+    text-decoration: none;
+    border-bottom: 1px dotted #d15400;
+}
+
+
+.form-new-post input {}
+.form-new-post textarea {font-weight: normal}
+
+.form-new-post input,
+.form-new-post textarea {
+	font: 18px/18px Arial, Tahoma, Sans-Serif;
+	padding: 5px 0px;
+	width: 100%;
+    text-indent: 5px;
+}
+
+.code_frame textarea.textarea-spread {
+    height: 500px;
+}
+
+.js_comment_form-pad {
+    margin-bottom: 5px;
+}
+
+input.forms_submit {
+    padding: 4px 18px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.form-new-post-subm__pad {
+	padding-left: 150px;
+}
+
+.form-new-post input.form-new-post__subm {
+	width: auto;
+	font-size: 13px;
+	font-weight: bold;
+	padding: 3px 15px;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+
+a.pre-show-link {
+	position: relative;
+	font-weight: bold;
+	font-size: 13px;
+	top: 7px;
+}
+
+a.pre-show-link:link,
+a.pre-show-link:visited {
+	text-decoration: none;
+	border-bottom: 1px dotted #037dd3;
+}
+
+a.pre-show-link:hover,
+a.pre-show-link:active {
+	text-decoration: none;
+	border-bottom: 1px dotted #EE0000;
+}
+
+
+.congratulation {
+	background: #f1f5e8;
+	border: 1px solid #dcdfd5;
+}
+.congratulation1 {
+	padding: 24px 20px 22px 20px;
+	position: relative;
+
+}
+
+.congratulation em {
+	color: #4c4c4c;
+	font: italic bold 24px/24px Arial, Tahoma, Sans-Serif;
+	margin-bottom: 5px;
+	display: block;
+}
+
+.congratulation p {
+	margin: 0px;
+	font: 16px/16px Arial, Tahoma, Sans-Serif;
+}
+
+.icon-close {
+	display: block;
+	width: 16px;
+	height: 16px;
+	position: absolute;
+	top: 13px;
+	right: 10px;
+	background: url(../../img/closewin.gif) 0 0 no-repeat;
+}
+
+.increase-height-link {
+    display: block;
+    position: relative;
+    top: -1px;
+    width: 100%;
+    height: 7px;
+    border-left: 1px solid transparent;
+}
+
+.increase-height-link:link,
+.increase-height-link:visited {
+    background: url(../../img/botspread.gif) 0 0 repeat-x;
+    outline: none;
+}
+.increase-height-link:hover,
+.increase-height-link:active {
+    background: url(../../img/botspread-.gif) 0 0 repeat-x;
+    outline: none;
+}
+
+
+a.increase-height-link-spread:link,
+a.increase-height-link-spread:visited {
+    background: url(../../img/botspreaded.gif) 0 0 repeat-x;
+    outline: none;
+}
+a.increase-height-link-spread:hover,
+a.increase-height-link-spread:active {
+    background: url(../../img/botspreaded-.gif) 0 0 repeat-x;
+    outline: none;
+}
+
+
+.increase-height-link__l,
+.increase-height-link__r {
+    width: 1px;
+    height: 7px;
+    position: absolute;
+    top: 0px;
+    background: url(../../img/botspread-kray.gif) 0 0 no-repeat;
+}
+
+.increase-height-link__l {left: 0px;}
+.increase-height-link__r {right: 0px;}
+
+

@@ -1,0 +1,55 @@
+/**
+ * @package portal
+ */
+
+/**
+ * @subpackage popupIe
+ */
+
+* html .js_popup {
+    left: expression((function (scrollLeft) { return scrollLeft + 'px'; })(document.documentElement.scrollLeft));
+    position: absolute;
+    top: expression((function (scrollTop) { return scrollTop + 'px'; })(document.documentElement.scrollTop));
+    /*width: expression(document.documentElement.clientWidth + 'px');*/
+    zoom: 1;
+}
+
+* html .js_popup_overlay {
+    position: absolute;
+}
+
+.js_popup_sizer {
+    display: inline;
+    margin-right: -1px;
+    zoom: 1;
+}
+
+.js_popup_overlay {
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
+}
+
+.js_popup_close {
+    background-image: url('../img/icons.ie.png');
+}
+
+.js_popup_title {
+    display: inline;
+    zoom: 1;
+}
+
+/**
+ * @section frame
+ */
+.js_popup_frame {
+    display: inline;
+    zoom: 1;
+}
+/*
+* html .js_popup_frame {
+    margin-left: expression('-' + parseInt(this.offsetWidth / 2) + 'px');
+    margin-top: expression('-' + parseInt(this.scrollHeight / 2) - 70 + 'px');
+    left: 50%;
+    position: absolute;
+    top: 50%;
+}
+*/
