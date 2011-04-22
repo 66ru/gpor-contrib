@@ -9,7 +9,8 @@ class RAuthUserIdentity extends CBaseUserIdentity
 {
 	public $gpor_userid;
 	public $name;
-	public $sex;
+	public $profileLink;
+	public $image;
 
 	public function getId()
 	{
@@ -27,10 +28,10 @@ class RAuthUserIdentity extends CBaseUserIdentity
 		if (!$gpor_user) {
 			$this->errorCode = self::ERROR_UNKNOWN_IDENTITY;
 		} else {
-			$this->sex = $gpor_user['sex'] == 1 ? 'male' : ($gpor_user['sex'] == 2 ? 'female' : '');
 			$this->name = $gpor_user['username'];
 			$this->gpor_userid = $gpor_user['user_id'];
-
+			$this->profileLink = Yii::app()->params['gpor_server_uid'].'/user/'.$this->gpor_userid.'/';
+			$this->image = $gpor_user['avatar']['small'];
 			$this->errorCode = self::ERROR_NONE;
 		}
 

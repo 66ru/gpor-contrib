@@ -2,6 +2,8 @@
  
 class WebUser extends CWebUser {
 
+	public $isAdmin = false;
+
 	public function init()
 	{
 		if (!RAuthHelper::getCurrentHash()) {
@@ -9,5 +11,7 @@ class WebUser extends CWebUser {
 		}
 
 		parent::init();
+		if ( in_array($this->getId(), Yii::app()->params['adminIds']) )
+			$this->isAdmin = true;
 	}
 }
