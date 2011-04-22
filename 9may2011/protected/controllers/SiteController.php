@@ -49,4 +49,24 @@ class SiteController extends Controller
 				$this->render('error', $error);
 		}
 	}
+    public function actionNews()
+    {
+        if(!isset($_GET['id']))
+            throw new CHttpException(404);
+
+        $news = NewsHelper::getNews((int) $_GET['id']);
+
+        if(!$news)
+            throw new CHttpException(404);
+
+
+        $this->render(
+            'singleNews',
+            array(
+                 'news'=>$news[0],
+                 'veteran'=>'Тестовый ветеран',
+            )
+        );
+
+    }
 }

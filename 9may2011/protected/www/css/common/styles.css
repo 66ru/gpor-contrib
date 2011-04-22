@@ -151,7 +151,7 @@ a.pre-show-link:active {
 	position: absolute;
 	top: 13px;
 	right: 10px;
-	background: url(../../img/closewin.gif) 0 0 no-repeat;
+	background: url(/img/closewin.gif) 0 0 no-repeat;
 }
 
 .increase-height-link {
@@ -165,24 +165,24 @@ a.pre-show-link:active {
 
 .increase-height-link:link,
 .increase-height-link:visited {
-    background: url(../../img/botspread.gif) 0 0 repeat-x;
+    background: url(/img/botspread.gif) 0 0 repeat-x;
     outline: none;
 }
 .increase-height-link:hover,
 .increase-height-link:active {
-    background: url(../../img/botspread-.gif) 0 0 repeat-x;
+    background: url(/img/botspread-.gif) 0 0 repeat-x;
     outline: none;
 }
 
 
 a.increase-height-link-spread:link,
 a.increase-height-link-spread:visited {
-    background: url(../../img/botspreaded.gif) 0 0 repeat-x;
+    background: url(/img/botspreaded.gif) 0 0 repeat-x;
     outline: none;
 }
 a.increase-height-link-spread:hover,
 a.increase-height-link-spread:active {
-    background: url(../../img/botspreaded-.gif) 0 0 repeat-x;
+    background: url(/img/botspreaded-.gif) 0 0 repeat-x;
     outline: none;
 }
 
@@ -193,7 +193,7 @@ a.increase-height-link-spread:active {
     height: 7px;
     position: absolute;
     top: 0px;
-    background: url(../../img/botspread-kray.gif) 0 0 no-repeat;
+    background: url(/img/botspread-kray.gif) 0 0 no-repeat;
 }
 
 .increase-height-link__l {left: 0px;}
