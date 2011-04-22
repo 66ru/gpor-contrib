@@ -4,21 +4,31 @@ class SiteController extends Controller
 {
 	public function init()
 	{
-		if (Yii::app()->user->isGuest) {
+		/*if (Yii::app()->user->isGuest) {
 			$identity=new RAuthUserIdentity();
 			$identity->authenticate();
 			if ($identity->errorCode===$identity::ERROR_NONE) {
 				Yii::app()->user->login($identity, 30*60);
 			}
-		}
+		}*/
 	}
 
 	public function actionIndex()
 	{
+        $this->layout = 'index';
+
 		$this->render('index', array(
 			'user' => Yii::app()->user,
 		));
 	}
+
+    public function actionNewsShow() {
+        $id = $_GET['id'];
+
+        $this->render('newsShow', array(
+			'user' => Yii::app()->user,
+		));
+    }
 
 	public function actionError()
 	{
