@@ -2,7 +2,7 @@
 	<td colspan="2">
 		<?=CHtml::form(array('/comments/post'), 'post', array('id'=>'newComment-form'))?>
 			<fieldset>
-				<?=CHtml::textArea('newComment')?>
+				<?=CHtml::textArea('newComment', '', array('id'=>'comments_textarea'))?>
 			</fieldset>
 		<?=CHtml::submitButton('Отправить')?>
 		<?=CHtml::endForm()?>

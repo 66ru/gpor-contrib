@@ -2,11 +2,11 @@
           "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
  <head>
-  <title>Новости Екатеринбурга - www.66.ru</title>
+  <title></title>
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
   <link rel="pingback" href="http://api.new66.gpor.ru/" />
-  <link href="http://t.66.ru/new66/common/misc/favicon.ico" type="image/x-icon" rel="icon" />
-  <link href="http://t.66.ru/new66/common/misc/favicon.ico" type="image/x-icon" rel="shortcut icon" />
+  <link href="/favicon.ico" type="image/x-icon" rel="icon" />
+  <link href="/favicon.ico" type="image/x-icon" rel="shortcut icon" />
 
 
 
@@ -14,15 +14,11 @@
 <script type="text/javascript" src="/js/common/jquery-1.5.min.js"></script>
 <script type="text/javascript" src="/js/common/jquery.popup.js"></script>
 <script type="text/javascript" src="/js/common/rocon.js"></script>
-<script type="text/javascript" src="/js/selections.js"></script>
-<script type="text/javascript" src="/js/commands.js"></script>
-<script type="text/javascript" src="/js/buildForm.js"></script>
-<script type="text/javascript" src="/js/config.js"></script>
+
 
 <link rel="stylesheet" type="text/css" href="/css/common/styles.css">
 <link type="text/css" rel="stylesheet" href="/css/common/!reset.css" />
 <link type="text/css" rel="stylesheet" href="/css/common/commentsForm.css" />
-
 
 
 
@@ -39,16 +35,10 @@
 <link href="http://new66.gpor.ru/static/common/css/decorations.ie.if_lt_IE_8.css" rel="stylesheet" type="text/css" />
 <![endif]-->
 <!--[if lt IE 8]>
-<link href="http://new66.gpor.ru/static/common/css/forms.ie.if_lt_IE_8.css" rel="stylesheet" type="text/css" />
-<![endif]-->
-<!--[if lt IE 8]>
 <link href="http://new66.gpor.ru/static/common/css/g-png.ie6.if_lt_IE_8.css" rel="stylesheet" type="text/css" />
 <![endif]-->
 <!--[if lt IE 8]>
 <link href="http://new66.gpor.ru/static/common/css/head.ie.if_lt_IE_8.css" rel="stylesheet" type="text/css" />
-<![endif]-->
-<!--[if lt IE 8]>
-<link href="http://new66.gpor.ru/static/common/css/popup.ie.if_lt_IE_8.css" rel="stylesheet" type="text/css" />
 <![endif]-->
 
 
@@ -172,4 +162,5 @@
  </body>
 
 </html>
+
 
