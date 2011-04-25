@@ -2,14 +2,12 @@
           "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
  <head>
-  <title>Новости Екатеринбурга - www.66.ru</title>
+  <title><?php echo $this->getPageTitle(); ?></title>
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+  <meta name="description" content="<?php echo $this->getPageDescription(); ?>" />
   <link rel="pingback" href="http://api.new66.gpor.ru/" />
-  <link href="http://t.66.ru/new66/common/misc/favicon.ico" type="image/x-icon" rel="icon" />
-  <link href="http://t.66.ru/new66/common/misc/favicon.ico" type="image/x-icon" rel="shortcut icon" />
-
-
-
+  <link href="/favicon.ico" type="image/x-icon" rel="icon" />
+  <link href="/favicon.ico" type="image/x-icon" rel="shortcut icon" />
 
 <script type="text/javascript" src="/js/common/jquery-1.5.min.js"></script>
 <script type="text/javascript" src="/js/common/jquery.popup.js"></script>
@@ -23,28 +21,16 @@
 <script type="text/javascript">
     $(document).ready(function () {
        $(this).commentForm();
-
-
        $("#linkOpenFormGreeting").click(function(){
             $("#leaveGreetingFormRow").toggle();
            return false;
        });
-
     });
-
-
-
-
 </script>
-
 
 <link rel="stylesheet" type="text/css" href="/css/common/styles.css">
 <link type="text/css" rel="stylesheet" href="/css/common/!reset.css" />
 <link type="text/css" rel="stylesheet" href="/css/common/commentsForm.css" />
-
-
-
-
 
 <link href="/css/common/packed.css" rel="stylesheet" type="text/css" />
 

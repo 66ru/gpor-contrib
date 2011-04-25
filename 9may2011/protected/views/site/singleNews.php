@@ -78,96 +78,11 @@
                             </table>
 
                             <h3 class="news__list__title">Другие истории наших ветеранов</h3>
-                            <ul class="news__list">
-                                <li class="news__item">
-                                    <div class="news__item-pic">
-                                        <a href=""><img src="/img/pobeda/1.jpg" alt="" /></a>
-                                    </div>
-                                    <div class="news__item-text">
-                                        <h3 class="news__item_title"><a href="">Когда началась война, мне шел восьмой год</a></h3>
-                                        <p class="news__item_content">Федоров Михаил Степанович</p>
-                                    </div>
-                                </li>
-                                <li class="news__item">
-                                    <div class="news__item-pic">
-                                        <a href=""><img src="/img/pobeda/2.jpg" alt="" /></a>
-                                    </div>
-                                    <div class="news__item-text">
-                                        <h3 class="news__item_title"><a href="">Со дня объявления войны ,был в ПВО Москвы,  как командир пулеметного расчета</a></h3>
-                                        <p class="news__item_content">Селихов Борис Васильевич</p>
-                                    </div>
-                                </li>
-                                <li class="news__item">
-                                    <div class="news__item-pic">
-                                        <a href=""><img src="/img/pobeda/1.jpg" alt="" /></a>
-                                    </div>
-                                    <div class="news__item-text">
-                                        <h3 class="news__item_title"><a href="">Когда началась война, мне шел восьмой год</a></h3>
-                                        <p class="news__item_content">Федоров Михаил Степанович</p>
-                                    </div>
-                                </li>
-                                <li class="news__item">
-                                    <div class="news__item-pic">
-                                        <a href=""><img src="/img/pobeda/2.jpg" alt="" /></a>
-                                    </div>
-                                    <div class="news__item-text">
-                                        <h3 class="news__item_title"><a href="">Со дня объявления войны ,был в ПВО Москвы,  как командир пулеметного расчета</a>&nbsp;<span class="inline-block"><i class="has-photo">Фото</i></span>&nbsp;<noindex><a href="" class="comments-count">19<i class="invisible"> комментариев</i></a></noindex>
-                                        <p class="news__item_content">Селихов Борис Васильевич</p>
-                                    </div>
-                                </li>
-                                <li class="news__item">
-                                    <div class="news__item-pic">
-                                        <a href=""><img src="/img/pobeda/1.jpg" alt="" /></a>
-                                    </div>
-                                    <div class="news__item-text">
-                                        <h3 class="news__item_title"><a href="">Когда началась война, мне шел восьмой год</a></h3>
-                                        <p class="news__item_content">Федоров Михаил Степанович</p>
-                                    </div>
-                                </li>
-                                <li class="news__item">
-                                    <div class="news__item-pic">
-                                        <a href=""><img src="/img/pobeda/2.jpg" alt="" /></a>
-                                    </div>
-                                    <div class="news__item-text">
-                                        <h3 class="news__item_title"><a href="">Со дня объявления войны ,был в ПВО Москвы,  как командир пулеметного расчета</a></h3>
-                                        <p class="news__item_content">Селихов Борис Васильевич</p>
-                                    </div>
-                                </li>
-                            </ul>
-
-
+                            <? $this->widget('NewsListWidget', array('news'=>$other_news)) ?>
                             <div class="orange-brd"></div>
-
-
-                            <!-- стандартный пейджер с 66-->
-                            <div class="news_section-news-list__pagination">
-                                <noindex>
-                                    <span class="yiiPagerHeader">Страницы</span>
-                                    <ul class="yiiPager" id="yw0">
-                                        <li class="previous"><span class="ctrl left">← Ctrl </span><a href="">предыдущая</a></li>
-                                        <li class="next"><a href="">следующая</a><span class="ctrl right">Ctrl →</span></li>
-                                    </ul>
-                                    <ul class="yiiPagerPages">
-                                        <li class="page selected rc3"><a href="">1</a></li>
-                                        <li class="page"><a href="">2</a></li>
-                                        <li class="page"><a href="">3</a></li>
-                                        <li class="page"><a href="">4</a></li>
-                                        <li class="page"><a href="">5</a></li>
-                                        <li class="page"><a href="">6</a></li>
-                                        <li class="page"><a href="">7</a></li>
-                                        <li class="page"><a href="">8</a></li>
-                                        <li class="page"><a href="">9</a></li>
-                                        <li class="page"><a href="">…</a></li>
-                                    </ul>
-                                </noindex>
-                            </div>
-
-
-
+                            <? $this->widget('LinkPager', array('pages'=>$pages)) ?>
 
                         </div>
-
-
                     </div>
                 </div>
             </div>
