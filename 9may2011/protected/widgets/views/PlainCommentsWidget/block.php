@@ -2,6 +2,6 @@
 
 <? if (!$moreComments) { ?>
 <script type="text/javascript">
-	$('#plainCommentsWidget-loadMore').hide();
+	$('#plainCommentsWidget-loadMoreDiv').hide();
 </script>
 <? } ?>

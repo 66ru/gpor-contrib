@@ -1,6 +1,3 @@
-<? /*You guest? <?=var_dump($user->isGuest)?><br>
-<?=$user->name?>(<?=$user->id?>) */?>
-
 <div class="grid-2-cols context">
     <div class="grid-2-cols__col1">
         <div class="grid-2-cols__col1__pad">
@@ -149,15 +146,6 @@
             <div class="orange-brd"></div>
 
             <? $this->widget('PlainCommentsWidget') ?>
-
-
-
-
-
-
-
         </div>
-
-
     </div>
 </div>

@@ -14,20 +14,6 @@
 <script type="text/javascript" src="/js/common/jquery-1.5.min.js"></script>
 <script type="text/javascript" src="/js/common/jquery.popup.js"></script>
 <script type="text/javascript" src="/js/common/rocon.js"></script>
-<script type="text/javascript" src="/js/selections.js"></script>
-<script type="text/javascript" src="/js/commands.js"></script>
-<script type="text/javascript" src="/js/buildForm.js"></script>
-<script type="text/javascript" src="/js/config.js"></script>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-       $(this).commentForm();
-       $("#linkOpenFormGreeting").click(function(){
-            $("#leaveGreetingFormRow").toggle();
-           return false;
-       });
-    });
-</script>
 
 
 <link rel="stylesheet" type="text/css" href="/css/common/styles.css">

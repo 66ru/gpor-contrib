@@ -19,24 +19,6 @@
 <script type="text/javascript" src="/js/buildForm.js"></script>
 <script type="text/javascript" src="/js/config.js"></script>
 
-<script type="text/javascript">
-    $(document).ready(function () {
-       $(this).commentForm();
-
-
-       $("#linkOpenFormGreeting").click(function(){
-            $("#leaveGreetingFormRow").toggle();
-           return false;
-       });
-
-    });
-
-
-
-
-</script>
-
-
 <link rel="stylesheet" type="text/css" href="/css/common/styles.css">
 <link type="text/css" rel="stylesheet" href="/css/common/!reset.css" />
 <link type="text/css" rel="stylesheet" href="/css/common/commentsForm.css" />

@@ -31,7 +31,7 @@ class RAuthUserIdentity extends CBaseUserIdentity
 			$this->name = $gpor_user['username'];
 			$this->gpor_userid = $gpor_user['user_id'];
 			$this->profileLink = Yii::app()->params['gpor_server_uid'].'/user/'.$this->gpor_userid.'/';
-			$this->image = $gpor_user['avatar']['small'];
+			$this->image = !empty($gpor_user['avatar']['small']) ? $gpor_user['avatar']['small'] : 'http://img.66.ru/dez/noavatar25.gif';
 			$this->errorCode = self::ERROR_NONE;
 		}
 

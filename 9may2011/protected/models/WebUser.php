@@ -11,7 +11,18 @@ class WebUser extends CWebUser {
 		}
 
 		parent::init();
-		if ( in_array($this->getId(), Yii::app()->params['adminIds']) )
+		$this->setIsAdmin();
+	}
+
+	public function afterLogin($fromCookie) {
+		$this->setIsAdmin();
+
+		parent::afterLogin($fromCookie);
+	}
+
+	private function setIsAdmin()
+	{
+		if (in_array($this->getId(), Yii::app()->params['adminIds']))
 			$this->isAdmin = true;
 	}
 }

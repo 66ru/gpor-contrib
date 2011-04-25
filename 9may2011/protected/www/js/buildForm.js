@@ -19,7 +19,7 @@ var comment_form = {
     _buildCommentsEditor: function () {
         var textarea = this.container.children("textarea");
         var form =
-        "<form action='' class='js_comment_form ie_layout' method='post'>" +
+        "<form action='/comments/post/' class='js_comment_form ie_layout' method='post' id='newComment-form'>" +
             "<div class='js_comment_form-pad'>" +
                 "<table class='comments_editor'><tr>" +
                     "<td class='comments_editor__editor-label'><label for=''>Текст:</label></a></td><td class='commands_container'></td><td class='comments_editor__editor-rules'><a href='#'>как пользоваться cut-ом?</a></td>" +
@@ -70,9 +70,6 @@ var comment_form = {
                         "<input type='submit' value='Поздравить' id='submit-comment' name='submitComment' class='forms_submit forms_submit js_comments_forms_submit'>" +
                     "</b>" +
                 "</i>" +
-            "</div>" +
-            "<div class='js_comment_form-bottom_text'>" +
-                "<a href='' class='pre-show-link'>Предварительный просмотр</a>" +
             "</div>" +
         "</div>";
         $(".js_comment_form").append(submitButton);
