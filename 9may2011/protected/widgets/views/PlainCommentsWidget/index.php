@@ -1,3 +1,8 @@
+<script type="text/javascript" src="/js/selections.js"></script>
+<script type="text/javascript" src="/js/commands.js"></script>
+<script type="text/javascript" src="/js/buildForm.js"></script>
+<script type="text/javascript" src="/js/config.js"></script>
+
 <div class="list-greet">
 	<h3>Поздравления от посетителей</h3>
 
@@ -25,7 +30,7 @@
 	<? } ?>
 	</div>
 	<? if ($moreComments) { ?>
-	<div class="leave-greeting-block-bottom">
+	<div class="leave-greeting-block-bottom" id="plainCommentsWidget-loadMoreDiv" >
 		<i class="lt"></i><i class="lb"></i><i class="rt"></i><i class="rb"></i>
 		<table class="leave-greeting leave-greeting-last">
 			<tr>
