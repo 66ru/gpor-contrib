@@ -48,7 +48,7 @@ body #body {
 #teaser-place {
     width: 100%;
     height: 286px;
-    background: #4c632d url(../../img/pobeda/head-bg.jpg) center 0 no-repeat;
+    background: #4c632d url(/img/pobeda/head-bg.jpg) center 0 no-repeat;
 }
 
 .teaser-place__congratulations {
@@ -257,7 +257,7 @@ body #body {
 .lb,
 .rb {
     position: absolute;
-    background: url(../../img/round-cnr.gif) 0 0 no-repeat;
+    background: url(/img/round-cnr.gif) 0 0 no-repeat;
     z-index: 20;
     width: 2px;
     height: 2px;

@@ -215,7 +215,7 @@ body .buttons_wrap, .buttons_wrap-grey {
 
 .js_popup_close {
     cursor: pointer;
-    background: url('../../img/icons.png') no-repeat 0 -32px;
+    background: url('/img/icons.png') no-repeat 0 -32px;
     height: 32px;
     right: 17px;
     position: absolute;
@@ -248,7 +248,7 @@ body .buttons_wrap, .buttons_wrap-grey {
 .js_popup_frame_bottom-right,
 .js_popup_frame_top-left,
 .js_popup_frame_top-right {
-    background: url('../../img/popup.png') no-repeat;
+    background: url('/img/popup.png') no-repeat;
     left: -18px;
 }
 
@@ -420,7 +420,7 @@ body .buttons_wrap, .buttons_wrap-grey {
 .js_frames_cute_frame_top-left,
 .frames_cute_frame_top-right,
 .js_frames_cute_frame_top-right {
-    background: url('../../img/frames/cute.png') no-repeat;
+    background: url('/img/frames/cute.png') no-repeat;
     left: -11px;
 }
 

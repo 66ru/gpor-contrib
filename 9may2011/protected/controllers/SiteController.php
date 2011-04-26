@@ -25,20 +25,20 @@ class SiteController extends Controller
 
 	public function actionIndex()
 	{
-        $this->layout = 'index';
+        $this->setPageTitle('66 Лет Победы');
+        $this->setPageDescription('66 Лет Победы');
+        
+        $news = NewsHelper::getNews();
+
+        $pages = new CPagination($news['totalCount']);
+        $pages->pageSize=NewsHelper::PER_PAGE;        
 
 		$this->render('index', array(
 			'user' => Yii::app()->user,
+            'news' => $news['news'],
+            'pages' => $pages,
 		));
 	}
-
-    public function actionNewsShow() {
-        $id = $_GET['id'];
-
-        $this->render('newsShow', array(
-			'user' => Yii::app()->user,
-		));
-    }
 
 	public function actionError()
 	{
@@ -49,4 +49,31 @@ class SiteController extends Controller
 				$this->render('error', $error);
 		}
 	}
+    public function actionNews()
+    {
+        if(!isset($_GET['id']))
+            throw new CHttpException(404);
+
+        $news = NewsHelper::getNews((int) $_GET['id']);
+        $other_news = NewsHelper::getNews(null, $_GET['id']);
+
+        if(!$news)
+            throw new CHttpException(404);
+
+        $this->setPageTitle($news['news'][0]['title']);
+        $this->setPageDescription($news['news'][0]['annotation']);
+
+        $pages = new CPagination($other_news['totalCount']);
+        $pages->pageSize=NewsHelper::PER_PAGE;
+
+        $this->render(
+            'singleNews',
+            array(
+                'news' => $news['news'][0],
+                'other_news' => $other_news['news'],
+                'pages' => $pages,
+            )
+        );
+
+    }
 }
