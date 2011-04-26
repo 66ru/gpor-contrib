@@ -111,8 +111,10 @@ abstract class NewsHelper
             }
         }
 
-		Yii::app()->cache->set($cacheKey.'_news', $resp->val, 50*60);
-		Yii::app()->cache->set($cacheKey.'_newsCount', $resp2->val['newsCount'], 50*60);
+		if (!empty($resp->val))
+			Yii::app()->cache->set($cacheKey.'_news', $resp->val, 50*60);
+		if (!empty($resp2->val['newsCount']))
+			Yii::app()->cache->set($cacheKey.'_newsCount', $resp2->val['newsCount'], 50*60);
 
 		return(
             array(

@@ -86,17 +86,17 @@ return array(
 	'params'=>array(
 		'gpor_server_url' => '',
 		'gpor_secret_key' => '',
-		'gpor_server_uid'=> '', // Добавляется к profileLink: gpor_server_url/user/userId
+		'gpor_server_uid'=> '', // Добавляется к profileLink: gpor_server_uid/user/userId
+
         'apiKey' => '',
         'apiUrl' => 'http://api.66.localhost/' ,
+
         'vkontakteApiId' => 2148796,
         'newsSection' => 67,
 		'plainCommentsCount' => 10,
 		'adminIds' => array(65266),
-        'siteName' => '66.ru',
+
+        'siteName' => 'www.66.ru',
         'outerHostName' => '66.ru',
-        'hostName' => '9may.localhost:8080',
-		// this is used in contact page
-//		'adminEmail'=>'webmaster@example.com',
 	),
 );
