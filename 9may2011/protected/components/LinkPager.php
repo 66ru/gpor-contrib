@@ -127,7 +127,7 @@ class LinkPager extends CLinkPager
 				self::CSS_PREVIOUS_PAGE,
 				$currentPage<=0,
 				false,
-				'<span class="ctrl left">← Ctrl </span>'
+				''
 			);
 		}
 
@@ -143,7 +143,7 @@ class LinkPager extends CLinkPager
 				$currentPage>=$pageCount-1,
 				false,
 				'',
-				'<span class="ctrl right">Ctrl →</span>'
+				''
 			);
 		}
 

@@ -49,14 +49,14 @@
 			    <div id="vk_like"></div>
 		    </div>
 		    <div class="socialnetworks-posting-item">
-                <form action="http://<?php if(Yii::app()->user->getId()) echo Yii::app()->params['outerHostName'].'/user/'.Yii::app()->user->getId().'/blog/add/'; else echo Yii::app()->params['outerHostName'].'/login' ?>" method="post"><table class=""><tr><td><input type="hidden" name="newslink" value="http://<?php echo Yii::app()->params['hostName'].'/news/'.$news['id']; ?>"/><input type="hidden" name="newstitle" value="<?php echo $news['title']; ?>"/><input type="hidden" name="newsannotation" value="<?php echo $news['annotation']; ?>"/><span class="b-placing_into_blog66__container"><input class="b-placing_into_blog66" type="submit" alt="в блог на <?php echo Yii::app()->params['siteName']; ?>" title="в блог на <?php echo Yii::app()->params['siteName']; ?>" value="<?php if(isset($news['toBlogCount'])) echo $news['toBlogCount']; else echo 0;?>"></span></table></form>
+                <form action="http://<?php if(Yii::app()->user->getId()) echo Yii::app()->params['outerHostName'].'/user/'.Yii::app()->user->getId().'/blog/add/'; else echo Yii::app()->params['outerHostName'].'/login' ?>" method="post"><table class=""><tr><td><input type="hidden" name="newslink" value="<?CHtml::normalizeUrl(array('/site/news','id'=>$news['id']))?>"/><input type="hidden" name="newstitle" value="<?php echo $news['title']; ?>"/><input type="hidden" name="newsannotation" value="<?php echo $news['annotation']; ?>"/><span class="b-placing_into_blog66__container"><input class="b-placing_into_blog66" type="submit" alt="в блог на <?php echo Yii::app()->params['siteName']; ?>" title="в блог на <?php echo Yii::app()->params['siteName']; ?>" value="<?php if(isset($news['toBlogCount'])) echo $news['toBlogCount']; else echo 0;?>"></span></table></form>
 		    </div>
             <div class="socialnetworks-posting-item" style="margin-top: 1px;">
                 <div id="mail_like"></div>
             </div>
 
             <div class="socialnetworks-posting-item" style="margin-top: 1px;">
-                <div id="lj_like" src="/img/sb/lj.gif" href="http://www.livejournal.com/update.bml?subject='+encodeURIComponent(" simpletitle="<?php echo $news['title']; ?>" outerhostname="http://<?php echo Yii::app()->params['hostName'].'/news/'.$news['id']; ?>"></div>
+                <div id="lj_like" src="/img/sb/lj.gif" href="http://www.livejournal.com/update.bml?subject='+encodeURIComponent(" simpletitle="<?php echo $news['title']; ?>" outerhostname="<?CHtml::normalizeUrl(array('/site/news','id'=>$news['id']))?>"></div>
             </div>
 	    </div>
     </noindex>

@@ -49,8 +49,8 @@ return array(
 			'rules'=>array(
 //				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 //				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
-				'<action:\w+>'=>'site/<action>',
 				'<action:\w+>/<id:\d+>'=>'site/<action>',
+				'<action:\w+>'=>'site/<action>',
 			),
 		),
 
