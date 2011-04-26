@@ -27,7 +27,8 @@ abstract class NewsHelper
         $newsSection->field = 'sectionId';
         $newsSection->value = Yii::app()->params['newsSection'];
 
-        if($id)
+        $newsId = false;
+		if($id)
         {
             $newsId = new stdClass();
             $newsId->value = array($id);
@@ -43,14 +44,17 @@ abstract class NewsHelper
             $newsId->field = 'notId';
         }
 
-        $p2 = array($newsId, $newsSection);
+        if (!empty($newsId))
+			$p2[] = $newsId;
+
+		$p2[]= $newsSection;
         $p2 = php_xmlrpc_encode($p2);
         $message->addparam($p2);
         $message2->addparam($p2);
 
         $p3 = array(
             'id',
-            'title',
+            'simpletitle',
             'content',
             'authorId',
             'comment',
@@ -82,14 +86,14 @@ abstract class NewsHelper
         $p4 = php_xmlrpc_encode($p4);
         $message->addparam($p4);
 
-        $resp = $client->send($message, 0, 'http11');
-        $resp2 = $client->send($message2, 0, 'http11');
+		list($resp, $resp2) = $client->send(array($message,$message2), 0, 'http11');
 
         if(!empty($resp->val))
         {
-            foreach($resp->val as $k=>$v)
+            foreach($resp->val as $newsid=>&$news)
             {
-                $resp->val[$k]['addTags'] = self::tagParser($v['comment']);
+                $news['addTags'] = self::tagParser($news['comment']);
+                $news['title'] = $news['simpletitle'];
             }
         }
 

@@ -66,11 +66,13 @@ class LinkPager extends CLinkPager
 			return;
 		$this->registerClientScript();
 		// Header and buttons next and previous
+		echo '<div class="news_section-news-list__pagination"><noindex>';
 		echo '<span class="yiiPagerHeader">' . $this->header . '</span>';
 		echo CHtml::tag('ul', $this->htmlOptions, implode("\n", $buttons));
 		// internal pages
 		echo CHtml::tag('ul', $this->htmlPagesOptions, implode("\n", $pages));
 		echo $this->footer;
+		echo "</noindex></div>";
 
 		// Header and buttons next and previous
 //		$header = '';

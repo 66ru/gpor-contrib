@@ -6,11 +6,11 @@
         <li class="news__item">
         <div class="news__item-pic">
         '.(isset($v['_parsedSmallImage'])?
-            '<a href="/news/'.$v['id'].'"><img src="'.$v['_parsedSmallImage'].'" alt="'.$v['title'].'" /></a>'
+            '<a href="/news/'.$v['id'].'/"><img src="'.$v['_parsedSmallImage'].'" alt="'.$v['title'].'" /></a>'
             :'').'
         </div>
         <div class="news__item-text">
-            <h3 class="news__item_title"><a href="/news/'.$v['id'].'">'.$v['title'].'</a></h3>');
+            <h3 class="news__item_title"><a href="/news/'.$v['id'].'/">'.$v['title'].'</a></h3>');
         if(isset($v['containPhoto']) || isset($v['containAudio']) || isset($v['containVideo']) || isset($v['infograph']))
         {
             print('<div class="inline-block">');
@@ -27,7 +27,7 @@
             print('</div>');
         }
         if(isset($v['commentsCount']))
-            print('&nbsp;&nbsp;<noindex><a class="comments-count" href="/news/'.$v['id'].'#comments">'.$v['commentsCount'].'<i class="invisible"> комментари'.StringHelper::plural($v['commentsCount'],'й', 'я', 'ев').'</i></a></noindex>');
+            print('&nbsp;&nbsp;<noindex><a class="comments-count" href="/news/'.$v['id'].'/#comments">'.$v['commentsCount'].'<i class="invisible"> комментари'.StringHelper::plural($v['commentsCount'],'й', 'я', 'ев').'</i></a></noindex>');
 
         if(isset($v['addTags']['veteran']))
                 print '<p class="news__item_content">'.$v['addTags']['veteran'].'</p>';
