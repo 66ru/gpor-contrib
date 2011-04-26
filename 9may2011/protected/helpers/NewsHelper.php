@@ -7,7 +7,21 @@ abstract class NewsHelper
 
     static function getNews($id = null, $noInId = null)
     {
-        
+		$cacheKey = md5(serialize(array(
+			'page' => $_GET['page'],
+			'id' => $id,
+			'noInId' => $noInId,
+		)));
+		$cachedNews = Yii::app()->cache->get($cacheKey.'_news');
+		$cachedNewsCount = Yii::app()->cache->get($cacheKey.'_newsCount');
+		if ($cachedNews && $cachedNewsCount)
+			return(
+				array(
+					'totalCount' => $cachedNewsCount,
+					'news' => $cachedNews,
+				)
+			);
+		
         $client = new xmlrpc_client(Yii::app()->params['apiUrl']);
         $client->return_type = 'phpvals';
 
@@ -97,13 +111,15 @@ abstract class NewsHelper
             }
         }
 
-        return(
+		Yii::app()->cache->set($cacheKey.'_news', $resp->val);
+		Yii::app()->cache->set($cacheKey.'_newsCount', $resp2->val['newsCount']);
+
+		return(
             array(
                 'totalCount' => $resp2->val['newsCount'],
                 'news' => $resp->val,
             )
         );
-
     }
     static function tagParser($text)
     {
