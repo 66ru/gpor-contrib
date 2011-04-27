@@ -131,13 +131,6 @@ $.fn.commentForm = function (obj) {
             src: "/img/smile.gif",
             title: "Смайлики"
         },
-        {
-            containerIndex: 4,
-            type: "uniq",
-            textvalue: "cut",
-            src: "/img/cat.gif",
-            title: "Текст подкатом"
-        }
     ];
     var commands = defaultCommands.concat(obj.commands || []);
     comment_form.commands(commands);

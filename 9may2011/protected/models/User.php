@@ -19,7 +19,23 @@ class User extends CActiveRecord
 	public function rules()
 	{
 		return array(
-			array('name, profileLink, image', 'safe'),
+			array('name, profileLink, image, uid', 'safe'),
 		);
 	}
+
+    public function getAvatar() {
+        return $this->image;
+    }
+
+    public function getProfileLink() {
+        return $this->profileLink;
+    }
+
+    public function getUsername() {
+        return $this->name;
+    }
+
+    public function getUid() {
+        return $this->uid;
+    }
 }

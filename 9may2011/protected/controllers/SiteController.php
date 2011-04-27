@@ -2,6 +2,8 @@
 
 class SiteController extends Controller
 {
+    protected $news;
+
 	public function init()
 	{
 		if (Yii::app()->user->isGuest ||
@@ -13,6 +15,7 @@ class SiteController extends Controller
 				if (empty($user)) {
 					$user = new User();
 					$user->id = $identity->gpor_userid;
+                    $user->uid = $identity->uid;
 					$user->name = $identity->name;
 					$user->profileLink = $identity->profileLink;
 					$user->image = $identity->image;
@@ -35,8 +38,13 @@ class SiteController extends Controller
     public function actionNewsShow() {
         $id = $_GET['id'];
 
+        $this->news = array(
+            'id' => 92689
+        );
+
         $this->render('newsShow', array(
 			'user' => Yii::app()->user,
+            'news' => $this->news
 		));
     }
 

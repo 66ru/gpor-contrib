@@ -22,14 +22,15 @@ var comment_form = {
         "<form action='' class='js_comment_form ie_layout' method='post'>" +
             "<div class='js_comment_form-pad'>" +
                 "<table class='comments_editor'><tr>" +
-                    "<td class='comments_editor__editor-label'><label for=''>Текст:</label></a></td><td class='commands_container'></td><td class='comments_editor__editor-rules'><a href='#'>как пользоваться cut-ом?</a></td>" +
+                    "<td class='comments_editor__editor-label'><label for=''>Текст:</label></a></td><td class='commands_container'></td>" +
                 "</tr></table>" +
             "</div>" +
         "</form>";
         
         this.container.append(form);
         var table_out = this.container.find(".js_comment_form-pad");
-        table_out.append(textarea).append("<a class='increase-height-link' href='#' onClick='increaseHeight(); return false;'><i class='increase-height-link__l'></i><i class='increase-height-link__r'></i></a>");
+        table_out.append(textarea)
+                //.append("<a class='increase-height-link' href='#' onClick='increaseHeight(); return false;'><i class='increase-height-link__l'></i><i class='increase-height-link__r'></i></a>");
 
     },
 
@@ -67,12 +68,9 @@ var comment_form = {
             "<div class='js_comment_form-bottom_but'>" +
                 "<i class='button buttons_wrap rc3'>" +
                     "<b class='opera_inline-block-wrap'>" +
-                        "<input type='submit' value='Поздравить' id='submit-comment' name='submitComment' class='forms_submit forms_submit js_comments_forms_submit'>" +
+                        "<input type='submit' value='Отправить' id='submit-comment' name='submitComment' class='forms_submit forms_submit js_comments_forms_submit'>" +
                     "</b>" +
                 "</i>" +
-            "</div>" +
-            "<div class='js_comment_form-bottom_text'>" +
-                "<a href='' class='pre-show-link'>Предварительный просмотр</a>" +
             "</div>" +
         "</div>";
         $(".js_comment_form").append(submitButton);

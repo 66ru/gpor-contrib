@@ -65,61 +65,11 @@
                 </div>
                 */?>
 
-                <!--стандартный блок комментариев с новостей 66-->
-                <a class="news_single_content-links context js_toggle_p js_comment-6-14" name="comments"><span class="news_single_content-links__right" style="display: block;">27 комментариев</span></a>
 
-                <div id="comments-6-73480" class="js_comments context">
-                    <div class="b-sep"></div>
-                    <!--form action="" method="">
-                        <fieldset>
-                            <textarea id="comments_textarea" rows="10" id=""></textarea>
-                        </fieldset>
-                    </form-->
-
-                    <div id="c123731" class="js_comment  ie_layout" comremoved="0" style="display: block;">
-                      <div class="comment_head rc5">
-                       <div class="comment_head_avatar"><img alt="" src="http://img.66.ru/img/avatar25/120098.jpg"></div>
-                           <a href="http://demo.66.localhost/profile/" class="js_user js_user-1 js_user-f-off ">demo</a>
-                           <i class="comment_head_date">31 декабря 2010 | 12:44</i>
-                           <a href="#" title="Игнорировать сообщения этого пользовтаеля" class="buttons_report_small comment_head_icon">Игнорировать сообщения этого пользователя</a>
-                           <form method="post" class="inline-block comment_head_icon js_comment_remove" action="/comments/commentAjax/deleteComment/">
-                                 <input type="hidden" value="123731" name="commentId" class="forms_hidden">
-                                 <input type="submit" value="Удалить" title="Удалить комментарий" name="delete" class="forms_submit  buttons_remove_small comment_head_buttons_remove_small">
-                           </form>
-                           <a title="Ссылка на комментарий" href="#c123731" class="buttons_anchor_small comment_head_icon">Ссылка</a>
-                           <a style="display: none;" class="show_bad_comment" href="#"><i></i>показать комментарий</a>
-                           <a href="#" class="comment_head_next-new">следующий новый<span class="comment_head_next-new-pic"></span></a>
-                       </div>
-                       <div class="comment_content content">В результате взрыва пострадали 60 человек, 30 из них были госпитализированы.В результате взрыва пострадали 60 человек, 30 из них были</div>
-                       <div class="comment_foot context"><a href="?reply-to=123731#c123731" class="comment_foot_answer js_comment-to-comment" id="c123731">ответить</a><!--script src="../js/jquery.rating.js" type="text/javascript"></script--><span style="display: none;" class="jsOffCommentBlock"></span><!--яваскрипт имеется --><span class="jsOnCommentBlock"><div class="inline-block  js_rating-small comment_foot-right-align" id="jsOnCommentBlock-2-123731"><span onclick="rateDown(123731, 2);" class="inline-block rating_control js_rating_down" name="rateDown">&ndash;</span><span class="inline-block rating_value_wrap"><span class="opera_inline-block-wrap js_rating_value js_rating_value-showed rc5 " id="idRaitingItem-2-123731" val="0">0</span></span><span onclick="rateUp(123731, 2);" class="inline-block rating_control js_rating_up" name="rateUp">+</span></div></span><script type="text/javascript">/*&lt;![CDATA[ */ var path = "/rateditems/ratedItemsAjax/changeRating/";	function rateDown (a, b) {	$.post (path, {ratedItemId : a, ratedItemType : b, rateDown : 1}, function(ready) {	if (!ready) {	alert('Ошибка при изменении рейтинга');	return; }	if (ready.ifError) {	alert(ready.message);	return;	}	var strId = "#idRaitingItem-"+b+"-"+a;	var parentId = "#jsOnCommentBlock-"+b+"-"+a;	var strRatingValue = ready.rating;	$(parentId).find(".rating_control").css("visibility", "hidden");	if (strRatingValue &gt;0) {	strRatingValue = "+" + strRatingValue;	$(strId).removeClass("js_rating_value-negative");	} else if (strRatingValue == 0) {	$(strId).removeClass("js_rating_value-negative");	}	else {	$(strId).addClass("js_rating_value-negative");	}	$(strId).html(strRatingValue);	}, 'json');	}	function rateUp (a, b) {	$.post (path, {ratedItemId : a, ratedItemType : b, rateUp : 1}, function(ready){	if (!ready) {	alert('Ошибка при изменении рейтинга');	return;	}	if (ready.ifError) {	alert(ready.message);	return;	}	var strId = "#idRaitingItem-" + b + "-" + a;	var parentId = "#jsOnCommentBlock-" + b + "-" + a; var strRatingValue = ready.rating;	$(parentId).find(".rating_control").css("visibility", "hidden");	if (strRatingValue &gt;0) {	strRatingValue = "+" + strRatingValue;	$(strId).removeClass("js_rating_value-negative");	} else if (strRatingValue == 0) {	$(strId).removeClass("js_rating_value-negative");	} else {	$(strId).addClass("js_rating_value-negative");	}	$(strId).html(strRatingValue);	}, 'json');	}	$(document).ready(function(){	$(".jsOffCommentBlock").empty(); $(".jsOffCommentBlock").css("display", "none"); }); /* ]]&gt;*/</script><div class="hr comment_foot_hr"><hr></div></div>
-                       <div class="js_comment-sublevel_wrap" id="c123731s"></div>
-                    </div>
-
-                    <div id="c123731" class="js_comment  ie_layout" comremoved="0" style="display: block;">
-                      <div class="comment_head rc5">
-                       <div class="comment_head_avatar"><img alt="" src="http://img.66.ru/img/avatar25/120098.jpg"></div>
-                           <a href="http://demo.66.localhost/profile/" class="js_user js_user-1 js_user-f-off ">demo</a>
-                           <i class="comment_head_date">31 декабря 2010 | 12:44</i>
-                           <a href="#" title="Игнорировать сообщения этого пользовтаеля" class="buttons_report_small comment_head_icon">Игнорировать сообщения этого пользователя</a>
-                           <form method="post" class="inline-block comment_head_icon js_comment_remove" action="/comments/commentAjax/deleteComment/">
-                                 <input type="hidden" value="123731" name="commentId" class="forms_hidden">
-                                 <input type="submit" value="Удалить" title="Удалить комментарий" name="delete" class="forms_submit  buttons_remove_small comment_head_buttons_remove_small">
-                           </form>
-                           <a title="Ссылка на комментарий" href="#c123731" class="buttons_anchor_small comment_head_icon">Ссылка</a>
-                           <a style="display: none;" class="show_bad_comment" href="#"><i></i>показать комментарий</a>
-                           <a href="#" class="comment_head_next-new">следующий новый<span class="comment_head_next-new-pic"></span></a>
-                       </div>
-                       <div class="comment_content content">В результате взрыва пострадали 60 человек, 30 из них были госпитализированы.В результате взрыва пострадали 60 человек, 30 из них были</div>
-                       <div class="comment_foot context"><a href="?reply-to=123731#c123731" class="comment_foot_answer js_comment-to-comment" id="c123731">ответить</a><!--script src="../js/jquery.rating.js" type="text/javascript"></script--><span style="display: none;" class="jsOffCommentBlock"></span><!--яваскрипт имеется --><span class="jsOnCommentBlock"><div class="inline-block  js_rating-small comment_foot-right-align" id="jsOnCommentBlock-2-123731"><span onclick="rateDown(123731, 2);" class="inline-block rating_control js_rating_down" name="rateDown">&ndash;</span><span class="inline-block rating_value_wrap"><span class="opera_inline-block-wrap js_rating_value js_rating_value-showed rc5 " id="idRaitingItem-2-123731" val="0">0</span></span><span onclick="rateUp(123731, 2);" class="inline-block rating_control js_rating_up" name="rateUp">+</span></div></span><script type="text/javascript">/*&lt;![CDATA[ */ var path = "/rateditems/ratedItemsAjax/changeRating/";	function rateDown (a, b) {	$.post (path, {ratedItemId : a, ratedItemType : b, rateDown : 1}, function(ready) {	if (!ready) {	alert('Ошибка при изменении рейтинга');	return; }	if (ready.ifError) {	alert(ready.message);	return;	}	var strId = "#idRaitingItem-"+b+"-"+a;	var parentId = "#jsOnCommentBlock-"+b+"-"+a;	var strRatingValue = ready.rating;	$(parentId).find(".rating_control").css("visibility", "hidden");	if (strRatingValue &gt;0) {	strRatingValue = "+" + strRatingValue;	$(strId).removeClass("js_rating_value-negative");	} else if (strRatingValue == 0) {	$(strId).removeClass("js_rating_value-negative");	}	else {	$(strId).addClass("js_rating_value-negative");	}	$(strId).html(strRatingValue);	}, 'json');	}	function rateUp (a, b) {	$.post (path, {ratedItemId : a, ratedItemType : b, rateUp : 1}, function(ready){	if (!ready) {	alert('Ошибка при изменении рейтинга');	return;	}	if (ready.ifError) {	alert(ready.message);	return;	}	var strId = "#idRaitingItem-" + b + "-" + a;	var parentId = "#jsOnCommentBlock-" + b + "-" + a; var strRatingValue = ready.rating;	$(parentId).find(".rating_control").css("visibility", "hidden");	if (strRatingValue &gt;0) {	strRatingValue = "+" + strRatingValue;	$(strId).removeClass("js_rating_value-negative");	} else if (strRatingValue == 0) {	$(strId).removeClass("js_rating_value-negative");	} else {	$(strId).addClass("js_rating_value-negative");	}	$(strId).html(strRatingValue);	}, 'json');	}	$(document).ready(function(){	$(".jsOffCommentBlock").empty(); $(".jsOffCommentBlock").css("display", "none"); }); /* ]]&gt;*/</script><div class="hr comment_foot_hr"><hr></div></div>
-                       <div class="js_comment-sublevel_wrap" id="c123731s"></div>
-                    </div>
-
-                    <div style="display: block;" class="all-comments-wrap"><span class="all-comments">Все комментарии</span> (27)</div>
-
-
-
-                </div>
-
+                <? $this->widget('RCommentsWidget', array(
+                    'objectId' => $news['id'],
+                    'objectTypeCode' => 6 /* news */
+                 )); ?>
 
             </div>
         </div>

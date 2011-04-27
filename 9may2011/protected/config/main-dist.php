@@ -55,7 +55,7 @@ return array(
 		),
 
 		'db'=>array(
-			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../../../../base/9may.db',
+			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/9may.db',
 		),
 		// uncomment the following to use a MySQL database
 		/*
@@ -101,3 +101,4 @@ return array(
 //		'adminEmail'=>'webmaster@example.com',
 	),
 );
+

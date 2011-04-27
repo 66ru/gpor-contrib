@@ -12,6 +12,7 @@
 
 
 <script type="text/javascript" src="/js/common/jquery-1.5.min.js"></script>
+<script type="text/javascript" src="/js/common/jquery.ba-postmessage.min.js"></script>
 <script type="text/javascript" src="/js/common/jquery.popup.js"></script>
 <script type="text/javascript" src="/js/common/rocon.js"></script>
 <script type="text/javascript" src="/js/selections.js"></script>
