@@ -1,8 +1,8 @@
 
 function increaseHeight() {
-    $("#comments_textarea").toggleClass("textarea-spread");
+    /*$("#comments_textarea").toggleClass("textarea-spread");
     $(".increase-height-link").toggleClass("increase-height-link-spread");
-    /*curHeight = $("#comments_textarea").height();
+    curHeight = $("#comments_textarea").height();
     $("#comments_textarea").height(curHeight + 200 + "px");*/
 }
 
@@ -47,10 +47,16 @@ function actionCommands () {
     container.find(".photo").bind("click", function () {
         $.popup.show({
             title: 'Загрузка изображения',
-            content: "<iframe src='" + comment_form.iFrameUrl +"?object_type=photo#?callbackName=iframeMessage" +
+            content: "<iframe src='" + comment_form.iFrameUrl +"?object_type=photo#" +
                      encodeURIComponent(document.location.href) + "' scrolling='no' style='width: 350px; height: 260px;' />",
             width: 550
         });
+
+        $.receiveMessage(function(e) {
+            surroundText('[photo]'+e.data+'[/photo]', '');
+            $.popup.hide();
+        }, "http://66.ru");
+
         $(".js_popup_frame").css("width", "auto");
     });
 
@@ -58,10 +64,16 @@ function actionCommands () {
     container.find(".video").bind("click", function (){
         $.popup.show({
             title: 'Загрузка видео',
-            content: "<iframe src='" + comment_form.iFrameUrl +"?object_type=video#?callbackName=iframeMessage" +
+            content: "<iframe src='" + comment_form.iFrameUrl +"?object_type=video#" +
                      encodeURIComponent(document.location.href) + "' scrolling='no' style='width: 350px; height: 260px;' />",
             width: 550
         });
+
+        $.receiveMessage(function(e) {
+            surroundText('[video]'+e.data+'[/video]', '');
+            $.popup.hide();
+        }, "http://66.ru");
+
         $(".js_popup_frame").css("width", "auto");
     });
 
@@ -69,10 +81,16 @@ function actionCommands () {
     container.find(".audio").bind("click", function () {
         $.popup.show({
             title: 'Загрузка аудио',
-            content: "<iframe src='" + comment_form.iFrameUrl +"?object_type=audio#?callbackName=iframeMessage" +
+            content: "<iframe src='" + comment_form.iFrameUrl +"?object_type=audio#" +
                      encodeURIComponent(document.location.href) + "' scrolling='no' style='width: 350px; height: 260px;' />",
             width: 550
         });
+
+        $.receiveMessage(function(e) {
+            surroundText('[audio]'+e.data+'[/audio]', '');
+            $.popup.hide();
+        }, "http://66.ru");
+
         $(".js_popup_frame").css("width", "auto");
     });
 

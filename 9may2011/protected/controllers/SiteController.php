@@ -2,6 +2,8 @@
 
 class SiteController extends Controller
 {
+    protected $news;
+
 	public function init()
 	{
 		if (Yii::app()->user->isGuest ||
@@ -13,6 +15,7 @@ class SiteController extends Controller
 				if (empty($user)) {
 					$user = new User();
 					$user->id = $identity->gpor_userid;
+                    $user->uid = $identity->uid;
 					$user->name = $identity->name;
 					$user->profileLink = $identity->profileLink;
 					$user->image = $identity->image;

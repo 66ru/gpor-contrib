@@ -21,20 +21,8 @@ abstract class NewsHelper
 					'news' => $cachedNews,
 				)
 			);
-		
-        $client = new xmlrpc_client(Yii::app()->params['apiUrl']);
-        $client->return_type = 'phpvals';
-
-        $message = new xmlrpcmsg("news.listNews");
-        $message2 = new xmlrpcmsg("news.countNews");
-        $p0 = new xmlrpcval(Yii::app()->params['apiKey'], 'string');
-        $message->addparam($p0);
-        $message2->addparam($p0);
 
         $p1= 'News';
-        $p1 = php_xmlrpc_encode($p1);
-        $message->addparam($p1);
-        $message2->addparam($p1);
 
         $newsSection = new stdClass();
         $newsSection->type = 'integer';
@@ -58,13 +46,12 @@ abstract class NewsHelper
             $newsId->field = 'notId';
         }
 
+        $p2 = array();
+
         if (!empty($newsId))
 			$p2[] = $newsId;
 
 		$p2[]= $newsSection;
-        $p2 = php_xmlrpc_encode($p2);
-        $message->addparam($p2);
-        $message2->addparam($p2);
 
         $p3 = array(
             'id',
@@ -81,8 +68,6 @@ abstract class NewsHelper
             'infograph',
             'commentsCount',
         );
-        $p3 = php_xmlrpc_encode($p3);
-        $message->addparam($p3);
 
         $p4 = new stdClass();
 
@@ -98,28 +83,28 @@ abstract class NewsHelper
             $p4->limit = 1;            
         }
         $p4 = php_xmlrpc_encode($p4);
-        $message->addparam($p4);
 
-		list($resp, $resp2) = $client->send(array($message,$message2), 0, 'http11');
+        $resp = XMLRPCHelper::sendMessage('news.listNews', $p1, $p2, $p3, $p4);
+        $resp2 = XMLRPCHelper::sendMessage('news.countNews', $p1, $p2);
 
-        if(!empty($resp->val))
+		if(!empty($resp))
         {
-            foreach($resp->val as $newsid=>&$news)
+            foreach($resp as $newsid=>&$news)
             {
                 $news['addTags'] = self::tagParser($news['comment']);
                 $news['title'] = $news['simpletitle'];
             }
         }
 
-		if (!empty($resp->val))
-			Yii::app()->cache->set($cacheKey.'_news', $resp->val, 50*60);
-		if (!empty($resp2->val['newsCount']))
-			Yii::app()->cache->set($cacheKey.'_newsCount', $resp2->val['newsCount'], 50*60);
+		if (!empty($resp))
+			Yii::app()->cache->set($cacheKey.'_news', $resp, 50*60);
+		if (!empty($resp2['newsCount']))
+			Yii::app()->cache->set($cacheKey.'_newsCount', $resp2['newsCount'], 50*60);
 
 		return(
             array(
-                'totalCount' => $resp2->val['newsCount'],
-                'news' => $resp->val,
+                'totalCount' => $resp2['newsCount'],
+                'news' => $resp,
             )
         );
     }

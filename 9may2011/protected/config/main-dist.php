@@ -100,3 +100,4 @@ return array(
         'outerHostName' => '66.ru',
 	),
 );
+

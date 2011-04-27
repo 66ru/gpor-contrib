@@ -1,4 +1,4 @@
-        <div id="wrapper-place">
+      <div id="wrapper-place">
 		<!--[if lt IE 7]>
 		<div class="ie_max-width_left_frame"></div>
 		<div class="ie_max-width_right_frame"></div>
@@ -61,6 +61,11 @@
 	    </div>
     </noindex>
 </div>
+
+<? $this->widget('RCommentsWidget', array(
+    'objectId' => $news['id'],
+    'objectTypeCode' => 6 /* news */
+ )); ?>
 
                             </div>
                         </div>

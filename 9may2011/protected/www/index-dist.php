@@ -7,6 +7,8 @@ define('LIB_PATH', dirname(__FILE__).'/../lib');
 defined('YII_DEBUG') or define('YII_DEBUG',false);
 // specify how many levels of call stack should be shown in each log message
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL',3);
+define('DS', DIRECTORY_SEPARATOR);
+define('LIB_PATH', dirname(__FILE__). DS . '..' . DS . '..' . DS . '..' . DS . 'lib');
 
 require_once(dirname(__FILE__).'/../../framework/yii.php');
 $configDist=require(dirname(__FILE__).'/../config/main-dist.php');
