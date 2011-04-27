@@ -154,7 +154,65 @@
                          </li><!--
                                --></ul>
                 </div>
-                <div class="v5-counters"></div>
+                <div class="v5-counters">
+<!--LiveInternet counter--><script type="text/javascript"><!--
+document.write("<a href='http://www.liveinternet.ru/click;66.ru' "+
+"target=_blank><img src='//counter.yadro.ru/hit;66?t14.16;r"+
+escape(document.referrer)+((typeof(screen)=="undefined")?"":
+";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
+screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
+";"+Math.random()+
+"' alt='' title='LiveInternet: показано число просмотров за 24"+
+" часа, посетителей за 24 часа и за сегодня' "+
+"border='0' width='88' height='31'><\/a>")
+//--></script><!--/LiveInternet-->
+
+
+<!--/* Openads Javascript Tag v2.4.1 */-->
+
+<script type='text/javascript'><!--//<![CDATA[
+   var m3_u = (location.protocol=='https:'?'https://r.66.ru/www/delivery/ajs.php':'http://r.66.ru/www/delivery/ajs.php');
+   var m3_r = Math.floor(Math.random()*99999999999);
+   if (!document.MAX_used) document.MAX_used = ',';
+   document.write ("<scr"+"ipt type='text/javascript' src='"+m3_u);
+   document.write ("?zoneid=128");
+   document.write ('&amp;cb=' + m3_r);
+   if (document.MAX_used != ',') document.write ("&amp;exclude=" + document.MAX_used);
+   document.write ("&amp;loc=" + escape(window.location));
+   if (document.referrer) document.write ("&amp;referer=" + escape(document.referrer));
+   if (document.context) document.write ("&context=" + escape(document.context));
+   if (document.mmm_fo) document.write ("&amp;mmm_fo=1");
+   document.write ("'></scr"+"ipt>");
+//]]>--></script><noscript><a href='http://r.66.ru/www/delivery/ck.php?n=ad0b0986&amp;cb=INSERT_RANDOM_NUMBER_HERE' target='_blank'><img src='http://r.66.ru/www/delivery/avw.php?zoneid=128&amp;n=ad0b0986' border='0' alt='' /></a></noscript>
+<!-- tns-counter.ru -->
+<script language="JavaScript"> var img = new Image(); img.src = 'http://www.tns-counter.ru/V13a***R>' + document.referrer.replace(/\*/g,'%2a') + '*mediasite_ru/ru/CP1251/tmsec=66_news/'; </script> <noscript> <img src="http://www.tns-counter.ru/V13a****mediasite_ru/ru/CP1251/tmsec=66_news/" width="1" height="1" alt="" /> </noscript>
+<!--/ tns-counter.ru -->
+<!-- Yandex.Metrika -->
+<script src="//mc.yandex.ru/metrika/watch.js" type="text/javascript"></script>
+<div style="display:none;"><script type="text/javascript">
+try { var yaCounter1519197 = new Ya.Metrika(1519197); yaCounter1519197.clickmap(); } catch(e){}
+</script></div>
+<noscript><div style="position:absolute"><img src="//mc.yandex.ru/watch/1519197" alt="" /></div></noscript>
+<!-- /Yandex.Metrika -->
+<!-- kavanga-style banner -->
+<!--/* 66.ru Javascript Tag v2.4.1 */-->
+
+<script type='text/javascript'><!--//<![CDATA[
+   var m3_u = (location.protocol=='https:'?'https://r.66.ru/www/delivery/ajs.php':'http://r.66.ru/www/delivery/ajs.php');
+   var m3_r = Math.floor(Math.random()*99999999999);
+   if (!document.MAX_used) document.MAX_used = ',';
+   document.write ("<scr"+"ipt type='text/javascript' src='"+m3_u);
+   document.write ("?zoneid=135");
+   document.write ('&amp;cb=' + m3_r);
+   if (document.MAX_used != ',') document.write ("&amp;exclude=" + document.MAX_used);
+   document.write ("&amp;loc=" + escape(window.location));
+   if (document.referrer) document.write ("&amp;referer=" + escape(document.referrer));
+   if (document.context) document.write ("&context=" + escape(document.context));
+   if (document.mmm_fo) document.write ("&amp;mmm_fo=1");
+   document.write ("'><\/scr"+"ipt>");
+//]]>--></script><noscript><a href='http://r.66.ru/www/delivery/ck.php?n=aab102e9&amp;cb=INSERT_RANDOM_NUMBER_HERE' target='_blank'><img src='http://r.66.ru/www/delivery/avw.php?zoneid=135&amp;n=aab102e9' border='0' alt='' /></a></noscript>
+<!-- kavanga-style banner -->
+                </div>
     		</div>
     	</div>
     </div>
