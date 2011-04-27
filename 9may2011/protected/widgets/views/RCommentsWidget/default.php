@@ -28,38 +28,6 @@ $user = $app->user;
 
 ?>
 
-<script type="text/javascript">
-//<![CDATA[
-    var commentForm;
-    $(document).ready(function () {
-        $(this).commentForm({
-            urlFrame: 'http://66.ru/new66_upload_gate.php'
-        });
-        commentForm = $('#comment-form');
-        commentForm.find('form').attr('action', '');
-        commentForm.find('.js_comment_form').css('display', 'block');
-        commentForm.find('.js_comment_form').append('<input type="hidden" name="comment[parentCommentId]" value="0" />');
-        commentForm.data('parentCommentId', commentForm.find('input[name="comment[parentCommentId]"]'));
-        commentForm.show();
-
-        $('.js_comment-to-comment').click(function(){
-            var re = new RegExp('[0-9]+');
-            var tmp = $(this).attr('id').match(re);
-
-            if(!tmp)
-                return;
-
-            var commentId = tmp[0];
-            commentForm.data('parentCommentId').val(commentId)
-            commentForm.appendTo($(this).parent().next());
-            return false;
-        });
-    });
-//]]>
-</script>
-
-
-
 <!--стандартный блок комментариев с новостей 66-->
 <div id="comments-<?php echo $this->objectTypeCode;?>-<?php echo $this->objectId;?>" class="js_comments context">
     <div class="b-sep"></div>
@@ -72,7 +40,60 @@ $user = $app->user;
         </fieldset>
     </form>
     </div>
-    <?php }?>
+
+    <script type="text/javascript">
+    //<![CDATA[
+        var commentForm;
+        $(document).ready(function () {
+            $(this).commentForm({
+                urlFrame: 'http://66.ru/new66_upload_gate.php'
+            });
+            commentForm = $('#comment-form');
+            commentForm.find('form').attr('action', '');
+            commentForm.find('.js_comment_form').css('display', 'block');
+            commentForm.find('.js_comment_form').append('<input type="hidden" name="comment[parentCommentId]" value="0" />');
+            commentForm.data('parentCommentId', commentForm.find('input[name="comment[parentCommentId]"]'));
+            commentForm.show();
+
+            $('.js_comment-to-comment').click(function(){
+                var re = new RegExp('[0-9]+');
+                var tmp = $(this).attr('id').match(re);
+
+                if(!tmp)
+                    return;
+
+                var commentId = tmp[0];
+                commentForm.data('parentCommentId').val(commentId)
+                commentForm.appendTo($(this).parent().next());
+                return false;
+            });
+        });
+    //]]>
+    </script>
+    <?php } else { ?>
+    <table class="leave-greeting">
+    <tr>
+        <td class="leave-greeting__link"><a id="linkOpenFormGreeting" href="#">Оставить свой комментарий</a>
+        </td>
+        <td class="leave-greeting__stat"></td>
+    </tr>
+    <tr id="expandForm" style="">
+        <td colspan="2">
+            <a href="http://66.ru/login?location=http://9may2011.local<?php echo $_SERVER['REQUEST_URI'];?>">Авторизуйтесь</a>, чтобы оставить свой
+            комментарий
+        </td>
+    </tr>
+    </table>
+    <script type="text/javascript">
+    //<![CDATA[
+        $('#expandForm').hide();
+        $('#linkOpenFormGreeting').click(function(){
+           $('#expandForm').toggle();
+           return false;
+        });
+    //]]>
+    </script>
+    <?php } ?>
 
     <?function printComments(&$index, &$comments, $key = 0){?>
         <? if(!isset($index[$key])) return; ?>
