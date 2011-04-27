@@ -11,9 +11,9 @@
         <div class="grid-2-cols__col2__pad">
             <table class="banner-grid">
                 <tr>
-                    <td><a href=""><img src="/img/pobeda/ban1.jpg" alt=""></a></td>
+                    <td><a href="http://www.pobediteli.ru"><img src="/img/pobeda/ban1.jpg" alt="Победители. Солдаты великой войны"></a></td>
                     <td class="sep">&nbsp;</td>
-                    <td><a href=""><img src="/img/pobeda/ban2.jpg" alt=""></a></td>
+                    <td><a href="http://www.ekburg.ru"><img src="/img/pobeda/ban2.jpg" alt="Официальный портал Екатеринбурга"></a></td>
                 </tr>
             </table>
             <div class="orange-brd"></div>

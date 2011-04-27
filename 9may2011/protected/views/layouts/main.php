@@ -74,7 +74,7 @@
             <div class="ie_max-width_right_frame"></div>
             <![endif]-->
 		<div id="head" class="ie_layout">
-             <div class="head-slogan">Современный портал Екатеринбурга <a title="Современный портал Екатеринбурга" target="_blank" href="66.ru"><img class="head-slogan-logo66" src="/img/pobeda/head-66logo.gif" alt="66.ru" /></a></i> представляет</div>
+             <div class="head-slogan">Современный портал Екатеринбурга <a title="Современный портал Екатеринбурга" target="_blank" href="http://www.66.ru"><img class="head-slogan-logo66" src="/img/pobeda/head-66logo.gif" alt="66.ru" /></a></i> представляет</div>
 		</div>
 	   </div>
 	</div>
