@@ -88,8 +88,12 @@ return array(
 		'gpor_secret_key' => '',
 		'gpor_server_uid'=> '', // Добавляется к profileLink: gpor_server_uid/user/userId
 
-        'apiKey' => '',
-        'apiUrl' => 'http://api.66.localhost/' ,
+        'api' => array(
+            'host' => 'api.new66.gpor.ru',
+            'port' => '80',
+            'path' => '/',
+            'key'  => ''
+        ),
 
         'vkontakteApiId' => 2148796,
         'newsSection' => 67,

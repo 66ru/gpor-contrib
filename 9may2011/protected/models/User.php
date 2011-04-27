@@ -24,7 +24,7 @@ class User extends CActiveRecord
 	}
 
     public function getAvatar() {
-        return $this->image;
+        return $this->image ? $this->image : 'http://img.66.ru/dez/noavatar25.gif';
     }
 
     public function getProfileLink() {

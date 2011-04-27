@@ -17,6 +17,7 @@
 <script type="text/javascript" src="/js/commands.js"></script>
 <script type="text/javascript" src="/js/buildForm.js"></script>
 <script type="text/javascript" src="/js/config.js"></script>
+ <script type="text/javascript" src="/js/socialbloks.js"></script>
 
 <link rel="stylesheet" type="text/css" href="/css/common/styles.css">
 <link type="text/css" rel="stylesheet" href="/css/common/!reset.css" />

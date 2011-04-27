@@ -431,3 +431,7 @@ ul.yiiPagerPages .selected a:active {
     color: #fff;
     font-weight: bold;
 }
+
+#expandForm td {
+    padding: 10px;
+}
