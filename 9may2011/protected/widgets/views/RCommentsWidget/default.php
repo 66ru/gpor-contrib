@@ -186,7 +186,7 @@ $.fn.commentForm = function (obj) {
     </tr>
     <tr id="expandForm" style="">
         <td colspan="2">
-            <a href="http://66.ru/login?location=http://9may2011.local<?php echo $_SERVER['REQUEST_URI'];?>">Авторизуйтесь</a>, чтобы оставить свой
+            <a href="http://66.ru/login?location=http://<?php echo $_SERVER['HTTP_HOST'];;?><?php echo $_SERVER['REQUEST_URI'];?>">Авторизуйтесь</a>, чтобы оставить свой
             комментарий
         </td>
     </tr>
