@@ -23,8 +23,22 @@ class RAuthUserIdentity extends CBaseUserIdentity
 		return $this->name;
 	}
 
+    public function rauthRedirect() {
+        if(Yii::app()->request->cookies["firstvisitpassed"]->value)
+			return;
+
+        $cookie = new CHttpCookie("firstvisitpassed", 1);
+        Yii::app()->request->cookies["firstvisitpassed"] = $cookie;
+
+        $location = 'http://' . $_SERVER['HTTP_HOST'] . '/' . $_SERVER['REQUEST_URI'];
+        header('Location: http://66.ru/external_service/rauth/?location=' . $location);
+        Yii::app()->end();
+    }
+
 	public function authenticate()
 	{
+        $this->rauthRedirect();
+
 		$gpor_user = RauthHelper::getResponse("get_user_info");
 		if (!$gpor_user) {
 			$this->errorCode = self::ERROR_UNKNOWN_IDENTITY;

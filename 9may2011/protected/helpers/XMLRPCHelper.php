@@ -52,12 +52,21 @@ class XMLRPCHelper {
         $client->method = self::$method;
 
         $args = func_get_args();
+        $throwException = $args[0][0] != '@';
+
+        if( !$throwException ) {
+            $args[0] = substr($args[0], 1);
+        }
+
         $message = call_user_func_array(array(__CLASS__, 'createMessage'), $args);
         $res = $client->send($message);
 
-        if ($res->faultcode())
-			throw new CException(get_class($res) . ': ' . $res->faultString());
-        else
+        if ($res->faultcode()) {
+            if($throwException)
+			    throw new CException(get_class($res) . '(' . $args[0] . '): ' . $res->faultString());
+            else
+                return false;
+        } else
 			return php_xmlrpc_decode($res->value());
     }
 }
