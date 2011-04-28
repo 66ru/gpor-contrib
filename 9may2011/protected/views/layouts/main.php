@@ -93,6 +93,7 @@
 		<![endif]-->
             <div id="body" class="ie_layout">
                 <div class="grid-2-cols context">
+                    <a href="/" id="homepage-link"></a>
                     <div class="grid-2-cols__col1">
                         <img class="znachok__pic" src="/img/pobeda/znachok.gif" alt="" />
                     </div>
