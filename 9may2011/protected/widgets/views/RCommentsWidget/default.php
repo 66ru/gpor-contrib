@@ -113,7 +113,13 @@ $user = $app->user;
                    <?/*<a style="display: none;" class="show_bad_comment" href="default.php#"><i></i>показать комментарий</a>*/?>
                    <?/*<a href="default.php#" class="comment_head_next-new">следующий новый<span class="comment_head_next-new-pic"></span></a>*/?>
                </div>
-               <div class="comment_content content"><?php echo $item['contentParsed'];?></div>
+               <div class="comment_content content">
+                   <?php if($item['removedByCode'] === "") { // null приходит как string ?>
+                        <div class="deleted">Комментарий удален</div>
+                   <?php } else {?>
+                       <?php echo $item['contentParsed'];?>
+                   <?php }?>
+               </div>
                <div class="comment_foot context">
                    <a href="#c<?php echo $item['id'];?>" class="comment_foot_answer js_comment-to-comment" id="c<?php echo $item['id'];?>">ответить</a>
                    <div class="hr comment_foot_hr"><hr></div>

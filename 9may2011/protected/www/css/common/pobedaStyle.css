@@ -442,3 +442,8 @@ ul.yiiPagerPages .selected a:active {
     width: 100%;
     height: 280px;
 }
+
+.comment_content .deleted {
+    color: #aaa;
+    font-style: italic;
+}
