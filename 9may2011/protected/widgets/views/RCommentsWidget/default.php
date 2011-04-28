@@ -114,7 +114,7 @@ $user = $app->user;
                    <?/*<a href="default.php#" class="comment_head_next-new">следующий новый<span class="comment_head_next-new-pic"></span></a>*/?>
                </div>
                <div class="comment_content content">
-                   <?php if($item['removedByCode'] === "") { // null приходит как string ?>
+                   <?php if(isset($item['removedByCode']) && $item['removedByCode'] === "") { // null приходит как string ?>
                         <div class="deleted">Комментарий удален</div>
                    <?php } else {?>
                        <?php echo $item['contentParsed'];?>
