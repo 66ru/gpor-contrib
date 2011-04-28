@@ -14,6 +14,7 @@ function getUser($commentArr) {
 
 foreach($comments as &$item) {
     $parentId = isset($item['parentCommentId']) ? $item['parentCommentId'] : 0;
+    $parentId = intval($parentId);// корневой это NULL, а не 0
 
     if(!isset($index[$parentId])) {
         $index[$parentId] = array();
