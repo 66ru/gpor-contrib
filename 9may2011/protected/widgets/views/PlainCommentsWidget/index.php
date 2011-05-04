@@ -1,7 +1,6 @@
 <script type="text/javascript" src="/js/selections.js"></script>
 <script type="text/javascript" src="/js/commands.js"></script>
 <script type="text/javascript" src="/js/buildForm.js"></script>
-<script type="text/javascript" src="/js/config.js"></script>
 
 <div class="list-greet">
 	<h3>Поздравления от посетителей</h3>
