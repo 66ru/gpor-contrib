@@ -13,7 +13,7 @@ class DateHelper {
 
 	static function formatRusDate($timestamp) {
 		$result = date('j ## Y | H:i', $timestamp);
-		$rusMonth = self::getRusMonth(date('n'));
+		$rusMonth = self::getRusMonth(date('n', $timestamp));
 		$result = str_replace('##', $rusMonth, $result);
 
 		return $result;

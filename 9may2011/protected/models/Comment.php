@@ -39,10 +39,6 @@ class Comment extends CActiveRecord
 		return $this;
 	}
 
-	public function getFormattedDatetime() {
-		
-	}
-
 	public function scopes() {
 		return array(
 			'limitDefault' => array(
