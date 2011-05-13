@@ -68,17 +68,21 @@ class RCommentsWidget extends Widget {
         if(!is_array($arr) || !isset($arr['restrictedUserId'])) {
             return new User();
         }
-
-        if($user = User::model()->findByPk($arr['restrictedUserId']))
+	
+	$userdata = XMLRPCHelper::sendMessage('user.getUserInfo', $arr['restrictedUserId'], 'restrictedUuserId');
+	
+//        if($user = User::model()->findByPk($arr['restrictedUserId']))
+	if($user = User::model()->findByPk(str_replace('@66.ru', '', $userdata['uid'])));
             return $user;
 
 
-        $userdata = XMLRPCHelper::sendMessage('user.getUserInfo', $arr['restrictedUserId'], 'restrictedUuserId');
+//        $userdata = XMLRPCHelper::sendMessage('user.getUserInfo', $arr['restrictedUserId'], 'restrictedUuserId');
         if($userdata) {
             $user = new User();
             $user->gender = $userdata['gender'];
             $user->name = $userdata['username'];
             $user->uid = $userdata['uid'];
+//            $user->id = str_replace('@66.ru', '', $userdata['uid']);
             $user->id = $userdata['id'];
             $user->profileLink = $userdata['profileLink'];
             $user->image = $userdata['avatarSmallUrl'];
