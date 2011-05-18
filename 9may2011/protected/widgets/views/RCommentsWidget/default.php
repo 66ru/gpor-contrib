@@ -208,7 +208,7 @@ $.fn.commentForm = function (obj) {
             <div id="c<?php echo $item['id'];?>" class="js_comment  ie_layout" comremoved="0" style="display: block;">
               <div class="comment_head rc5">
                <div class="comment_head_avatar"><img alt="" src="<?php echo $item['user']->getAvatar();?>"></div>
-                   <a href="<?php echo $item['user']->getProfileLink();?>" class="js_user js_user-1 js_user-f-off "><?php echo $item['user']->getUsername();?></a>
+                   <a href="<?php echo $item['user']->getProfileLink();?>" class="js_user js_user-1 js_user-f-off "><?php echo CHtml::encode($item['user']->getUsername())?></a>
                    <i class="comment_head_date"><?php echo DateHelper::formatRusDate($item['createTime']);?></i>
                    <?/*<a href="default.php#" title="Игнорировать сообщения этого пользовтаеля" class="buttons_report_small comment_head_icon">Игнорировать сообщения этого пользователя</a>
                    <form method="post" class="inline-block comment_head_icon js_comment_remove" action="/comments/commentAjax/deleteComment/">
