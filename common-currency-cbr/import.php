@@ -1,20 +1,19 @@
 <?php
 define ('DS', '/');
-include ('lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
+include ('../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 $params = require('config.php');
 
-$kkey = 'dda846cec45943c3dfc7e868017197c6'; // API KEY
+$apiKey = isset($params['apiKey']) ? $params['apiKey'] : false;
+$apiUrl = isset($params['apiUrl']) ? $params['apiUrl'] : false;
 
-$apiUrl = $params['apiUrl'];
-$kkey = isset ($params['setCurrencyKey']) ? $params['setCurrencyKey'] : false;
-if (!$kkey) {
-	print 'Error. setCurrencyKey not found in config';
-	exit();
-}
-	
+if (!$apiKey)
+	die('Error. "apiKey" not found in config.php');
+if (!$apiUrl)
+	die('Error. "apiUrl" not found in config.php');
+
 $xml_content = @file_get_contents('http://www.cbr.ru/scripts/XML_daily.asp');
 if (empty($xml_content)) {
-	print 'Error. cbr.ru return empty answer';
+	print 'Error. cbr.ru returned empty answer';
 	exit();
 }
 
@@ -36,7 +35,7 @@ $client->return_type = 'phpvals';
 
 $message = new xmlrpcmsg("currency.setCurrency");
 
-$p0 = new xmlrpcval($kkey, 'string');
+$p0 = new xmlrpcval($apiKey, 'string');
 $message->addparam($p0);
 
 $p2 = array(
@@ -50,9 +49,9 @@ $message->addparam($p2);
 
 $resp = $client->send($message, 0, 'http11');
 if (is_object($resp) && !$resp->errno) {
-	print "New currency:\n";
-	print 'USD: ' . $course_usd . "\n";
-	print 'EUR: ' . $course_eur . "\n";
+//	print "New currency:\n";
+//	print 'USD: ' . $course_usd . "\n";
+//	print 'EUR: ' . $course_eur . "\n";
 }
 else {
 	print 'Error. Failed to set currency: ' . (is_object($resp) ? $resp->errstr : '');

@@ -103,14 +103,14 @@
 	* function. Usage of xmlrpc native types (such as datetime.dateTime.iso8601 and base64)
 	* in the @param tag is also allowed, if you need the php function to receive/send
 	* data in that particular format (note that base64 encoding/decoding is transparently
-	* carried out by the lib, while datetime vals are passed around as strings)
+	* carried out by the _lib, while datetime vals are passed around as strings)
 	*
 	* Known limitations:
 	* - requires PHP 5.0.3 +
 	* - only works for user-defined functions, not for PHP internal functions
 	*   (reflection does not support retrieving number/type of params for those)
 	* - functions returning php objects will generate special xmlrpc responses:
-	*   when the xmlrpc decoding of those responses is carried out by this same lib, using
+	*   when the xmlrpc decoding of those responses is carried out by this same _lib, using
 	*   the appropriate param in php_xmlrpc_decode, the php objects will be rebuilt.
 	*   In short: php objects can be serialized, too (except for their resource members),
 	*   using this function.
@@ -562,7 +562,7 @@
 	*        integer       signum      the index of the method signature to use in mapping (if method exposes many sigs)
 	*        integer       timeout     timeout (in secs) to be used when executing function/calling remote method
 	*        string        protocol    'http' (default), 'http11' or 'https'
-	*        string        new_function_name the name of php function to create. If unsepcified, lib will pick an appropriate name
+	*        string        new_function_name the name of php function to create. If unsepcified, _lib will pick an appropriate name
 	*        string        return_source if true return php code w. function definition instead fo function name
 	*        bool          encode_php_objs let php objects be sent to server using the 'improved' xmlrpc notation, so server can deserialize them as php objects
 	*        bool          decode_php_objs --- WARNING !!! possible security hazard. only use it with trusted servers ---

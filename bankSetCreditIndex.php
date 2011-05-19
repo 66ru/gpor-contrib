@@ -1,7 +1,7 @@
 <?php 
 define ('DS', '/');
 
-include ('lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
+include ('_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 $params = require('config.php');
 
 $kkey = '3eaba1eee378e5c9eb5d89054d803e8e'; // API KEY

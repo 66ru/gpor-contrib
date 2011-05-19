@@ -180,7 +180,7 @@
  *      );
  * </code>
  *
- * @property ezcAuthenticationBignumLibrary $lib
+ * @property ezcAuthenticationBignumLibrary $_lib
  *           The wrapper for the PHP extension to use for big number operations.
  *           This will be autodetected in the constructor, but you can specify
  *           your own wrapper before calling run().
@@ -260,7 +260,7 @@ class ezcAuthenticationTypekeyFilter extends ezcAuthenticationFilter implements 
     {
         switch ( $name )
         {
-            case 'lib':
+            case '_lib':
                 if ( $value instanceof ezcAuthenticationBignumLibrary )
                 {
                     $this->properties[$name] = $value;
@@ -289,7 +289,7 @@ class ezcAuthenticationTypekeyFilter extends ezcAuthenticationFilter implements 
     {
         switch ( $name )
         {
-            case 'lib':
+            case '_lib':
                 return $this->properties[$name];
 
             default:
@@ -308,7 +308,7 @@ class ezcAuthenticationTypekeyFilter extends ezcAuthenticationFilter implements 
     {
         switch ( $name )
         {
-            case 'lib':
+            case '_lib':
                 return isset( $this->properties[$name] );
 
             default:

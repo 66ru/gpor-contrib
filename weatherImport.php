@@ -6,7 +6,7 @@
  */
 
 define ('DS', '/');
-require ('lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
+require ('_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 require "weatherImportFunction.php";
 
 $setOnlyCurrentWeather = isset($setOnlyCurrentWeather)?$setOnlyCurrentWeather:false;

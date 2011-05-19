@@ -2537,7 +2537,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 			/// @todo return an error msg if $data=='' ?
 
 			// be tolerant of junk after methodResponse (e.g. javascript ads automatically inserted by free hosts)
-			// idea from Luca Mariano <luca.mariano@email.it> originally in PEARified version of the lib
+			// idea from Luca Mariano <luca.mariano@email.it> originally in PEARified version of the _lib
 			$pos = strrpos($data, '</methodResponse>');
 			if($pos !== false)
 			{
@@ -2569,7 +2569,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 			// the default encoding and parse the xml anyway, but log a warning...
 			if (!in_array($resp_encoding, array('UTF-8', 'ISO-8859-1', 'US-ASCII')))
 			// the following code might be better for mb_string enabled installs, but
-			// makes the lib about 200% slower...
+			// makes the _lib about 200% slower...
 			//if (!is_valid_charset($resp_encoding, array('UTF-8', 'ISO-8859-1', 'US-ASCII')))
 			{
 				error_log('XML-RPC: '.__METHOD__.': invalid charset encoding of received response: '.$resp_encoding);
@@ -3739,7 +3739,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 			// no encoding specified: as per HTTP1.1 assume it is iso-8859-1?
 			// Both RFC 2616 (HTTP 1.1) and 1945 (HTTP 1.0) clearly state that for text/xxx content types
 			// this should be the standard. And we should be getting text/xml as request and response.
-			// BUT we have to be backward compatible with the lib, which always used UTF-8 as default...
+			// BUT we have to be backward compatible with the _lib, which always used UTF-8 as default...
 			return $GLOBALS['xmlrpc_defencoding'];
 		}
 	}

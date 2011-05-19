@@ -1,20 +1,29 @@
 <?php
 
-require ('lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
+require ('../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 $params = require('config.php');
 
-$kkey = isset($params['contentBlockUpdateKey']) ? $params['contentBlockUpdateKey'] : false;
+$apiKey = isset($params['apiKey']) ? $params['apiKey'] : false;
 $apiUrl = isset($params['apiUrl']) ? $params['apiUrl'] : false;
-if (!$kkey)
-	die('Error. "contentBlockUpdateKey" not found in config.php');
+$importUrl = isset($params['importUrl']) ? $params['importUrl'] : false;
+$redirectPrefix = isset($params['redirectPrefix']) ? $params['redirectPrefix'] : false;
+
+if (!$apiKey)
+	die('Error. "apiKey" not found in config.php');
 if (!$apiUrl)
 	die('Error. "apiUrl" not found in config.php');
+if (!$importUrl)
+	die('Error. "importUrl" not found in config.php');
+if (!$redirectPrefix)
+	die('Error. "redirectPrefix" not found in config.php');
 
 if (!function_exists('simplexml_load_file'))
 	die('I need php with --enable-libxml option installed');
-$data = simplexml_load_file('http://66.ru/auto/get_grayline/');
+
+$data = simplexml_load_file($importUrl);
+
 if (!$data)
-	die('cant process http://66.ru/auto/get_grayline/');
+	die('cant process '.$importUrl);
 
 $templateTop = <<<HTML
 <style type="text/css">
@@ -67,10 +76,10 @@ $templateTop = <<<HTML
 HTML;
 $itemTemplate = <<<HTML
 <span>
-<a target="_blank" href="http://www.66.ru/go/%s">
+<a target="_blank" href="%s">
 	<img src="http://t.66.ru/auto/pixel.gif" style="background: url('%s') center 0px no-repeat; width:53px; height:30px" alt="%s">
 </a>
-<br><a target="_blank" href="http://www.66.ru/go/%s">%s</a></span>&nbsp;
+<br><a target="_blank" href="%s">%s</a></span>&nbsp;
 HTML;
 $templateBottom = <<<HTML
 <span style="width:100%;font-size:1px;"></span>
@@ -79,13 +88,13 @@ HTML;
 
 $items = '';
 foreach($data->item as $item) {
-	$items.= sprintf($itemTemplate, $item->link, $item->image, $item->title, $item->link, $item->title);
+	$items.= sprintf($itemTemplate, $redirectPrefix.$item->link, $item->image, $item->title, $redirectPrefix.$item->link, $item->title);
 }
 
 $client = new xmlrpc_client($apiUrl);
 $client->return_type = 'phpvals';
 $message = new xmlrpcmsg("contextblock.update");
-$p0 = new xmlrpcval($kkey, 'string');
+$p0 = new xmlrpcval($apiKey, 'string');
 $message->addparam($p0);
 $p1 = new xmlrpcval('auto_content_top_block', 'string');
 $message->addparam($p1);

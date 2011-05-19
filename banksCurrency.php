@@ -1,6 +1,6 @@
 <?php
 define ('DS', '/');
-require ('lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
+require ('_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 require 'banksCurrencyFunctions.php';
 $params = require ('config.php');
 

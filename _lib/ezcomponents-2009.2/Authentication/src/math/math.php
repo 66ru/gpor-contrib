@@ -19,19 +19,19 @@
 class ezcAuthenticationMath
 {
     /**
-     * Creates a new big number library which uses the PHP extension $lib.
+     * Creates a new big number library which uses the PHP extension $_lib.
      *
-     * If $lib is null then an autodetection of the library is tried. If neither
+     * If $_lib is null then an autodetection of the library is tried. If neither
      * gmp or bcmath are installed then an exception will be thrown.
      *
-     * If $lib is specified, then that library will be used (if it is installed),
+     * If $_lib is specified, then that library will be used (if it is installed),
      * otherwise an exception will be thrown.
      *
      * @throws ezcBaseExtensionNotFoundException
-     *         if neither of the PHP gmp and bcmath extensions are installed ($lib === null),
-     *         or if the specified $lib is not installed
+     *         if neither of the PHP gmp and bcmath extensions are installed ($_lib === null),
+     *         or if the specified $_lib is not installed
      * @throws ezcBaseValueException
-     *         if the value provided for $lib is not correct
+     *         if the value provided for $_lib is not correct
      * @param string $lib The PHP library to use for big number support. Default
      *                    is null, which means the available library is autodetected.
      * @return ezcAuthenticationBignumLibrary

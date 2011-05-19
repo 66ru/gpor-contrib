@@ -940,7 +940,7 @@
 			{
 				if (!in_array($req_encoding, array('UTF-8', 'ISO-8859-1', 'US-ASCII')))
 				// the following code might be better for mb_string enabled installs, but
-				// makes the lib about 200% slower...
+				// makes the _lib about 200% slower...
 				//if (!is_valid_charset($req_encoding, array('UTF-8', 'ISO-8859-1', 'US-ASCII')))
 				{
 					error_log('XML-RPC: '.__METHOD__.': invalid charset encoding of received request: '.$req_encoding);
@@ -1178,7 +1178,7 @@
 			}
 			catch(Exception $e)
 			{
-				// (barring errors in the lib) an uncatched exception happened
+				// (barring errors in the _lib) an uncatched exception happened
 				// in the called function, we wrap it in a proper error-response
 				switch($this->exception_handling)
 				{

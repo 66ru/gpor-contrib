@@ -13,11 +13,11 @@ define('REMOTE_API_HOST', $config['apiUrl']);
 define('REMOTE_API_KEY', 'd0eaf58d952a82ec1bf2ec2a07c0ec00');
 
 // path to base class of ezComponents library, needed to setup autoload
-$ezComponentsBase = 'lib/ezcomponents-2009.2/Base/src/base.php';
+$ezComponentsBase = '_lib/ezcomponents-2009.2/Base/src/base.php';
 require_once($ezComponentsBase);
 spl_autoload_register(array('ezcBase', 'autoload'));
-require_once('lib/xmlrpc-3.0.0.beta'.DS.'xmlrpc.inc');
-require_once('lib/xmlrpc-3.0.0.beta'.DS.'xmlrpcs.inc');
+require_once('_lib/xmlrpc-3.0.0.beta'.DS.'xmlrpc.inc');
+require_once('_lib/xmlrpc-3.0.0.beta'.DS.'xmlrpcs.inc');
 
 $kassyFeed = ezcFeed::parse(KASSY_FEED_URL);
 
