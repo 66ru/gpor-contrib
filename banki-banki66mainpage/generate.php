@@ -1,15 +1,14 @@
 <?php
 #ini_set('display_errors',1);
 #error_reporting(E_ALL);
-$filePath = '';
-$params = array();
+
 $params = include('config.php');
-$host = isset($params['outerHostName']) && $params['outerHostName'] ? $params['outerHostName'] : false;
+
+$host = isset($params['host']) ? $params['host'] : false;
+$filePath = isset($params['filePath']) ? $params['filePath'] : '';
+
 if (!$host)
-{
-	echo 'Error. outerHostName not found in config.php.';
-	die();
-}
+	die('Error. "host" not found in config.php');
 
 //header('Content-type: text/html; charset=utf-8');
 $ch = curl_init();
@@ -26,6 +25,7 @@ $content = str_replace('href="/','href="http://'.$host.'/',$content);
 $content = str_replace('href=\'/','href=\'http://'.$host.'/',$content);
 $content = preg_replace('#href="([^h])#','href="http://'.$host.'/$1',$content);
 $content = preg_replace('#href=\'([^h])#','href="http://'.$host.'/$1',$content);
+$content = preg_replace('/action="([^"]+)"/i','action="http://'.$host.'$1"',$content);
 
 $fn = fopen($filePath.'index.html','w');
 fwrite($fn, $content);
