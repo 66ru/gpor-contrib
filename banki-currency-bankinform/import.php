@@ -1,27 +1,18 @@
 <?php
 define ('DS', '/');
-require ('_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
+require ('../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 require 'banksCurrencyFunctions.php';
 $params = require ('config.php');
 
-$kkey1 = isset($params['setBanksCurrencyKey']) ? $params['setBanksCurrencyKey'] : null; // API KEY
-$kkey2 = isset($params['cleanBanksCurrencyKey']) ? $params['cleanBanksCurrencyKey'] : null; // API KEY
-$apiUrl = $params['apiUrl'];
-if (!$kkey1)
-{
-	echo 'Error. "setBanksCurrencyKey" not found in config.php';
-	die();
-}
-if (!$kkey2)
-{
-	echo 'Error. "cleanBanksCurrencyKey" not found in config.php';
-	die();
-}
+$apiKey = isset($params['apiKey']) ? $params['apiKey'] : false;
+$apiUrl = isset($params['apiUrl']) ? $params['apiUrl'] : false;
+
+if (!$apiKey)
+	die('Error. "apiKey" not found in config.php');
 if (!$apiUrl)
-{
-	echo 'Error. "apiUrl" not found in config.php';
-	die();
-}
+	die('Error. "apiUrl" not found in config.php');
+
+
 
 // Создаем SAX парсер, который будет использоваться для
 // обработки XML-данных.
@@ -38,7 +29,7 @@ $index = null;          // Текущий индекс в массиве
 // Получаем содержимое XML-файла с курсами валют банков.
 @$xml = join('',file('http://bankinform.ru/services/rates/xml.aspx'));
 if (!$xml || empty($xml)) {
-	print "Error. Can't get bankinform XML";
+	print "Error. Can't get http://bankinform.ru/services/rates/xml.aspx";
 	exit();
 }
 
@@ -70,7 +61,7 @@ foreach ($ar_banks as $ar_bank)
     }
 
 	$msg = new xmlrpcmsg('banki.setCurrency');
-	$p1 = new xmlrpcval($kkey1, 'string');
+	$p1 = new xmlrpcval($apiKey, 'string');
 	$msg->addparam($p1);
 	$p2 = array(
 		'id' => $id_banki66,
@@ -90,7 +81,7 @@ foreach ($ar_banks as $ar_bank)
 if(!empty($banks_ids))
 {
     $msg = new xmlrpcmsg('banki.cleanCurrency');
-    $p1 = new xmlrpcval($kkey2, 'string');
+    $p1 = new xmlrpcval($apiKey, 'string');
     $msg->addparam($p1);
     $p2 = array(
         'ids' => $banks_ids,
