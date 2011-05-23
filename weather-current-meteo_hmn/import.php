@@ -37,74 +37,6 @@ if ($params['useMeteo']) {
         die('Error. "meteoMysqlPassword" not found in config.php');
 }
 
-
-$file = $hmnUrl . '/fact_astro.xml';
-
-$xmldata = file_get_contents($file);
-
-$array = @XML_unserialize($xmldata);
-
-$cities = array();
-for ($i = 0; $i < 50; $i++) // kinda retarded shit...
-{
-    if (isset($array['fact_astro']['c'][$i])) {
-        $weather = $array['fact_astro']['c'][$i];
-        $city_id = $array['fact_astro']['c'][$i . ' attr']['id'];
-
-        $weather['city_id'] = $city_id;
-
-        $weather['t'] = weather_u2w($weather['t']);
-        $weather['tc'] = weather_u2w($weather['tc']);
-        $weather['do'] = weather_u2w($weather['do']);
-
-        $cities[$city_id] = ($weather['t']);
-
-        // ????????? ????? ?????? ??????? ??????
-        $weather_quick = array();
-
-        list($ico, $text, $weatherStatus) = code_repl($weather['yc'], $weather['cb']);
-
-
-        $weather_quick['current_temp'] = (string)intval($weather['tf']);
-        $weather_quick['current_cond'] = $text;
-        $weather_quick['current_ico'] = (string)($code_to_66icon[$ico]);
-
-        if ($city_id == $hmnCityId) {
-            if ($params['useMeteo']) {
-                mysql_connect($meteoMysqlHost, $meteoMysqlUser, $meteoMysqlPassword);
-                mysql_select_db($meteoMysqlDb);
-                $query = mysql_query('SELECT timekey,ROUND(`value`) as val FROM sdata WHERE fieldid=0 AND sensorid=9 ORDER BY timekey DESC LIMIT 1');
-                $query = mysql_fetch_array($query);
-                if ($query['timekey'] < (time() - 60 * 60))
-                    $query = false;
-            } else {
-                $query = false;
-            }
-            $temperature = $query ? $query['val'] : $weather_quick['current_temp'];
-            $time = $query ? ($setOnlyCurrentWeather ? time() : $query['timekey']) : time();
-
-            $client = new xmlrpc_client($apiUrl);
-            $client->return_type = 'phpvals';
-            $message = new xmlrpcmsg("weather.updateWeather");
-            $p0 = new xmlrpcval($apiKey, 'string');
-            $message->addparam($p0);
-
-            $p1 = array('temperatureMin' => $temperature, 'temperatureMax' => $temperature, 'time' => $time, 'weatherStatus' => $weatherStatus, 'precipitation' => $weather_quick['current_ico']);
-            $p1 = php_xmlrpc_encode($p1);
-            $message->addparam($p1);
-
-            $resp = $client->send($message, 0, 'http11');
-            if (is_object($resp) && !$resp->errno) {
-            }
-            else
-                echo 'Error setting weather: ' . is_object($resp) ? $resp->errstr : '';
-            break;
-        }
-
-    }
-}
-
-
 /**
  *
  * ??? ??????? ????? ?????? ?? 4 ??? ???????
@@ -216,5 +148,74 @@ for ($if = 0; $if < sizeof($files_3); $if++) {
         }
     }
 }
+
+$file = $hmnUrl . '/fact_astro.xml';
+
+$xmldata = file_get_contents($file);
+
+$array = @XML_unserialize($xmldata);
+
+$cities = array();
+for ($i = 0; $i < 50; $i++) // kinda retarded shit...
+{
+    if (isset($array['fact_astro']['c'][$i])) {
+        $weather = $array['fact_astro']['c'][$i];
+        $city_id = $array['fact_astro']['c'][$i . ' attr']['id'];
+
+        $weather['city_id'] = $city_id;
+
+        $weather['t'] = weather_u2w($weather['t']);
+        $weather['tc'] = weather_u2w($weather['tc']);
+        $weather['do'] = weather_u2w($weather['do']);
+
+        $cities[$city_id] = ($weather['t']);
+
+        // ????????? ????? ?????? ??????? ??????
+        $weather_quick = array();
+
+        list($ico, $text, $weatherStatus) = code_repl($weather['yc'], $weather['cb']);
+
+
+        $weather_quick['current_temp'] = (string)intval($weather['tf']);
+        $weather_quick['current_cond'] = $text;
+        $weather_quick['current_ico'] = (string)($code_to_66icon[$ico]);
+
+        if ($city_id == $hmnCityId) {
+            if ($params['useMeteo']) {
+                mysql_connect($meteoMysqlHost, $meteoMysqlUser, $meteoMysqlPassword);
+                mysql_select_db($meteoMysqlDb);
+                $query = mysql_query('SELECT timekey,ROUND(`value`) as val FROM sdata WHERE fieldid=0 AND sensorid=9 ORDER BY timekey DESC LIMIT 1');
+                $query = mysql_fetch_array($query);
+                if ($query['timekey'] < (time() - 60 * 60))
+                    $query = false;
+            } else {
+                $query = false;
+            }
+            $temperature = $query ? $query['val'] : $weather_quick['current_temp'];
+            $time = $query ? ($setOnlyCurrentWeather ? time() : $query['timekey']) : time();
+
+            $client = new xmlrpc_client($apiUrl);
+            $client->return_type = 'phpvals';
+            $message = new xmlrpcmsg("weather.updateWeather");
+            $p0 = new xmlrpcval($apiKey, 'string');
+            $message->addparam($p0);
+
+            $p1 = array('temperatureMin' => $temperature, 'temperatureMax' => $temperature, 'time' => $time, 'weatherStatus' => $weatherStatus, 'precipitation' => $weather_quick['current_ico']);
+            $p1 = php_xmlrpc_encode($p1);
+            $message->addparam($p1);
+
+            $resp = $client->send($message, 0, 'http11');
+            if (is_object($resp) && !$resp->errno) {
+            }
+            else
+                echo 'Error setting weather: ' . is_object($resp) ? $resp->errstr : '';
+            break;
+        }
+
+    }
+}
+
+
+
 
 ?>
