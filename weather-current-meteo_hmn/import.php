@@ -179,7 +179,7 @@ for ($if = 0; $if < sizeof($files_3); $if++) {
             $client = new xmlrpc_client($apiUrl);
             $client->return_type = 'phpvals';
             $message = new xmlrpcmsg("weather.updateWeather");
-            $p0 = new xmlrpcval($kkey, 'string');
+            $p0 = new xmlrpcval($apiKey, 'string');
             $message->addparam($p0);
 
             $weatherData =
