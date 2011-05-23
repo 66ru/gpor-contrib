@@ -1,3 +1,3 @@
 <?php
 $setOnlyCurrentWeather = true;
-include ("weatherImport.php");
+include ("import.php");
