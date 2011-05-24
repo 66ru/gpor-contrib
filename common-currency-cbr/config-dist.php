@@ -1,6 +1,6 @@
 <?php
 return array(
 	'apiUrl' => '',
-    'apikey' => '', // needs 'currency.setCurrency' method access
+    'apiKey' => '', // needs 'currency.setCurrency' method access
 );
 ?>
