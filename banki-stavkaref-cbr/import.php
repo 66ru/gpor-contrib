@@ -46,9 +46,10 @@ if ($stavka_ref !== null)
     $message->addparam($p);
 
     $resp = $client->send($message, 0, 'http11');
-    if (is_object($resp) && !$resp->errno)
+    if (is_object($resp) && !$resp->errno) {
 //        echo 'New index: '.$stavka_ref;
-    else
+    } else {
         echo 'Error setting index: '.is_object($resp)?$resp->errstr:'';
+    }
 }
 ?>
