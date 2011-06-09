@@ -1,7 +1,7 @@
 <?php
 
-require ('../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
-$params = require('config.php');
+include_once ('../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
+$params = include_once('config.php');
 if (!$params)
 	die('Error: config.php not found.');
 
