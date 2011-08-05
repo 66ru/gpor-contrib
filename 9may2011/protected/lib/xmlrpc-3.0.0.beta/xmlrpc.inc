@@ -50,6 +50,7 @@
 	// Milosch: 2005/08/07 - explicitly request these via $GLOBALS where used.
 	$GLOBALS['xmlrpcI4']='i4';
 	$GLOBALS['xmlrpcInt']='int';
+	$GLOBALS['xmlrpcInteger']='int';
 	$GLOBALS['xmlrpcBoolean']='boolean';
 	$GLOBALS['xmlrpcDouble']='double';
 	$GLOBALS['xmlrpcString']='string';
@@ -62,6 +63,7 @@
 	$GLOBALS['xmlrpcTypes']=array(
 		$GLOBALS['xmlrpcI4']       => 1,
 		$GLOBALS['xmlrpcInt']      => 1,
+		$GLOBALS['xmlrpcInteger']  => 1,
 		$GLOBALS['xmlrpcBoolean']  => 1,
 		$GLOBALS['xmlrpcString']   => 1,
 		$GLOBALS['xmlrpcDouble']   => 1,
@@ -206,7 +208,7 @@
 	// The encoding used internally by PHP.
 	// String values received as xml will be converted to this, and php strings will be converted to xml
 	// as if having been coded with this
-	$GLOBALS['xmlrpc_internalencoding']='ISO-8859-1';
+	$GLOBALS['xmlrpc_internalencoding']='UTF-8';
 
 	$GLOBALS['xmlrpcName']='XML-RPC for PHP';
 	$GLOBALS['xmlrpcVersion']='3.0.0.beta';
@@ -855,7 +857,7 @@
 		/// Charset encodings that can be decoded without problems by the client
 		var $accepted_charset_encodings = array();
 		/// Charset encoding to be used in serializing request. NULL = use ASCII
-		var $request_charset_encoding = '';
+		var $request_charset_encoding = 'UTF-8';
 		/**
 		* Decides the content of xmlrpcresp objects returned by calls to send()
 		* valid strings are 'xmlrpcvals', 'phpvals' or 'xml'
@@ -2749,22 +2751,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 					default:
 						error_log("XML-RPC: ".__METHOD__.": not a known type ($type)");
 				}
-				/*if($type=='')
-				{
-					$type='string';
-				}
-				if($GLOBALS['xmlrpcTypes'][$type]==1)
-				{
-					$this->addScalar($val,$type);
-				}
-				elseif($GLOBALS['xmlrpcTypes'][$type]==2)
-				{
-					$this->addArray($val);
-				}
-				elseif($GLOBALS['xmlrpcTypes'][$type]==3)
-				{
-					$this->addStruct($val);
-				}*/
+
 			}
 		}
 
@@ -2943,6 +2930,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 							$rs.="<${typ}>" . xmlrpc_encode_entitites($val, $GLOBALS['xmlrpc_internalencoding'], $charset_encoding). "</${typ}>";
 							break;
 						case $GLOBALS['xmlrpcInt']:
+						case $GLOBALS['xmlrpcInteger']:
 						case $GLOBALS['xmlrpcI4']:
 							$rs.="<${typ}>".(int)$val."</${typ}>";
 							break;
@@ -3002,7 +2990,6 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 					foreach($val as $key2 => $val2)
 					{
 						$rs.='<member><name>'.xmlrpc_encode_entitites($key2, $GLOBALS['xmlrpc_internalencoding'], $charset_encoding)."</name>\n";
-						//$rs.=$this->serializeval($val2);
 						$rs.=$val2->serialize($charset_encoding);
 						$rs.="</member>\n";
 					}
@@ -3013,7 +3000,6 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 					$rs.="<array>\n<data>\n";
 					for($i=0; $i<count($val); $i++)
 					{
-						//$rs.=$this->serializeval($val[$i]);
 						$rs.=$val[$i]->serialize($charset_encoding);
 					}
 					$rs.="</data>\n</array>";
@@ -3038,19 +3024,6 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 				reset($this->me);
 				list($typ, $val) = each($this->me);
 				return '<value>' . $this->serializedata($typ, $val, $charset_encoding) . "</value>\n";
-			//}
-		}
-
-		// DEPRECATED
-		function serializeval($o)
-		{
-			// add check? slower, but helps to avoid recursion in serializing broken xmlrpcvals...
-			//if (is_object($o) && (get_class($o) == 'xmlrpcval' || is_subclass_of($o, 'xmlrpcval')))
-			//{
-				$ar=$o->me;
-				reset($ar);
-				list($typ, $val) = each($ar);
-				return '<value>' . $this->serializedata($typ, $val) . "</value>\n";
 			//}
 		}
 
