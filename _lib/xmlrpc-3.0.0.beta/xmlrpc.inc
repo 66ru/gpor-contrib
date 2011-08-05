@@ -50,6 +50,7 @@
 	// Milosch: 2005/08/07 - explicitly request these via $GLOBALS where used.
 	$GLOBALS['xmlrpcI4']='i4';
 	$GLOBALS['xmlrpcInt']='int';
+	$GLOBALS['xmlrpcInteger']='int';
 	$GLOBALS['xmlrpcBoolean']='boolean';
 	$GLOBALS['xmlrpcDouble']='double';
 	$GLOBALS['xmlrpcString']='string';
