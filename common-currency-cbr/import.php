@@ -22,8 +22,19 @@ preg_match('/<CharCode>EUR<\/CharCode>.*?<Value>(.*?)<\/Value>/is', $xml_content
 preg_match('#<ValCurs Date="([0-9\.]+)#is', $xml_content, $matches3);
 $course_usd = $matches1[1];
 $course_eur = $matches2[1];
-$date = $matches3[1];
-$date = strtotime ($date);
+$currency_date = $matches3[1];
+
+//дата курса в timestamp
+$currency_date = strtotime ($currency_date);
+//текущая дата в timestamp
+$current_date = mktime (0, 0, 0, date("n"), date("j"), date("Y"));;
+
+//echo( "currency = ".date("d.n.Y", $currency_date)."; current = ".date("d.n.Y", $current_date) );
+//echo( "currency = $currency_date; current = $current_date" );
+
+//вычисление даты курса, по которой будет импортирован текущий загруженный курс 
+if($current_date<=$currency_date) $date = $currency_date;
+else $date = $current_date;
 
 if (empty($course_usd) || empty($course_eur)) {
 	print 'Error. USD or EUR course is empty';

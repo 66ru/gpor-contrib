@@ -50,6 +50,7 @@
 	// Milosch: 2005/08/07 - explicitly request these via $GLOBALS where used.
 	$GLOBALS['xmlrpcI4']='i4';
 	$GLOBALS['xmlrpcInt']='int';
+	$GLOBALS['xmlrpcInteger']='int';
 	$GLOBALS['xmlrpcBoolean']='boolean';
 	$GLOBALS['xmlrpcDouble']='double';
 	$GLOBALS['xmlrpcString']='string';
@@ -62,6 +63,7 @@
 	$GLOBALS['xmlrpcTypes']=array(
 		$GLOBALS['xmlrpcI4']       => 1,
 		$GLOBALS['xmlrpcInt']      => 1,
+		$GLOBALS['xmlrpcInteger']  => 1,
 		$GLOBALS['xmlrpcBoolean']  => 1,
 		$GLOBALS['xmlrpcString']   => 1,
 		$GLOBALS['xmlrpcDouble']   => 1,
@@ -2537,7 +2539,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 			/// @todo return an error msg if $data=='' ?
 
 			// be tolerant of junk after methodResponse (e.g. javascript ads automatically inserted by free hosts)
-			// idea from Luca Mariano <luca.mariano@email.it> originally in PEARified version of the _lib
+			// idea from Luca Mariano <luca.mariano@email.it> originally in PEARified version of the lib
 			$pos = strrpos($data, '</methodResponse>');
 			if($pos !== false)
 			{
@@ -2569,7 +2571,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 			// the default encoding and parse the xml anyway, but log a warning...
 			if (!in_array($resp_encoding, array('UTF-8', 'ISO-8859-1', 'US-ASCII')))
 			// the following code might be better for mb_string enabled installs, but
-			// makes the _lib about 200% slower...
+			// makes the lib about 200% slower...
 			//if (!is_valid_charset($resp_encoding, array('UTF-8', 'ISO-8859-1', 'US-ASCII')))
 			{
 				error_log('XML-RPC: '.__METHOD__.': invalid charset encoding of received response: '.$resp_encoding);
@@ -2749,22 +2751,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 					default:
 						error_log("XML-RPC: ".__METHOD__.": not a known type ($type)");
 				}
-				/*if($type=='')
-				{
-					$type='string';
-				}
-				if($GLOBALS['xmlrpcTypes'][$type]==1)
-				{
-					$this->addScalar($val,$type);
-				}
-				elseif($GLOBALS['xmlrpcTypes'][$type]==2)
-				{
-					$this->addArray($val);
-				}
-				elseif($GLOBALS['xmlrpcTypes'][$type]==3)
-				{
-					$this->addStruct($val);
-				}*/
+
 			}
 		}
 
@@ -2943,6 +2930,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 							$rs.="<${typ}>" . xmlrpc_encode_entitites($val, $GLOBALS['xmlrpc_internalencoding'], $charset_encoding). "</${typ}>";
 							break;
 						case $GLOBALS['xmlrpcInt']:
+						case $GLOBALS['xmlrpcInteger']:
 						case $GLOBALS['xmlrpcI4']:
 							$rs.="<${typ}>".(int)$val."</${typ}>";
 							break;
@@ -3002,7 +2990,6 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 					foreach($val as $key2 => $val2)
 					{
 						$rs.='<member><name>'.xmlrpc_encode_entitites($key2, $GLOBALS['xmlrpc_internalencoding'], $charset_encoding)."</name>\n";
-						//$rs.=$this->serializeval($val2);
 						$rs.=$val2->serialize($charset_encoding);
 						$rs.="</member>\n";
 					}
@@ -3013,7 +3000,6 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 					$rs.="<array>\n<data>\n";
 					for($i=0; $i<count($val); $i++)
 					{
-						//$rs.=$this->serializeval($val[$i]);
 						$rs.=$val[$i]->serialize($charset_encoding);
 					}
 					$rs.="</data>\n</array>";
@@ -3038,19 +3024,6 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 				reset($this->me);
 				list($typ, $val) = each($this->me);
 				return '<value>' . $this->serializedata($typ, $val, $charset_encoding) . "</value>\n";
-			//}
-		}
-
-		// DEPRECATED
-		function serializeval($o)
-		{
-			// add check? slower, but helps to avoid recursion in serializing broken xmlrpcvals...
-			//if (is_object($o) && (get_class($o) == 'xmlrpcval' || is_subclass_of($o, 'xmlrpcval')))
-			//{
-				$ar=$o->me;
-				reset($ar);
-				list($typ, $val) = each($ar);
-				return '<value>' . $this->serializedata($typ, $val) . "</value>\n";
 			//}
 		}
 
@@ -3739,7 +3712,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 			// no encoding specified: as per HTTP1.1 assume it is iso-8859-1?
 			// Both RFC 2616 (HTTP 1.1) and 1945 (HTTP 1.0) clearly state that for text/xxx content types
 			// this should be the standard. And we should be getting text/xml as request and response.
-			// BUT we have to be backward compatible with the _lib, which always used UTF-8 as default...
+			// BUT we have to be backward compatible with the lib, which always used UTF-8 as default...
 			return $GLOBALS['xmlrpc_defencoding'];
 		}
 	}
