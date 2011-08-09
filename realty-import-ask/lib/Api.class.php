@@ -1,7 +1,9 @@
-<?php
+﻿<?php
 include_once ('../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 include_once ('../_lib/xmlrpc-3.0.0.beta/xmlrpcs.inc');
 include_once ('../_lib/xmlrpc-3.0.0.beta/xmlrpc_wrappers.inc');
+global $GLOBALS;
+$GLOBALS['xmlrpc_internalencoding']='UTF-8';
 
 abstract class Api {
 
