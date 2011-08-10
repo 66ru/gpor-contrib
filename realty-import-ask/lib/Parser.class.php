@@ -200,7 +200,7 @@ class Parser extends CsvParser {
 			}
 			
 			// Собираем объявы которые надо удалить
-			$announce2Delete = array_merge($this->announce2Delete, $announceList);
+			$this->announce2Delete = array_merge($this->announce2Delete, $announceList);
 		}
 		
 		// Перезапишем объект
@@ -265,24 +265,35 @@ class Parser extends CsvParser {
 
 		$export = new Export();
 
-		foreach ($groupedData as $objectId => $objectGroup)
+		foreach ($groupedData as $complexObjectId => $objectGroup)
 		{
+			// Выставляем id по дефолту 0
+			$objectId = 0; // id Новостройки
+			$stageId = 0;  // id Очереди новостройки
+			// Если id новостройки связано с планировкой (напр. "1.1")
+			// Закоментирован Notice чтобы зря не ругалась
+			@list($objectId, $stageId) = explode('.', $complexObjectId);
+
 			// получаем список планировок новостройки
-			$flatList = $export->getFlatListOfObject($objectId);
+			$flatList = $export->getFlatListOfObject((int) $objectId);
 
 			// Перезаписываем данные с найденной планировкой
-			$groupedData[$objectId] = $this->findFlat($objectGroup, $flatList);
-		}
+			$groupedData[$objectId] = $this->findFlat($objectGroup, $flatList, (int) $stageId);
 			
+			// Удаляем данные со сложным id (новостройка с планировкой)
+			unset($groupedData[$complexObjectId]);
+		}
+		
 		return $groupedData;
 	}
 
 	/**
 	 * Привязывает объявление к планировке
-	 * @param unknown_type $objectGroup
-	 * @param unknown_type $flatList
+	 * @param array $objectGroup
+	 * @param array $flatList
+	 * @param mixed int $stageId 
 	 */
-	private function findFlat($objectGroup, $flatList)
+	private function findFlat($objectGroup, $flatList, $stageId = 0)
 	{
 		foreach ($objectGroup as $objectflat) {
 			$maybyFlat = array();
@@ -290,6 +301,11 @@ class Parser extends CsvParser {
 			$maybyFlatId = 0;
 			foreach ($flatList as $flat)
 			{
+				// Если есть четкая привязка к очереди, то рассматриваем только планировки указанной очереди
+				if(!((int) $flat['stageId'] == $stageId && $stageId > 0))
+				{
+					continue;
+				}
 				// Найдено точное соответствие
 				if($flat['square'] == $objectflat->square)
 				{
@@ -315,7 +331,6 @@ class Parser extends CsvParser {
 				$objectflat->flatId = $maybyFlatId;
 			}
 		}
-			
 		return $objectGroup;
 	}
 

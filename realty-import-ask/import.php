@@ -23,13 +23,11 @@ if($curentRequest->protocol === "http-post")
 	
 	foreach ($parser->getUniqueObjectIds() as $i => $item)
 	{
-		$objectId = (int) $curentRequest->variables['realty_id_'.$i];
+		$objectId = $curentRequest->variables['realty_id_'.$i];
 		
 		$newObjectCompliances[$item] = $objectId;
-		
-		$parser->saveObjectCompliances($newObjectCompliances);
-
 	}
+	$parser->saveObjectCompliances($newObjectCompliances);
 	
 	// Готовим объявления для импорта и ипортируем
 	$parser->prepareAnnonceListAndImport();

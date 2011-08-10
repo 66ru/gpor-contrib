@@ -18,11 +18,11 @@ if($curentRequest->protocol === "http-post")
 	
 	// Сохранение загруженного файла
 	$file = $curentRequest->files[0];
-	if($file->mimeType ===  "text/csv")
+	if($file->mimeType == "text/csv" or $file->mimeType == "text/comma-separated-values")
 	{
 		$parser->saveFile($file->tmpPath);
 	}
-	else die('Загруженный файл должен быть CSV!');
+	else die('Загруженный файл должен быть CSV! Формат полученного файла '.$file->mimeType);
 
 	// Парсим загруженный файл
 	$parser->configure(array('id','rooms', 'square', 'price', 'floor'), true, ';');
@@ -33,7 +33,7 @@ if($curentRequest->protocol === "http-post")
 	
 	// Получаем список новостроек
 	$export = new Export();
-	$realtyObjectsList = $export->getClearedObjectList();	
+	$realtyObjectsList = $export->getClearedObjectListWithStages();
 	
 }
 else die("Файл не загружен!");
