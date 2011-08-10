@@ -52,10 +52,9 @@ class Export extends Api {
 		{
 			if($object['developerId'] == $this->developerId)
 			$stageListOfObject = $this->getStageListOfObject($object['id']);
+			
 			if(!empty($stageListOfObject) && count($stageListOfObject) >= $minStage)
 			{
-				//$developerObjectList[] = $object;
-				
 				foreach ($stageListOfObject as $stage)
 				{
 					$developerObjectList[] = array('id' => $object['id'].'.'.$stage['id'], 'name' => $object['name'].' ('.$stage['name'].')');
@@ -65,6 +64,8 @@ class Export extends Api {
 			{
 				$developerObjectList[] = $object;
 			}
+			
+			unset($stageListOfObject);
 		}
 
 		return $developerObjectList;

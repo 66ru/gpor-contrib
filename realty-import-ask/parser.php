@@ -18,6 +18,7 @@ if($curentRequest->protocol === "http-post")
 	
 	// Сохранение загруженного файла
 	$file = $curentRequest->files[0];
+	
 	if($file->mimeType == "text/csv" or $file->mimeType == "text/comma-separated-values")
 	{
 		$parser->saveFile($file->tmpPath);
