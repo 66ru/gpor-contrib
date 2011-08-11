@@ -34,7 +34,7 @@ if($requestMethod === "post")
 	
 	// Получаем список новостроек
 	$export = new Export();
-	$realtyObjectsList = $export->getClearedObjectListWithStages();
+	$realtyObjectsList = $export->getClearedObjectListWithStages(1);
 	
 }
 else die("Файл не загружен!");

@@ -43,7 +43,7 @@ class Export extends Api {
 	 * Оставит в списке новостроек только те, которые принадлежат импортируемому застройщику и дополнит список очередями
 	 * @return array
 	 */
-	public function getClearedObjectListWithStages($minStage = 2)
+	public function getClearedObjectListWithStages($minStage = 1)
 	{
 		$objectList = $this->getObjectList();
 		$developerObjectList = array();

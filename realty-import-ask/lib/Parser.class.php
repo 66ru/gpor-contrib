@@ -273,7 +273,7 @@ class Parser extends CsvParser {
 			// Если id новостройки связано с планировкой (напр. "1.1")
 			// Закоментирован Notice чтобы зря не ругалась
 			@list($objectId, $stageId) = explode('.', $complexObjectId);
-
+			
 			// получаем список планировок новостройки
 			$flatList = $export->getFlatListOfObject((int) $objectId);
 
@@ -281,7 +281,10 @@ class Parser extends CsvParser {
 			$groupedData[$objectId] = $this->findFlat($objectGroup, $flatList, (int) $stageId);
 			
 			// Удаляем данные со сложным id (новостройка с планировкой)
-			unset($groupedData[$complexObjectId]);
+			if($stageId > 0)
+			{
+				unset($groupedData[$complexObjectId]);
+			}
 		}
 		
 		return $groupedData;
