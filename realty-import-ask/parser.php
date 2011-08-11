@@ -1,28 +1,29 @@
 <?php
-// Настраиваем автолоадеры
-require '../_lib/ezcomponents-2009.2/Base/src/base.php';
-spl_autoload_register( array( 'ezcBase', 'autoload' ) );
-
 spl_autoload_register('autoload');
 function autoload($class_name) {
     include './lib/'.$class_name . '.class.php';
 }
 
 // Обрабатываем запрос
-$request = new ezcMvcHttpRequestParser();
-$curentRequest = $request->createRequest();
+$requestMethod = strtolower($_SERVER['REQUEST_METHOD']);
 
-if($curentRequest->protocol === "http-post")
+if($requestMethod === "post")
 {
 	$parser = new Parser();
 	
 	// Сохранение загруженного файла
-	$file = $curentRequest->files[0];
-	if($file->mimeType == "text/csv" or $file->mimeType == "text/comma-separated-values")
+	if (!empty($_FILES))
 	{
-		$parser->saveFile($file->tmpPath);
+		$file = $_FILES['file']['tmp_name'];
+		$filetype = strtolower(end(explode(".", $_FILES['file']['name'])));
+		
+		if($filetype === "csv")
+		{
+			$parser->saveFile($file);
+		}
+		else die('Загруженный файл должен быть CSV! Расширение полученного файла '.$filetype);
+		
 	}
-	else die('Загруженный файл должен быть CSV! Формат полученного файла '.$file->mimeType);
 
 	// Парсим загруженный файл
 	$parser->configure(array('id','rooms', 'square', 'price', 'floor'), true, ';');
@@ -33,7 +34,7 @@ if($curentRequest->protocol === "http-post")
 	
 	// Получаем список новостроек
 	$export = new Export();
-	$realtyObjectsList = $export->getClearedObjectListWithStages();
+	$realtyObjectsList = $export->getClearedObjectListWithStages(1);
 	
 }
 else die("Файл не загружен!");
