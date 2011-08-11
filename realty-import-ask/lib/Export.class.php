@@ -50,22 +50,23 @@ class Export extends Api {
 
 		foreach ($objectList as $object)
 		{
-			if($object['developerId'] == $this->developerId)
-			$stageListOfObject = $this->getStageListOfObject($object['id']);
-			
-			if(!empty($stageListOfObject) && count($stageListOfObject) >= $minStage)
-			{
-				foreach ($stageListOfObject as $stage)
+			if($object['developerId'] == $this->developerId) {
+				$stageListOfObject = $this->getStageListOfObject($object['id']);
+					
+				if(!empty($stageListOfObject) && count($stageListOfObject) >= $minStage)
 				{
-					$developerObjectList[] = array('id' => $object['id'].'.'.$stage['id'], 'name' => $object['name'].' ('.$stage['name'].')');
+					foreach ($stageListOfObject as $stage)
+					{
+						$developerObjectList[] = array('id' => $object['id'].'.'.$stage['id'], 'name' => $object['name'].' ('.$stage['name'].')');
+					}
 				}
+				else
+				{
+					$developerObjectList[] = $object;
+				}
+					
+				unset($stageListOfObject);
 			}
-			else
-			{
-				$developerObjectList[] = $object;
-			}
-			
-			unset($stageListOfObject);
 		}
 
 		return $developerObjectList;
@@ -82,7 +83,7 @@ class Export extends Api {
 		foreach ($clearedObjectList as $i => $object)
 		{
 			$stageListOfObject = $this->getStageListOfObject($object['id']);
-				
+
 			if(!empty($stageListOfObject))
 			{
 
