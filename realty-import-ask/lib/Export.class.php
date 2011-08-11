@@ -50,26 +50,29 @@ class Export extends Api {
 
 		foreach ($objectList as $object)
 		{
-			if($object['developerId'] == $this->developerId)
-			$stageListOfObject = $this->getStageListOfObject($object['id']);
-			
-			if(!empty($stageListOfObject) && count($stageListOfObject) >= $minStage)
-			{
-				foreach ($stageListOfObject as $stage)
+			if($object['developerId'] == $this->developerId) {
+				$stageListOfObject = $this->getStageListOfObject($object['id']);
+					
+				if(!empty($stageListOfObject) && count($stageListOfObject) >= $minStage)
 				{
-					$developerObjectList[] = array('id' => $object['id'].'.'.$stage['id'], 'name' => $object['name'].' ('.$stage['name'].')');
+					foreach ($stageListOfObject as $stage)
+					{
+						$developerObjectList[] = array('id' => $object['id'].'.'.$stage['id'], 'name' => $object['name'].' ('.$stage['name'].')');
+					}
 				}
+				else
+				{
+					$developerObjectList[] = $object;
+				}
+					
+				unset($stageListOfObject);
 			}
-			else
-			{
-				$developerObjectList[] = $object;
-			}
-			
-			unset($stageListOfObject);
 		}
-
+		masort($developerObjectList, 'name');
 		return $developerObjectList;
 	}
+	
+
 	/**
 	 * Дополняет список "чистых" новостроек еще очередями
 	 * @return array
@@ -82,7 +85,7 @@ class Export extends Api {
 		foreach ($clearedObjectList as $i => $object)
 		{
 			$stageListOfObject = $this->getStageListOfObject($object['id']);
-				
+
 			if(!empty($stageListOfObject))
 			{
 
@@ -173,4 +176,47 @@ class Export extends Api {
 
 		return $developerAnnounceList;
 	}
+}
+
+/**
+* Магическая сортировка массива по внутренним полям
+* http://php.southpark.com.ua/2007/sortirovka-massiva-po-polyu-ili-uasort-na-steroidax/
+* 
+* @param array $data
+* @param string $sortby
+* @return boolean
+*/
+function masort(&$data, $sortby) {
+	static $funcs = array();
+	 
+	if (empty($funcs[$sortby])) {
+		$code = "\$c=0;";
+		foreach (split(',', $sortby) as $key) {
+			$key = trim($key);
+			if (strlen($key)>5 && substr($key, -5)==' DESC') {
+				$asc = false;
+				$key = substr($key, 0, strlen($key)-5);
+			} else {
+				$asc = true;
+			}
+			 
+			$array = array_pop($data);
+			array_push($data, $array);
+			 
+			if ($asc) {
+				if(is_numeric($array[$key])) {
+					$code .= "if ( \$c = ((\$a['$key'] == \$b['$key']) ? 0:((\$a['$key'] " . (($asc)?'<':'>') . " \$b['$key']) ? -1 : 1 )) ) return \$c;";
+				} else {
+					$code .= "if ( (\$c = strcasecmp(\$a['$key'],\$b['$key'])) != 0 ) return " . (($asc)?'':'-') . "\$c;\n";
+				}
+			}
+		}
+		$code .= 'return $c;';
+		$func = $funcs[$sortby] = create_function('$a, $b', $code);
+	} else {
+		$func = $funcs[$sortby];
+	}
+	$func = $funcs[$sortby];
+	 
+	return uasort($data, $func);
 }
