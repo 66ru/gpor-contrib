@@ -30,7 +30,7 @@ if($requestMethod === "post")
 	$parser->parse();
 	
 	//Получаем список уже сохраненных соответствий
-	$objectCompliancesList = Parser::getObjectCompliancesList();
+	$objectCompliancesList = $parser->getObjectCompliancesList();
 	
 	// Получаем список новостроек
 	$export = new Export();
@@ -68,6 +68,52 @@ function renderRealtyObjectsList($realtyObjectList = array(), $objectCompliances
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<script src="js/jquery.min.js" type="text/javascript"></script>
+<script>
+$(function() {
+	var data = '<?php echo base64_encode(serialize($parser->data)) ?>';
+	$('form').submit(function(){
+		$('#content').html(" ");
+		$('form select[name^="realty_id_"]').each(function(index) {
+			index2 = $(this).attr('name').substr(10);
+			item = $('form input[name="id_' + index2 +'"]').val();
+			if($(this).val() != '0') {
+				var objects = {};
+				objects = '{ "'+ item +'":"'+ $(this).val() + '"}';
+				var title = '<p>'+$(this).children('option:selected').text()+'</p>';
+			
+			$.ajax({
+				url:  'process.php',
+				type: 'POST',
+				data: { data: data, objects: objects },
+				cache: false,
+				success: function(data) {
+					$('#content').append(title + data);
+					},
+				error: function(data, status) {
+					$('#content').append(title + data.responseText);
+					}
+				});
+				
+			}
+				
+			});
+		
+		$.ajax({
+			url:  'saveObjectCompliances.php',
+			type: 'POST',
+			data:  $('form').serialize(),
+			cache: false,
+			success: function(data) {
+				},
+			error: function(data, status) {
+				}
+			});
+			return false;
+		});
+});
+
+</script>
 <title>Парсер новостроек Атомстройкомплекса</title>
   <style type="text/css">
   </style>
@@ -106,6 +152,10 @@ function renderRealtyObjectsList($realtyObjectList = array(), $objectCompliances
   		</tfoot>
   	</table>
   	</form>
+  </div>
+  <div id="result">
+  	<h2>Отчет</h2>
+  	<div id="content"></div>
   </div>
 </body>
 </html>
