@@ -18,7 +18,7 @@ class Parser extends CsvParser {
 	 * @var array
 	 */
 	public $announce2Delete = array();
-	
+
 	/**
 	 * Массив с уникальными id от аск
 	 * @var array
@@ -30,6 +30,12 @@ class Parser extends CsvParser {
 	 * @var array
 	 */
 	public $objectComplianceList;
+
+	/**
+	 * Список объявлений которые не удалось привязать и импортировать
+	 * @var array
+	 */
+	public $announcesNotUsed = array();
 
 	/**
 	 * Путь до файла где хранятся соотвектсвия в виде json серриализации
@@ -105,16 +111,19 @@ class Parser extends CsvParser {
 	/**
 	 * Отдает массив соответсвий нашей базы и базы для импорта по id
 	 */
-	public static function getObjectCompliancesList()
+	public function getObjectCompliancesList()
 	{
-		if(file_exists(self::$compliancesFilePath) && is_readable(self::$compliancesFilePath))
-		{
-			return json_decode(file_get_contents(self::$compliancesFilePath));
+		if(empty($this->objectComplianceList)) {
+			if(file_exists(self::$compliancesFilePath) && is_readable(self::$compliancesFilePath))
+			{
+				return json_decode(file_get_contents(self::$compliancesFilePath));
+			}
+			else
+			{
+				return array();
+			}
 		}
-		else
-		{
-			return array();
-		}
+		else return $this->objectComplianceList;
 	}
 
 	/**
@@ -162,14 +171,14 @@ class Parser extends CsvParser {
 	}
 
 	/**
-	 * Формирует объект $data для импорта 
+	 * Формирует объект $data для импорта
 	 * Собирает массив устаревших объявлений
 	 */
 	public function prepareAnnonceList()
 	{
 		// Привязываем объявления к планировкам
 		$data = $this->announce2Flat();
-		
+
 		$export = new Export();
 		foreach ($data as $objectId => $objectGroup)
 		{
@@ -185,7 +194,7 @@ class Parser extends CsvParser {
 					{
 						$objectFlat->action = 'edit';
 						$objectFlat->announceId = $announce['id'];
-						
+
 						// Найденное объявление удаляем из списка
 						unset($announceList[$i]);
 
@@ -196,18 +205,18 @@ class Parser extends CsvParser {
 				}
 				// Если объявление не найдено
 				if(!isset($objectFlat->action))
-					$objectFlat->action = 'add';
+				$objectFlat->action = 'add';
 			}
-			
+
 			// Собираем объявы которые надо удалить
 			$this->announce2Delete = array_merge($this->announce2Delete, $announceList);
 		}
-		
+
 		// Перезапишем объект
 		$this->data = $data;
 			
 	}
-	
+
 	/**
 	 * Обращает к Import Api для внесения изменений в базу
 	 */
@@ -218,7 +227,7 @@ class Parser extends CsvParser {
 		$import->deleteOldAnnounceList($this->announce2Delete);
 		$import->getStatistics();
 	}
-	
+
 	public function prepareAnnonceListAndImport()
 	{
 		$this->prepareAnnonceList();
@@ -241,7 +250,7 @@ class Parser extends CsvParser {
 		foreach ($this->getUniqueObjectIds() as $objectId)
 		{
 			// Объявления id новостройки которого не определен выбросить
-			if($objectCompliancesList->$objectId > 0)
+			if(isset($objectCompliancesList->$objectId) &&  $objectCompliancesList->$objectId > 0)
 			{
 				$groupedData[$objectCompliancesList->$objectId] = array();
 				foreach ($this->data as $data)
@@ -273,20 +282,20 @@ class Parser extends CsvParser {
 			// Если id новостройки связано с планировкой (напр. "1.1")
 			// Закоментирован Notice чтобы зря не ругалась
 			@list($objectId, $stageId) = explode('.', $complexObjectId);
-			
+
 			// получаем список планировок новостройки
 			$flatList = $export->getFlatListOfObject((int) $objectId);
 
 			// Перезаписываем данные с найденной планировкой
 			$groupedData[$objectId] = $this->findFlat($objectGroup, $flatList, (int) $stageId);
-			
+
 			// Удаляем данные со сложным id (новостройка с планировкой)
 			if($stageId > 0)
 			{
 				unset($groupedData[$complexObjectId]);
 			}
 		}
-		
+
 		return $groupedData;
 	}
 
@@ -294,11 +303,11 @@ class Parser extends CsvParser {
 	 * Привязывает объявление к планировке
 	 * @param array $objectGroup
 	 * @param array $flatList
-	 * @param mixed int $stageId 
+	 * @param mixed int $stageId
 	 */
 	private function findFlat($objectGroup, $flatList, $stageId = 0)
 	{
-		foreach ($objectGroup as $objectflat) {
+		foreach ($objectGroup as $i => $objectflat) {
 			$maybyFlat = array();
 			$_dd = 9999;
 			$maybyFlatId = 0;
@@ -309,29 +318,39 @@ class Parser extends CsvParser {
 				{
 					continue;
 				}
-				// Найдено точное соответствие
-				if($flat['square'] == $objectflat->square)
-				{
-					$objectflat->flatId = intval($flat['id']);
-					continue;
-				}
-				// Вычисляем разницу площадей
-				else
-				{
-					$dd = abs($flat['square'] - $objectflat->square);
-					if($dd < $_dd)
+				// Проверяем чтобы привязка осуществлялась только к планировке, у которой этаж и количество комнат совпададет
+				if($flat['rooms'] == $objectflat->rooms && in_array($objectflat->floor, $flat['floors'])) {
+
+					// Найдено точное соответствие
+					if($flat['square'] == $objectflat->square)
 					{
-						$_dd = $dd;
-						// Кладем в массив
-						$maybyFlatId = $flat['id'];
+						$objectflat->flatId = intval($flat['id']);
+						continue;
+					}
+					// Вычисляем разницу площадей
+					else
+					{
+						$dd = abs($flat['square'] - $objectflat->square);
+						if($dd < $_dd)
+						{
+							$_dd = $dd;
+							// Кладем в массив
+							$maybyFlatId = $flat['id'];
+						}
 					}
 				}
 			}
 
 			// если точного совпадения нет
-			if(!isset($objectflat->flatId))
+			if(!isset($objectflat->flatId) && $maybyFlatId > 0)
 			{
 				$objectflat->flatId = $maybyFlatId;
+			}
+			else {
+				// Записываем объявы, которые не удалось привязать
+				array_push($this->announcesNotUsed, $objectGroup[$i]);
+				// Эту объяву мы дальше не будем обрабатывать
+				unset($objectGroup[$i]);
 			}
 		}
 		return $objectGroup;
