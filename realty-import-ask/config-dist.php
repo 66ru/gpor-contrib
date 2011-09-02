@@ -7,5 +7,8 @@ return array(
 	
 	'fileToParsePath' => '',
 	'compliancesFilePath' => '',
+	'preparedDataFilePath' => '',
+	'importOperationsNumber' => '',
+	'logFile' => '',
 );
 ?>
