@@ -1,7 +1,7 @@
 ﻿<?php
-include_once ('../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
-include_once ('../_lib/xmlrpc-3.0.0.beta/xmlrpcs.inc');
-include_once ('../_lib/xmlrpc-3.0.0.beta/xmlrpc_wrappers.inc');
+include_once get_include_path().'../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc';
+include_once get_include_path().'../_lib/xmlrpc-3.0.0.beta/xmlrpcs.inc';
+include_once get_include_path().'../_lib/xmlrpc-3.0.0.beta/xmlrpc_wrappers.inc';
 global $GLOBALS;
 $GLOBALS['xmlrpc_internalencoding']='UTF-8';
 
@@ -26,7 +26,7 @@ abstract class Api {
 
 	public function __construct()
 	{
-		$params = require ('./config.php');
+		$params = require ('config.php');
 
 		$this->_apiKey = isset($params['apiKey']) ? $params['apiKey'] : false;
 		$this->_apiUrl = isset($params['apiUrl']) ? $params['apiUrl'] : false;

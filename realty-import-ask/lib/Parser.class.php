@@ -17,7 +17,7 @@ class Parser extends CsvParser {
 	 * Список объяв на удаление
 	 * @var array
 	 */
-	public $announce2Delete = array();
+	//public $announce2Delete = array();
 
 	/**
 	 * Массив с уникальными id от аск
@@ -42,7 +42,13 @@ class Parser extends CsvParser {
 	 * @var string
 	 */
 	static protected $compliancesFilePath;
-
+	
+	/**
+	* Путь до файла где хранятся подготовленные для парсинга данные 
+	* @var string
+	*/
+	static protected $preparedDataFilePath;
+	
 	/**
 	 * Путь до файла для парсинга
 	 * @var unknown_type
@@ -51,11 +57,12 @@ class Parser extends CsvParser {
 
 	public function __construct()
 	{
-		$params = require ('./config.php');
+		$params = require ('config.php');
 
 		$this->fileToParsePath = isset($params['fileToParsePath']) ? $params['fileToParsePath'] : false;
 		self::$compliancesFilePath = isset($params['compliancesFilePath']) ? $params['compliancesFilePath'] : false;
-
+		self::$preparedDataFilePath = isset($params['preparedDataFilePath']) ? $params['preparedDataFilePath'] : false;
+		
 		$this->developerId = isset($params['developerId']) ? $params['developerId'] : false;
 		$this->agencyId = isset($params['agencyId']) ? $params['agencyId'] : false;
 
@@ -201,15 +208,25 @@ class Parser extends CsvParser {
 						break;
 					}
 
-
 				}
 				// Если объявление не найдено
 				if(!isset($objectFlat->action))
 				$objectFlat->action = 'add';
 			}
 
-			// Собираем объявы которые надо удалить
-			$this->announce2Delete = array_merge($this->announce2Delete, $announceList);
+			// Собираем объявы которые надо удалить и пишем в $data
+			foreach ($announceList as $announce)
+			{
+				$item = new stdClass();
+				$item->action = 'delete';
+				$item->announceId = $announce['id'];
+				$item->flatId = 0; 
+				$item->square = 0; 
+				$item->floor = 0; 
+				$item->price = 0;
+				array_push($data[$objectId],$item);
+			}
+			
 		}
 
 		// Перезапишем объект
@@ -224,7 +241,6 @@ class Parser extends CsvParser {
 	{
 		$import = new Import();
 		$import->importAnnounceList($this->data);
-		$import->deleteOldAnnounceList($this->announce2Delete);
 		$import->getStatistics();
 	}
 
@@ -232,6 +248,13 @@ class Parser extends CsvParser {
 	{
 		$this->prepareAnnonceList();
 		$this->importAnnounceList();
+	}
+	
+	
+	public function prepareAnnonceListAndSave()
+	{
+		$this->prepareAnnonceList();
+		$this->writePreparedDataFile($this->data);
 	}
 
 	/**
@@ -387,6 +410,29 @@ class Parser extends CsvParser {
 
 		fclose($handle);
 
+	}
+
+	/**
+	* Записывает подготовленные данные для импорта в файла
+	* Создаст файл если он не существует
+	* @param object $data
+	* @throws ErrorException
+	*/	
+	public function writePreparedDataFile($data)
+	{
+		$file = get_include_path().self::$preparedDataFilePath;
+		
+		$data = base64_encode(serialize($data));
+		
+		if (!$handle = fopen($file, 'w')) {
+			throw new ErrorException("Cannot open file ($file)");
+		}
+		
+		if (fwrite($handle, $data) === FALSE) {
+			throw new ErrorException("Cannot write to file ($filename)");
+		}
+
+		@chmod($file, 0666);
 	}
 }
 
