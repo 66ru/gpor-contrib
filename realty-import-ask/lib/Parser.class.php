@@ -199,13 +199,16 @@ class Parser extends CsvParser {
 					// Объявление найдено
 					if( (int) $announce['flatId'] == (int) $objectFlat->flatId)
 					{
-						$objectFlat->action = 'edit';
-						$objectFlat->announceId = $announce['id'];
-
-						// Найденное объявление удаляем из списка
-						unset($announceList[$i]);
-
-						break;
+						if( dechex($announce['square']) == dechex(str_replace(', ', '.', $objectFlat->square)) && in_array($objectFlat->floor, $announce['floors']))
+						{
+							$objectFlat->action = 'edit';
+							$objectFlat->announceId = $announce['id'];
+	
+							// Найденное объявление удаляем из списка
+							unset($announceList[$i]);
+	
+							break;
+						}
 					}
 
 				}
@@ -369,7 +372,7 @@ class Parser extends CsvParser {
 			{
 				$objectflat->flatId = $maybyFlatId;
 			}
-			else {
+			elseif (!isset($objectflat->flatId)) {
 				// Записываем объявы, которые не удалось привязать
 				array_push($this->announcesNotUsed, $objectGroup[$i]);
 				// Эту объяву мы дальше не будем обрабатывать
