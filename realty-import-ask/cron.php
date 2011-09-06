@@ -9,29 +9,37 @@ $params = require ('config.php');
 $maxOperations = isset($params['importOperationsNumber']) ? $params['importOperationsNumber'] : false;
 $preparedDataFilePath = isset($params['preparedDataFilePath']) ? $params['preparedDataFilePath'] : false;
 $logFile = isset($params['logFile']) ? $params['logFile'] : false;
+$statusFile = isset($params['statusFile']) ? $params['statusFile'] : false;
 $log = '';
 
-if(file_exists(get_include_path().$preparedDataFilePath)) {
-	$data = unserialize(base64_decode(file_get_contents(get_include_path().$preparedDataFilePath)));
+// Не позволяем запускать одновременно несколько копий скрипта
+if(!file_exists(get_include_path().$statusFile)) {
+	file_put_contents(get_include_path().$statusFile, '');
+	if(file_exists(get_include_path().$preparedDataFilePath)) {
+		$data = unserialize(base64_decode(file_get_contents(get_include_path().$preparedDataFilePath)));
 
-	$import = new Import();
-	
-	if($data) {
-		$newData = $import->importAnnounceListByPart($data, $maxOperations);
-		$stat = $import->getStatistics();
+		$import = new Import();
 
-		$parser = new Parser();
-		$parser->writePreparedDataFile($newData);
+		if($data) {
+			$newData = $import->importAnnounceListByPart($data, $maxOperations);
+			$stat = $import->getStatistics();
 
-		$log = '';
-		foreach ($stat as $row)
-		{
-			$log .= $row."\n";
+			$parser = new Parser();
+			$parser->writePreparedDataFile($newData);
+
+			$log = '';
+			foreach ($stat as $row)
+			{
+				$log .= $row."\n";
+			}
 		}
 	}
+	else {
+		$log = time().'|'.'Total|0'."\n";
+	}
+	$hRet = file_put_contents(get_include_path().$logFile, $log, FILE_APPEND);
+	chmod(get_include_path().$logFile, 0666);
+	unlink(get_include_path().$statusFile);
+
 }
-else {
-	$log = time().'|'.'Total|0'."\n";
-}
-$hRet = file_put_contents(get_include_path().$logFile, $log, FILE_APPEND);
-chmod(get_include_path().$logFile, 0666);
+else die('Копия скрипта уже запущена');
