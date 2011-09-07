@@ -163,26 +163,33 @@ class gporImport
 		
 		$limit = $this->limit;
 		
-		$items = $model->findAll();
+		$items = db_assoc('SELECT `id` FROM `'.TABLE_COMPANIES_VACANCIES.'`
+            WHERE 
+                '.vacancy_sql( VACANCY_DEFAULT ).' AND `_actual` > 0 '.($lastId ? ' AND id > '.$lastId : '').'
+            ORDER BY id
+            LIMIT 0, '.$limit);
+		
 		
 		if ($items)
 		{
 			$xmlRpc = new XmlRpc($this->apiUrl, $this->apiKey, 'job.postVacancy');
 			$result = array();
-			foreach ($items as $item)
+			foreach ($items as $row)
 			{
+				$item = vacancy_get($row['id']);
 				$this->setLastId($item['id']);
 				$params = $item;
 				
-				$geoplaces = self::geoplacesToGpor($item->_geoplaces);
+				$geoplaces = self::geoplacesToGpor($item['cities']);
 				if ($geoplaces)
-					$params['geoplaces'] = $geoplaces;
+					$params['geoplacesNames'] = $geoplaces;
 				else
 					continue;
-				$params['branches'] = self::branchesToGpor($item->_branches);
-				$params['vbranches'] = self::vbranchesToGpor($item->_vbranches);
-				$params['vac_type'] = $params['vac_type'] ? $params['vac_type'] : 1;
-				$params['workplan'] = $params['workplan'] ? $params['workplan'] : 1;
+				$params['branches'] = self::branchesToGpor($item['branch']);
+				$params['vbranches'] = self::vbranchesToGpor($item['vac_branch']);
+				$params['vac_type'] = self::vactypeToGpor($item['vac_type']);
+				$params['workplan'] =  self::workplanToGpor($item['workplan']);
+				$params['pay_sum_to'] =  $item['pay_sum'];
 				
 				if (!$params['vbranches'])
 					continue;
@@ -368,41 +375,65 @@ class gporImport
 		return $res;
 	}
 	
-	public static function geoplacesToGpor ($geoplaceId)
+	public static function geoplacesToGpor ($geoplaceIds)
 	{
-		$cities = array (
-			1799 => 3,
-			1800 => 7,
-			1801 => 8,
-			1802 => 9,
-			1803 => 10,
-			1804 => 11,
-			1805 => 12,
-			1806 => 13,
-			1807 => 14,
-			1808 => 15,
-			1809 => 2,
-			1810 => 16,
-			1811 => 17,
-			1812 => 18,
-			1813 => 19,
-			1814 => 20,
-			1815 => 21,
-			1816 => 22,
-			1817 => 1,
-			1818 => 23,
-			1819 => 24,
-			1820 => 4,
-			1821 => 25,
-			1822 => 26,
-			1823 => 5,
-			1824 => 27,
-			);
-		if (isset($cities[$geoplaceId]))
-			return $cities[$geoplaceId];
-		return false;
+		global $GEO_LIST;
+		$result = array();
+		if ($geoplaceIds)
+		{
+			foreach ($geoplaceIds as $geoplaceId)
+			{
+				if (isset($GEO_LIST[$geoplaceId]))
+					$result[] = $GEO_LIST[$geoplaceId]['name'];
+			}
+		}
+		
+		return $result;
+	}
+	
+	public static function educationToGpor ($education)
+	{
+	    $educatuionsList = array(
+	        1 => 1, //'Высшее',
+	        2 => 2, //'Среднее',
+	        3 => 3, //'Неполное высшее',
+	        4 => 4, //'Среднее специальное'
+	        );
+	    if (isset($educatuionsList[$education]))
+	    	return $educatuionsList[$education];
+	    return 0;
+	}
+	
+	
+	public static function vactypeToGpor ($val)
+	{
+	    $items = array(
+	        1 => 1,
+	        2 => 2,
+	        3 => 3,
+	        );
+	    if (isset($items[$val]))
+	    	return $items[$val];
+	    return 0;
 	}
 
+	
+	public static function workplanToGpor ($val)
+	{
+	    $items = array(
+			        1 => 1, //	 'Полный рабочий день',
+			        4 => 4, //    'Посменно',
+			        2 => 2, //    'Свободный график',
+			        3 => 3, //    'Контракт',
+			        5 => 5, //    'Удаленно',
+			        6 => 1, //    'Вахта',
+			        
+	    );
+	    if (isset($items[$val]))
+	    	return $items[$val];
+	    return 0;
+	}
+	
 }
 
 
