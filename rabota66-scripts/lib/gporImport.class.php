@@ -7,7 +7,15 @@
     lib('email');
     lib('templates');
     lib('dates');
+    lib('companies');
     lib('companies_employees');
+    include_once( ROOT.'/lib/email.lib.php' );
+    include_once( ROOT.'/lib/notes.lib.php' );
+    include_once( ROOT.'/lib/resume.lib.php' );
+    include_once( ROOT.'/lib/managers.lib.php' );
+    include_once( ROOT.'/lib/companies.lib.php' );
+    include_once( ROOT.'/lib/dates.lib.php' );
+    
 
 	include_once (ROOT.'/lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 	include_once (ROOT.'/lib/xmlrpc-3.0.0.beta/xmlrpcs.inc');
@@ -50,7 +58,7 @@ class gporImport
 
 	protected function addLog($val)
 	{
-		$this->_log[time()] = $val;
+		$this->_log[] = date('d-m-Y G:i:s', time()).': '.$val;
 		return true;
 	}
 		
@@ -69,7 +77,7 @@ class gporImport
 	{
 		if (!$this->apiUrl || !$this->apiKey)
 		{
-            $this->setLastError('РќРµ Р·Р°РґР°РЅ apiUrl РёР»Рё apiKey');
+            $this->setLastError('Не задан apiUrl или apiKey');
             return false;
 		}
 
@@ -123,28 +131,30 @@ class gporImport
 					}
 				}
 				
-				// TO_DO: РїРѕР»СѓС‡РёС‚СЊ СЂРµРєРІРёР·РёС‚С‹ РґРѕСЃС‚СѓРїР° РєРѕРјРїР°РЅРёРё
-				/*
-				if ($company->user)
+				//if ($company->user)
 				{
-					$params['client'] = $company->user->attributes;
-					$params['client']['login'] = $company->user->username;
+					$params['client'] = array(
+						'id' => 1,
+						'login' => 'rabotaTest',
+						'password' => 'rabotaTest',
+						'username' => 'rabotaTest',
+						'email' => 'rabotaTest@rabota66.ru',
+					);
 				}
-				*/
 					
 				$res = $xmlRpc->send(array($params));
 				if ($res)
-					$this->addLog($company->id.': success');
+					$this->addLog($company['id'].': success');
 				else
 				{
-					$this->addLog($company->id.': error. '.$xmlRpc->getLastError());
+					$this->addLog($company['id'].': error. '.$xmlRpc->getLastError());
 				}
 			}
 			return true;
 		}
 		else
 		{
-			$this->addLog('РљРѕРјРїР°РЅРёРё РёРјРїРѕСЂС‚РёСЂРѕРІР°РЅС‹');
+			$this->addLog('Компании импортированы');
 			return false;
 		}
 		
@@ -155,7 +165,7 @@ class gporImport
 	{
 		if (!$this->apiUrl || !$this->apiKey)
 		{
-            $this->setLastError('РќРµ Р·Р°РґР°РЅ apiUrl РёР»Рё apiKey');
+            $this->setLastError('Не задан apiUrl или apiKey');
             return false;
 		}
 
@@ -197,10 +207,10 @@ class gporImport
 				$res = $xmlRpc->send(array($params));
 				
 				if ($res)
-					$this->addLog($item->id.': success');
+					$this->addLog($item['id'].': success');
 				else
 				{
-					$this->addLog($item->id.': error. '.$xmlRpc->getLastError());
+					$this->addLog($item['id'].': error. '.$xmlRpc->getLastError());
 				}
 			}
 			
@@ -208,7 +218,7 @@ class gporImport
 		}
 		else
 		{
-			$this->addLog('Р’Р°РєР°РЅСЃРёРё РёРјРїРѕСЂС‚РёСЂРѕРІР°РЅС‹');
+			$this->addLog('Вакансии импортированы');
 			return false;
 		}
 	}
@@ -218,83 +228,71 @@ class gporImport
 	{
 		if (!$this->apiUrl || !$this->apiKey)
 		{
-            $this->setLastError('РќРµ Р·Р°РґР°РЅ apiUrl РёР»Рё apiKey');
+            $this->setLastError('Не задан apiUrl или apiKey');
             return false;
 		}
-
-		$lastId = $this->getLastId();
 		
-		$limit = $this->limit;
+		$lastResponse = db_row('SELECT * FROM `'.TABLE_RESPONSES.'`
+            WHERE 
+                `referal_id` = 1
+            ORDER BY id DESC LIMIT 1' );
 		
-		$items = $model->findAll();
-		
-		$xmlRpc = new XmlRpc($this->apiUrl, $this->apiKey, 'job.importResponses');
-		$params = array (
-			'fromDate' => '',
-		);
-		
-		if ($items = $xmlRpc->send(array($params)) )
+		if ($lastResponse)
 		{
-			foreach ($items as $item)
+			$fromTime = strtotime($lastResponse['datetime']);
+			//$fromTime = time() - 60*60*24*7;
+			$xmlRpc = new XmlRpc($this->apiUrl, $this->apiKey, 'job.listResponses');
+			$params = array (
+				$fromTime,
+			);
+			
+			if ($xmlRpc->send($params) )
 			{
-				
+				$resp = $xmlRpc->getResponseVal();
+				if ($resp['items'])
+				{
+					foreach ($resp['items'] as $item)
+					{
+						$res = $this->saveResponse($item);
+						if ($res)
+							$this->addLog($item['id'].': success');
+						else
+						{
+							$this->addLog($item['id'].': error. '.$xmlRpc->getLastError());
+						}
+					}
+				}
 			}
 		}
+		
 	}
 	
-	
-	public function exportResumes ()
-	{
-		if (!$this->apiUrl || !$this->apiKey)
-		{
-            $this->setLastError('РќРµ Р·Р°РґР°РЅ apiUrl РёР»Рё apiKey');
-            return false;
-		}
 
-		$lastId = $this->getLastId();
-		
-		$limit = $this->limit;
-		
-		$items = $model->findAll();
-		
-		$xmlRpc = new XmlRpc($this->apiUrl, $this->apiKey, 'job.postResumes');
-		$params = array (
-			'fromDate' => '',
-		);
-		
-		if ($items = $xmlRpc->send(array($params)) )
-		{
-			foreach ($items as $item)
-			{
-				
-			}
-		}
-	}
 	
 	public static function branchesToGpor ($ids)
 	{
 		$items = array(
-        1 => 1, //    'Р¤РёРЅР°РЅСЃС‹, СЌРєРѕРЅРѕРјРёРєР° Рё СЃС‚СЂР°С…РѕРІР°РЅРёРµ',
-        2 => 7, //   'IT, С‚РµР»РµРєРѕРј, СЃРІСЏР·СЊ',
-        3 => 4, //   'РЎС‚СЂРѕРёС‚РµР»СЊСЃС‚РІРѕ, РЅРµРґРІРёР¶РёРјРѕСЃС‚СЊ',
-        4 => 20, //   'Р—РґСЂР°РІРѕРѕС…СЂР°РЅРµРЅРёРµ',
-        5 => 19, //   'Р РµСЃС‚РѕСЂР°РЅС‹, РґРѕСЃСѓРі, РіРѕСЃС‚РёРЅРёС†С‹',
-        6 => 5,  //  'РђРІС‚РѕР±РёР·РЅРµСЃ, С‚СЂР°РЅСЃРїРѕСЂС‚',
-        7 => 23, //   'РљСѓР»СЊС‚СѓСЂР°, РёСЃРєСѓСЃСЃС‚РІРѕ, С‚РІРѕСЂС‡РµСЃС‚РІРѕ',
-        8 => 27, //   'РЎРµР»СЊСЃРєРѕРµ С…РѕР·СЏР№СЃС‚РІРѕ',
-        9 => 23, //   'РљСѓСЂСЃС‹, РЅР°СѓРєР°, РѕР±СЂР°Р·РѕРІР°РЅРёРµ',
-        10 => 8, //  'Р РµРєР»Р°РјР°, РєР°РґСЂС‹, СЋСЂРёСЃС‚С‹, РєРѕРЅСЃР°Р»С‚РёРЅРі, Р°СѓРґРёС‚',
-        11 => 8, //  'РЎРњР, РёР·РґР°С‚РµР»СЊСЃС‚РІРѕ',
-        12 => 13,//   'РћРїС‚РѕРІР°СЏ С‚РѕСЂРіРѕРІР»СЏ',
-        13 => 12, //  'Р РѕР·РЅРёС‡РЅР°СЏ С‚РѕСЂРіРѕРІР»СЏ',
-        14 => 24, //  'РЎРїРѕСЂС‚, С‚СѓСЂРёР·Рј',
-        15 => 6,  // 'Р›РѕРіРёСЃС‚РёРєР°, СЃРєР»Р°Рґ, Р’Р­Р”',
-        16 => 3, //  'РџСЂРѕРёР·РІРѕРґСЃС‚РІРѕ, РїСЂРѕРјС‹С€Р»РµРЅРЅРѕСЃС‚СЊ',
-        17 => 26, //  'Р“РѕСЃСѓРґР°СЂСЃС‚РІРµРЅРЅР°СЏ СЃР»СѓР¶Р±Р°',
-        18 => 11, //  'Р§Р°СЃС‚РЅС‹Р№ СЂР°Р±РѕС‚РѕРґР°С‚РµР»СЊ',
-        19 => 11, //  'РћР±СЃР»СѓР¶РёРІР°РЅРёРµ Р±РёР·РЅРµСЃР°',
-        20 => 11, //  'РРЅРґСѓСЃС‚СЂРёСЏ РєСЂР°СЃРѕС‚С‹',
-        21 => 11, //  'РЎС„РµСЂР° СѓСЃР»СѓРі',			        
+        1 => 1, //    'Финансы, экономика и страхование',
+        2 => 7, //   'IT, телеком, связь',
+        3 => 4, //   'Строительство, недвижимость',
+        4 => 20, //   'Здравоохранение',
+        5 => 19, //   'Рестораны, досуг, гостиницы',
+        6 => 5,  //  'Автобизнес, транспорт',
+        7 => 23, //   'Культура, искусство, творчество',
+        8 => 27, //   'Сельское хозяйство',
+        9 => 23, //   'Курсы, наука, образование',
+        10 => 8, //  'Реклама, кадры, юристы, консалтинг, аудит',
+        11 => 8, //  'СМИ, издательство',
+        12 => 13,//   'Оптовая торговля',
+        13 => 12, //  'Розничная торговля',
+        14 => 24, //  'Спорт, туризм',
+        15 => 6,  // 'Логистика, склад, ВЭД',
+        16 => 3, //  'Производство, промышленность',
+        17 => 26, //  'Государственная служба',
+        18 => 11, //  'Частный работодатель',
+        19 => 11, //  'Обслуживание бизнеса',
+        20 => 11, //  'Индустрия красоты',
+        21 => 11, //  'Сфера услуг',			        
 		);
 
 		$idsAr = is_array($ids) ? $ids : array ($ids);
@@ -317,46 +315,46 @@ class gporImport
 	public static function vbranchesToGpor ($ids)
 	{
 		$items = array(
-	        1 => 1, // 'Р‘СѓС…РіР°Р»С‚РµСЂРёСЏ',
-	        25 => 25, // 'Р¤РёРЅР°РЅСЃС‹, СЌРєРѕРЅРѕРјРёРєР° Рё СЃС‚СЂР°С…РѕРІР°РЅРёРµ',
-	        18 => 18, //'РЎС‚СЂРѕРёС‚РµР»СЊСЃС‚РІРѕ, РЅРµРґРІРёР¶РёРјРѕСЃС‚СЊ',
-	        17 => 17, //'РџСЂРѕРјС‹С€Р»РµРЅРЅРѕСЃС‚СЊ, РїСЂРѕРёР·РІРѕРґСЃС‚РІРѕ, СЃРµСЂРІРёСЃ',
-	        6 => 6, //'IT, С‚РµР»РµРєРѕРј, СЃРІСЏР·СЊ',
-	        13 => 13, //'РЎРµРєСЂРµС‚Р°СЂРёР°С‚, РђРҐРћ',
-	        5 => 5, //'HR, С‚СЂРµРЅРёРЅРіРё',
-	        4 => 4, //'РњР°СЂРєРµС‚РёРЅРі, СЂРµРєР»Р°РјР°, PR',
-	        37 => 37, //'РЎРњР, РР·РґР°С‚РµР»СЊСЃС‚РІРѕ, РїРѕР»РёРіСЂР°С„РёСЏ',
-	        24 => 24, //'Р РµРіРёРѕРЅР°Р»СЊРЅС‹Рµ, С‚РѕСЂРіРѕРІС‹Рµ РїСЂРµРґСЃС‚Р°РІРёС‚РµР»Рё',
-	//        2 => 'РћС‚РґРµР» РїСЂРѕРґР°Р¶',
-	//        15 => 'Р РѕР·РЅРёС‡РЅР°СЏ С‚РѕСЂРіРѕРІР»СЏ',
-	        45 => 15, //'Р РѕР·РЅРёС‡РЅР°СЏ С‚РѕСЂРіРѕРІР»СЏ РўРќРџ',
-	        46 => 15, //'Р РѕР·РЅРёС‡РЅР°СЏ С‚РѕСЂРіРѕРІР»СЏ РїСЂРѕРґСѓРєС‚С‹ РїРёС‚Р°РЅРёСЏ',	        
-	        33 => 33, //'РџСЂРѕРґР°Р¶Рё (РџСЂРѕРјС‹С€Р»РµРЅРЅРѕСЃС‚СЊ, РѕР±РѕСЂСѓРґРѕРІР°РЅРёРµ)',
-	        27 => 27, //'РџСЂРѕРґР°Р¶Рё (РЎС‚СЂРѕРёС‚РµР»СЊСЃС‚РІРѕ, РЅРµРґРІРёР¶РёРјРѕСЃС‚СЊ)',
-	        29 => 29, //'РџСЂРѕРґР°Р¶Рё (РўРќРџ, РїСЂРѕРґСѓРєС‚С‹)',
-	        31 => 31, //'РџСЂРѕРґР°Р¶Рё (РЈСЃР»СѓРіРё, СЂРµРєР»Р°РјР°)',
-	        34 => 34, //'РџСЂРѕРґР°Р¶Рё (Р¤РёРЅР°РЅСЃС‹, СЃС‚СЂР°С…РѕРІР°РЅРёРµ)',
-	        32 => 32, //'РџСЂРѕРґР°Р¶Рё (РђРІС‚РѕРјРѕР±РёР»Рё, Р·Р°РїС‡Р°СЃС‚Рё)',
-	        30 => 30, //'РџСЂРѕРґР°Р¶Рё (IT, РєРѕРјРїСЊСЋС‚РµСЂС‹)',
-	        28 => 28, //'РџСЂРѕРґР°Р¶Рё (РћРґРµР¶РґР°, РјРµР±РµР»СЊ)',
-	        7 => 7, //'Р®СЂРёСЃРїСЂСѓРґРµРЅС†РёСЏ',
-	        36 => 36, //'Р“РѕСЃСѓРґР°СЂСЃС‚РІРµРЅРЅР°СЏ СЃР»СѓР¶Р±Р°',
-	        16 => 16, //'Р РµСЃС‚РѕСЂР°С‚РѕСЂС‹, РїРѕРІР°СЂР°, РѕС„РёС†РёР°РЅС‚С‹',
-	        38 => 38, //'РўСѓСЂРёР·Рј, РіРѕСЃС‚РёРЅРёС†С‹',
-	        3 => 3, //'РџРѕСЃС‚Р°РІРєРё, Р’Р­Р”',
-	        10 => 10, //'Р›РѕРіРёСЃС‚РёРєР°, С‚СЂР°РЅСЃРїРѕСЂС‚, СЃРєР»Р°Рґ',
-	        39 => 39, //'РЎРµР»СЊСЃРєРѕРµ С…РѕР·СЏР№СЃС‚РІРѕ',
-	        22 => 22, //'РњРµРґРёС†РёРЅР°, С„Р°СЂРјР°С†РµРІС‚РёРєР°',
-	        40 => 40, //'РЎРїРѕСЂС‚, С„РёС‚РЅРµСЃСЃ, СЃР°Р»РѕРЅС‹ РєСЂР°СЃРѕС‚С‹',
-	        21 => 21, //'Р”РёР·Р°Р№РЅРµСЂС‹, С‚РІРѕСЂС‡РµСЃРєРёРµ РїСЂРѕС„РµСЃСЃРёРё',
-	        41 => 41, //'РљСѓР»СЊС‚СѓСЂР°, РёСЃРєСѓСЃСЃС‚РІРѕ, СЂР°Р·РІР»РµС‡РµРЅРёСЏ',
-	        23 => 23, //'РќР°СѓРєР°, РѕР±СЂР°Р·РѕРІР°РЅРёРµ, РєРѕРЅСЃР°Р»С‚РёРЅРі',
-	        14 => 14, //'РЎР»СѓР¶Р±Р° Р±РµР·РѕРїР°СЃРЅРѕСЃС‚Рё, РѕС…СЂР°РЅР°',
-	        42 => 42, //'Р”РѕРјР°С€РЅРёР№ РїРµСЂСЃРѕРЅР°Р», РѕР±СЃР»СѓР¶РёРІР°РЅРёРµ',
-	        26 => 26, //'Р Р°Р·РЅРѕСЂР°Р±РѕС‡РёРµ',
-	        43 => 43, //'Р Р°Р±РѕС‚Р° РґР»СЏ РјРѕР»РѕРґРµР¶Рё, СЃС‚СѓРґРµРЅС‚РѕРІ',
-	        44 => 44, //'РЎРµР·РѕРЅРЅР°СЏ, РІСЂРµРјРµРЅРЅР°СЏ СЂР°Р±РѕС‚Р°',
-	        47 => 45, //'Р Р°Р±РѕС‚Р° РґР»СЏ РїРµРЅСЃРёРѕРЅРµСЂРѕРІ',			        
+	        1 => 1, // 'Бухгалтерия',
+	        25 => 25, // 'Финансы, экономика и страхование',
+	        18 => 18, //'Строительство, недвижимость',
+	        17 => 17, //'Промышленность, производство, сервис',
+	        6 => 6, //'IT, телеком, связь',
+	        13 => 13, //'Секретариат, АХО',
+	        5 => 5, //'HR, тренинги',
+	        4 => 4, //'Маркетинг, реклама, PR',
+	        37 => 37, //'СМИ, Издательство, полиграфия',
+	        24 => 24, //'Региональные, торговые представители',
+	//        2 => 'Отдел продаж',
+	//        15 => 'Розничная торговля',
+	        45 => 15, //'Розничная торговля ТНП',
+	        46 => 15, //'Розничная торговля продукты питания',	        
+	        33 => 33, //'Продажи (Промышленность, оборудование)',
+	        27 => 27, //'Продажи (Строительство, недвижимость)',
+	        29 => 29, //'Продажи (ТНП, продукты)',
+	        31 => 31, //'Продажи (Услуги, реклама)',
+	        34 => 34, //'Продажи (Финансы, страхование)',
+	        32 => 32, //'Продажи (Автомобили, запчасти)',
+	        30 => 30, //'Продажи (IT, компьютеры)',
+	        28 => 28, //'Продажи (Одежда, мебель)',
+	        7 => 7, //'Юриспруденция',
+	        36 => 36, //'Государственная служба',
+	        16 => 16, //'Рестораторы, повара, официанты',
+	        38 => 38, //'Туризм, гостиницы',
+	        3 => 3, //'Поставки, ВЭД',
+	        10 => 10, //'Логистика, транспорт, склад',
+	        39 => 39, //'Сельское хозяйство',
+	        22 => 22, //'Медицина, фармацевтика',
+	        40 => 40, //'Спорт, фитнесс, салоны красоты',
+	        21 => 21, //'Дизайнеры, творческие профессии',
+	        41 => 41, //'Культура, искусство, развлечения',
+	        23 => 23, //'Наука, образование, консалтинг',
+	        14 => 14, //'Служба безопасности, охрана',
+	        42 => 42, //'Домашний персонал, обслуживание',
+	        26 => 26, //'Разнорабочие',
+	        43 => 43, //'Работа для молодежи, студентов',
+	        44 => 44, //'Сезонная, временная работа',
+	        47 => 45, //'Работа для пенсионеров',			        
 		);
 
 		$idsAr = is_array($ids) ? $ids : array ($ids);
@@ -394,10 +392,10 @@ class gporImport
 	public static function educationToGpor ($education)
 	{
 	    $educatuionsList = array(
-	        1 => 1, //'Р’С‹СЃС€РµРµ',
-	        2 => 2, //'РЎСЂРµРґРЅРµРµ',
-	        3 => 3, //'РќРµРїРѕР»РЅРѕРµ РІС‹СЃС€РµРµ',
-	        4 => 4, //'РЎСЂРµРґРЅРµРµ СЃРїРµС†РёР°Р»СЊРЅРѕРµ'
+	        1 => 1, //'Высшее',
+	        2 => 2, //'Среднее',
+	        3 => 3, //'Неполное высшее',
+	        4 => 4, //'Среднее специальное'
 	        );
 	    if (isset($educatuionsList[$education]))
 	    	return $educatuionsList[$education];
@@ -421,17 +419,162 @@ class gporImport
 	public static function workplanToGpor ($val)
 	{
 	    $items = array(
-			        1 => 1, //	 'РџРѕР»РЅС‹Р№ СЂР°Р±РѕС‡РёР№ РґРµРЅСЊ',
-			        4 => 4, //    'РџРѕСЃРјРµРЅРЅРѕ',
-			        2 => 2, //    'РЎРІРѕР±РѕРґРЅС‹Р№ РіСЂР°С„РёРє',
-			        3 => 3, //    'РљРѕРЅС‚СЂР°РєС‚',
-			        5 => 5, //    'РЈРґР°Р»РµРЅРЅРѕ',
-			        6 => 1, //    'Р’Р°С…С‚Р°',
+			        1 => 1, //	 'Полный рабочий день',
+			        4 => 4, //    'Посменно',
+			        2 => 2, //    'Свободный график',
+			        3 => 3, //    'Контракт',
+			        5 => 5, //    'Удаленно',
+			        6 => 1, //    'Вахта',
 			        
 	    );
 	    if (isset($items[$val]))
 	    	return $items[$val];
 	    return 0;
+	}
+	
+	
+	public function saveResponse ($data)
+	{
+		if (!$vacancy = vacancy_get($data['for_id']))
+		{
+			$this->setLastError('Вакансия не найдена');
+			return false;
+		}	
+		/*
+		if( !$_FILES['file']['name'] )
+				$err['ERROR_FILE_SIZE'] = true;
+    	*/
+        if (!$company = company_get( $vacancy['company_id'] ))
+        {
+			$this->setLastError('Компания не найдена');
+			return false;
+        }
+		
+		$data['from_type'] = $data['from_type'] == 2 ? 'user' : 'guest';
+		$data['referal_id'] = 1;
+    	
+		$_file = array();
+		if ($data['fileURL'])
+		{
+	       	$_file['content'] = @file_get_contents($data['fileURL']);
+	       	if ($_file['content'])
+	       	{
+		       	$_file['md5'] = md5( $_file['content'] );
+				$_file['pathinfo'] = pathinfo( $data['fileURL'] );
+		       	$_file['filename'] = '/upload_'.R.'/sendResume/'.date('Y-m-d').'/'.$_file['md5'].'.'.$_file['pathinfo']['extension'];
+				
+				$k = 'response'.$data['id'];
+				$tempName = tempnam(sys_get_temp_dir(), 'n');
+				file_put_contents($tempName, $_file['content']);
+				$_FILES[$k]['name'] = $data['name'].'.'.$_file['pathinfo']['extension'];
+				//$_FILES['type'][$k] = CFileHelper::getMimeTypeByExtension($oldFileName);
+				$_FILES[$k]['tmp_name'] = $tempName;
+				$_FILES[$k]['error'] = 0;
+				$_FILES[$k]['size'] = filesize($tempName);
+				
+				if (!file_upload($k, $_file['filename'], false, true))
+				{
+					$this->setLastError('error file upload');
+					return false;
+				}
+	       	}
+	       	else
+	       	{
+				$this->setLastError('Файл не найден');
+				return false;
+	       	}
+		}
+		else
+		{
+			$this->setLastError('no fileURL');
+			return false;
+		}
+				
+	        $content = array();
+	        $content['phone'] = $data['phone'];
+	        $content['name'] = $data['name'];	        
+	        $content['email'] = $data['email'];
+	        $content['file'] = $_file['filename'];
+			
+			db_query('
+	    	       INSERT INTO `'.TABLE_RESPONSES.'`
+	    	       SET
+	    	           `type` = "resumeFile",
+	    	           `datetime` = NOW(),
+	    	           `subject` = "'.safe($data['name']).'",
+	    	           `content` = "'.safe(serialize($content)).'",
+	    	           `for_type` = "vacancy",
+	    	           `for_id` = '.$vacancy['id'].',
+	    	           `from_type` = "'.safe($data['from_type']).'",
+	    	           `from_id` = "'.safe($data['from_uid']).'",
+	    	           `vacancy_type` = '.($vacancy['_exclusive'] ? 1 : 0).',
+	    	           `referal_id` = 1,
+	    	           `is_subscribe` = 1
+	    	');
+	    	    
+	    	$resp_id = db_insert_id();
+	    	    
+			$in_db = db_assoc('SELECT `md5`, `checked`, `agree` FROM `'.TABLE_RESP.'` WHERE `md5`="'.$_file['md5'].'" AND (`checked` = 1 OR `agree` = 1)');
+				    
+			$_checked = false;
+			$_agree = false;
+				    
+			foreach ($in_db as $_k => $_v)
+			{
+			   	if ($_v['checked'])
+			   		$_checked = true;
+				    		
+			   	if ($_v['agree'])
+			   		$_agree = true;
+			}
+				    
+			db_query('
+			    			INSERT
+			              		INTO `'.TABLE_RESP.'`
+							SET
+			                	`date` = NOW(),
+			                    `file` = "'.$_file['filename'].'",
+			                    `md5` = "'.$_file['md5'].'",
+			                    `ip` = "'.safe($_SERVER['REMOTE_ADDR']).'",
+			                    `response_id` = '.(int)$resp_id.',
+			                    `agree`='.( isset($data['agree']) || $_agree ? 1 : 0 ).',
+			                    `checked`='.( $_checked ? 1 : 0 ).'	 	                    
+			');
+			    
+			$employee = company_employee_get( $vacancy['employee_id'] );
+    	    
+	    	$from = 'Работа '.R_NUM.' <mail@rabota'.R_NUM.'.ru>';
+    	    
+    	    $files = array();
+    	    
+    	    if ($company['tariff_disable'])
+    	    	$txt = template('emails/resumeSendFile', array('data' => $content, 'file' => $_file, 'vacancy' => $vacancy));
+    	    else
+    	    {
+    	      	$txt = template('emails/resumeSendFile', array('data' => $content, 'file' => $_file, 'vacancy' => $vacancy, 'company' => $company));
+    	       	$files[ ROOT.$_file['filename'] ] = $content['name'].'.'.$_file['pathinfo']['extension'];
+    	    }    	    	
+
+			$files[] = true;
+    	    $txt = str_replace( '%responseId', $resp_id, $txt );
+    	    
+    	    ////////////// Новости в конец //////////////  
+    	    $news_list = db_assoc('SELECT * from `'.TABLE_PUBLICATIONS.'` where `type`=7 AND `publicate`=1 ORDER by `date` DESC LIMIT 3');
+	        $news = '';
+	        foreach ($news_list as $n)
+	           	$news .= '<li><a href="http://'.R_HOST.'/news/'.$n['id'].'">'.$n['name'].'</a></li>';
+	        $txt .= '<p>Сегодня на "Работе '.R_NUM.'":</p><ul>'.$news.'</ul> ';
+	        //////////////////////
+	        
+   	    	email_send( 
+    	       		$employee['email'].';', 
+    	       		'Отклик от '.$data['name'].' на вакансию '.$vacancy['name'], 
+	    	       
+    	       		email_blank( $txt,  'Отклик на вакансию'), 
+    	       		$from, 
+    	       		$files
+	       		);
+	       	return true;
 	}
 	
 }
@@ -447,6 +590,7 @@ class XmlRpc
 	protected  $_apiCommand;
 	protected  $_lastError;
 	protected  $_response;
+	protected  $_responseVal;
 	
 	public $client;
 	
@@ -505,6 +649,11 @@ class XmlRpc
 		return $this->_response;
 	}
 	
+	public function getResponseVal ()
+	{
+		return $this->_responseVal;
+	}
+	
 	public function getLastError ()
 	{
 		return $this->_lastError;
@@ -523,6 +672,7 @@ class XmlRpc
 				$this->_lastError = "An error occurred: "." Reason: ".htmlspecialchars(implode(',', $xmlrpcresp->errors));
 				return false;
 			}
+			$this->_responseVal = self::convertToCp1251($xmlrpcresp->val);
 			return true;
 		}
 		else{
@@ -555,7 +705,10 @@ class XmlRpc
 				}
 				else
 				{
-					$p = new xmlrpcval(iconv("UTF-8", "UTF-8//IGNORE", $param), 'string');
+					if (is_numeric($param))
+						$p = new xmlrpcval($param, 'int');
+					else
+						$p = new xmlrpcval(iconv("UTF-8", "UTF-8//IGNORE", $param), 'string');
 				}
 				$message->addparam($p);
 			}
@@ -582,5 +735,27 @@ class XmlRpc
 		return $res;
 		
 	}
+	
+	
+	public static function convertToCp1251 ($str)
+	{
+		$res = '';
+		if (is_array($str))
+		{
+			$res = array();
+			foreach ($str as $k=>$v)
+			{
+				$k = iconv('UTF-8', 'cp1251//IGNORE', $k);
+				$v = self::convertToCp1251 ($v);
+				$res[$k] = $v;
+			}
+		}
+		else
+			$res = iconv('UTF-8', 'cp1251//IGNORE', $str);
+		return $res;
+		
+	}
+	
 }
+
 ?>
