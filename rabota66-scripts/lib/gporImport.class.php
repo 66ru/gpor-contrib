@@ -25,6 +25,7 @@
 
 class gporImport
 {
+		private $_lastLaunchTime = 0;
 		private $_lastError = false;
 		private $_lastId = 0;
 		private $_log = array();
@@ -34,6 +35,16 @@ class gporImport
 		public $limit = 100;
 
 
+	public function setLastLaunchTime($val)
+	{
+		$this->_lastLaunchTime = $val;
+	}
+		
+	public function getLastLaunchTime()
+	{
+		return $this->_lastLaunchTime;
+	}
+		
 	public function setLastError($val)
 	{
 		$this->_lastError = $val;
@@ -62,7 +73,7 @@ class gporImport
 		return true;
 	}
 		
-	protected function clearLog()
+	public function clearLog()
 	{
 		$this->_log = array();
 		return true;
@@ -80,6 +91,8 @@ class gporImport
             $this->setLastError('Не задан apiUrl или apiKey');
             return false;
 		}
+		
+		$lastLaunchDate = date('Y-m-d G:i:s', $this->getLastLaunchTime());
 
 		$lastId = $this->getLastId();
 		
@@ -89,6 +102,8 @@ class gporImport
 		if ($lastId)
 			$where[] = '`c`.`id` > '.$lastId;
 		$where[] = '`c`.`checked` > 0';
+		$where[] = '`c`.`moderated` >= "'.$lastLaunchDate.'"';
+
 		$companies = db_assoc('	SELECT 
 								*
 							FROM
@@ -262,6 +277,34 @@ class gporImport
 						}
 					}
 				}
+			}
+		}
+		
+	}
+	
+	public function hideVacancies ()
+	{
+		if (!$this->apiUrl || !$this->apiKey)
+		{
+            $this->setLastError('Не задан apiUrl или apiKey');
+            return false;
+		}
+		
+		$lastLaunchDate = date('Y-m-d G:i:s', $this->getLastLaunchTime());
+		
+		$xmlRpc = new XmlRpc($this->apiUrl, $this->apiKey, 'job.hideVacancies');
+		$params = array (
+			array('apiUpdated' => $lastLaunchDate),
+		);
+			
+		if ($xmlRpc->send($params) )
+		{
+			$resp = $xmlRpc->getResponseVal();
+			if ($resp['error'])
+				$this->addLog('hideVacancies: error');
+			else
+			{
+				$this->addLog('hideVacancies: success');
 			}
 		}
 		
@@ -725,13 +768,17 @@ class XmlRpc
 			$res = array();
 			foreach ($str as $k=>$v)
 			{
-				$k = iconv('cp1251', 'UTF-8//IGNORE', $k);
+				$k = html_entity_decode($k);
+				$k = mb_convert_encoding($k, 'UTF-8', 'cp1251');
 				$v = self::convertToUtf8 ($v);
 				$res[$k] = $v;
 			}
 		}
 		else
-			$res = iconv('cp1251', 'UTF-8//IGNORE', $str);
+		{
+			$str = html_entity_decode($str);
+			$res = mb_convert_encoding($str, 'UTF-8', 'cp1251');
+		}
 		return $res;
 		
 	}
