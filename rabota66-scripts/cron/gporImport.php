@@ -14,25 +14,24 @@
 	if (!$apiUrl)
 		die('Error. "apiUrl" not found in config.php');
 		
-	$lastLaunchFile = 'gporImport.txt';
+	$lastLaunchFile = ROOT.'/cron/gporImport.txt';
 	$lastLaunchTime = 0;
 	if (file_exists($lastLaunchFile))
 		$lastLaunchTime = file_get_contents($lastLaunchFile);
-	file_put_contents($lastLaunchFile, time());
 	
 	$import = new gporImport();
 	$import->setLastLaunchTime($lastLaunchTime);
 	$import->apiUrl = $apiUrl;
 	$import->apiKey = $kkey;
-	$import->limit = 100;
-	
-	$lastLaunchTime = time();
+	$import->limit = 10;
 
+	$lastLaunchTime = time();
 	$import->setLastId(1);
 	$res = $import->importCompanies();
 	while ($res)
 	{
 		$res = $import->importCompanies();
+		$import->clearLog();
 	}
 	$import->clearLog();
 
@@ -41,13 +40,11 @@
 	while ($res)
 	{
 		$res = $import->importVacancies();
-		
+		$import->clearLog();
 	}
+
 	$import->hideVacancies();
 	$import->clearLog();
-	
-	$import->exportResponses();
-	$import->clearLog();
-	
+
 	file_put_contents($lastLaunchFile, $lastLaunchTime);
 ?>

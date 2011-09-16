@@ -293,11 +293,9 @@ class gporImport
 		$lastLaunchDate = date('Y-m-d G:i:s', $this->getLastLaunchTime());
 		
 		$xmlRpc = new XmlRpc($this->apiUrl, $this->apiKey, 'job.hideVacancies');
-		$params = array (
-			array('apiUpdated' => $lastLaunchDate),
-		);
-			
-		if ($xmlRpc->send($params) )
+		$params = array('apiUpdated' => $this->getLastLaunchTime());
+
+		if ($xmlRpc->send(array($params)) )
 		{
 			$resp = $xmlRpc->getResponseVal();
 			if ($resp['error'])
