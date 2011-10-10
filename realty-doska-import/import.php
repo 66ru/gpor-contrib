@@ -146,9 +146,24 @@ function ProcNotLive($action_type, $action_value){
 		if($object_type=="office"){
 			$office_res = array();
 			foreach($el as $square => $count){
+				$addParams = array();
+				$tmp = explode('-', $square);
+				if (count($tmp)>1)
+				{
+					$addParams[] = 'full_area_from='.$tmp[0];
+					$addParams[] = 'full_area_to='.$tmp[1];
+				}
+				else
+				{
+					if ((int)$tmp[0] < 500)
+						$addParams[] = 'full_area_to='.$tmp[0];
+					else
+						$addParams[] = 'full_area_from='.$tmp[0];
+				}
+
 				$office_res += array($square => array(
 					'name' => RusNames($square),
-					'url' => "#",
+					'url' => $params['serviceUrl2'].'?object_type='.$object_type.'&action_type='.$action_type.($addParams ? '&'.implode('&', $addParams) : ''),
 					'count' => $count
 				));
 			}
@@ -157,7 +172,7 @@ function ProcNotLive($action_type, $action_value){
 		else{
 			$result += array($object_type=>array(
 				'name' => RusNames($object_type),
-				'url' => "#",
+				'url' => $params['serviceUrl2'].'?object_type='.$object_type.'&action_type='.$action_type,
 				'count' => $el
 			));
 		}	
