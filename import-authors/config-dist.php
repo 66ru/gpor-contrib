@@ -1,5 +1,5 @@
 <?php
-set_include_path(__DIR__.DIRECTORY_SEPARATOR);
+//set_include_path(__DIR__.DIRECTORY_SEPARATOR);
 return array(
 	'apiUrl' => '',
     'apiKey' => '',

@@ -1,4 +1,5 @@
 <?php
+set_include_path(__DIR__.DIRECTORY_SEPARATOR);
 spl_autoload_register('autoload');
 function autoload($class_name) {
 	include './lib/'.$class_name . '.class.php';
@@ -6,14 +7,14 @@ function autoload($class_name) {
 
 $authorImport = new AuthorImport();
 
-$conn = mysql_connect($authorImport::$mysqlhost, $authorImport::$mysqluser, $authorImport::$mysqlpswd);
+$conn = mysql_connect(AuthorImport::$mysqlhost, AuthorImport::$mysqluser, AuthorImport::$mysqlpswd);
 
 if (!$conn) {
     echo "Unable to connect to DB: " . mysql_error();
     exit;
 }
 
-if (!mysql_select_db($authorImport::$mysqldb)) {
+if (!mysql_select_db(AuthorImport::$mysqldb)) {
     echo "Unable to select mydbname: " . mysql_error();
     exit;
 }
