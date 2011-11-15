@@ -199,14 +199,24 @@ class Parser extends CsvParser {
 					// Объявление найдено
 					if( (int) $announce['flatId'] == (int) $objectFlat->flatId)
 					{
-						if( dechex($announce['square']) == dechex(str_replace(', ', '.', $objectFlat->square)) && in_array($objectFlat->floor, $announce['floors']))
+						if(!$objectFlat->visible)
+						{
+							$objectFlat->action = 'delete';
+							$objectFlat->announceId = $announce['id'];
+
+							// Найденное объявление удаляем из списка
+							unset($announceList[$i]);
+
+							break;
+						}
+						elseif( dechex($announce['square']) == dechex(str_replace(', ', '.', $objectFlat->square)) && in_array($objectFlat->floor, $announce['floors']))
 						{
 							$objectFlat->action = 'edit';
 							$objectFlat->announceId = $announce['id'];
-	
+
 							// Найденное объявление удаляем из списка
 							unset($announceList[$i]);
-	
+
 							break;
 						}
 					}
@@ -234,7 +244,6 @@ class Parser extends CsvParser {
 
 		// Перезапишем объект
 		$this->data = $data;
-			
 	}
 
 	/**
@@ -346,7 +355,6 @@ class Parser extends CsvParser {
 				}
 				// Проверяем чтобы привязка осуществлялась только к планировке, у которой этаж и количество комнат совпададет
 				if($flat['rooms'] == $objectflat->rooms && in_array($objectflat->floor, $flat['floors'])) {
-
 					// Найдено точное соответствие
 					if($flat['square'] == $objectflat->square)
 					{

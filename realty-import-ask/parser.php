@@ -26,7 +26,7 @@ if($requestMethod === "post")
 	}
 
 	// Парсим загруженный файл
-	$parser->configure(array('id','rooms', 'square', 'price', 'floor'), true, ';');
+	$parser->configure(array('id','rooms', 'square', 'price', 'floor', 'visible'), true, ';');
 	$parser->parse();
 
 	//Получаем список уже сохраненных соответствий

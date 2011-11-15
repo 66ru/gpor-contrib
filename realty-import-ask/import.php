@@ -14,7 +14,7 @@ if($requestMethod === "post")
 	$logFile = isset($params['logFile']) ? $params['logFile'] : false;
 	
 	$parser = new Parser();
-	$parser->configure(array('id','rooms', 'square', 'price', 'floor'), true, ';');
+	$parser->configure(array('id','rooms', 'square', 'price', 'floor', 'visible'), true, ';');
 	$parser->parse();
 
 	// Получаем связи idшников и записываем их сохраняем их
@@ -31,7 +31,6 @@ if($requestMethod === "post")
 	
 	// Готовим объявления для импорта и ипортируем
 	$parser->prepareAnnonceListAndSave();
-	
 	$hRet = file_put_contents(get_include_path().$logFile, '');
 	
 	if(($count = count($parser->announcesNotUsed)) > 0)

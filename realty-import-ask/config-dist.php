@@ -1,15 +1,16 @@
 <?php
+set_include_path(__DIR__.DIRECTORY_SEPARATOR);
 return array(
-	'apiUrl' => '',
-    'apiKey' => '',
-	'developerId' => 0,
-	'agencyId'	  => 0,
+	'apiUrl' => '', //Api путь
+    'apiKey' => '', //Api ключ
+	'developerId' => 0, //ID застройщика на сайте (АСК)
+	'agencyId'	  => 0, //ID агентства на сайте (АСК)
 	
-	'fileToParsePath' => '',
-	'compliancesFilePath' => '',
-	'preparedDataFilePath' => '',
-	'importOperationsNumber' => 0,
-	'logFile' => '',
-	'statusFile' => '',
+	'fileToParsePath' => '', //путь файла для парсинга
+	'compliancesFilePath' => '', //путь до файла соответствий (сам генерится)
+	'preparedDataFilePath' => '', //путь до подготовленных файлов (сам генерится)
+	'importOperationsNumber' => 0, //количество одновременных операций импорта за один запуск
+	'logFile' => '', //путь до файла с логами
+	'statusFile' => '', //путь до lock-файла
 );
 ?>

@@ -42,13 +42,17 @@ abstract class CsvParser {
 
 
     while($line = fgets($f,1024)) {
-      $line = $this->clean($line);
-      $line = str_getcsv($line,$this->_separator);
-      if(count($line) != count($this->_columns)) continue;
-      $line = array_combine($this->_columns,$line);
-      array_walk($line,array($this,'clean'));
-      $this->_line_number++;
-      $this->parseLine((object)$line);
+		$line = $this->clean($line);
+		$line = str_getcsv($line,$this->_separator);
+		if(count($line) != count($this->_columns))
+		{
+			$line = array_slice($line, 0, count($this->_columns));
+		}
+
+		$line = array_combine($this->_columns,$line);
+		array_walk($line,array($this,'clean'));
+		$this->_line_number++;
+		$this->parseLine((object)$line);
     }
 
     $this->postParse();
