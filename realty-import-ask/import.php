@@ -44,12 +44,13 @@ if($requestMethod === "post")
 								<th>площадь</th>
 								<th>цена (млн р.)</th>
 								<th>этаж</th>
+								<th>статус</th>
 							</tr>
 						</thead>
 						<tbody>';
 		foreach ($parser->announcesNotUsed as $annonce)
 		{
-			echo '<tr><td>'.$annonce->id. '</td><td>'.$annonce->rooms.'</td><td>'.$annonce->square.'</td><td>'.$annonce->price.'</td><td>'.$annonce->floor.'</td></tr>';
+			echo '<tr><td>'.$annonce->id. '</td><td>'.$annonce->rooms.'</td><td>'.$annonce->square.'</td><td>'.$annonce->price.'</td><td>'.$annonce->floor.'</td><td>'.$annonce->visible.'</td></tr>';
 		}
 
 		echo '</tbody></table><br /><br /><br />';
