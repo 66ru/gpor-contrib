@@ -8,7 +8,7 @@ $params = require ('config.php');
 
 $maxOperations = isset($params['importOperationsNumber']) ? $params['importOperationsNumber'] : false;
 $preparedDataFilePath = isset($params['preparedDataFilePath']) ? $params['preparedDataFilePath'] : false;
-$logFile = isset($params['logFile']) ? $params['logFile'] : false;
+$logFile = get_include_path().isset($params['logFile']) ? $params['logFile'] : false;
 $statusFile = isset($params['statusFile']) ? $params['statusFile'] : false;
 $log = '';
 
@@ -37,8 +37,11 @@ if(!file_exists(get_include_path().$statusFile)) {
 	else {
 		$log = time().'|'.'Total|0'."\n";
 	}
-	$hRet = file_put_contents(get_include_path().$logFile, $log, FILE_APPEND);
-	chmod(get_include_path().$logFile, 0666);
+	if(file_exists($logFile) && !is_writable($logFile))
+		chmod($logFile, 0777);
+	$hRet = file_put_contents($logFile, $log, FILE_APPEND);
+	chmod($logFile, 0777);
+	
 	unlink(get_include_path().$statusFile);
 
 }

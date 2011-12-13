@@ -196,10 +196,11 @@ class Parser extends CsvParser {
 			{
 				foreach ($announceList as $i => $announce)
 				{
-					// Объявление найдено
+					// Планировка найдена. Тут мы не обращаем внимание на площадь в объявлении
 					if( (int) $announce['flatId'] == (int) $objectFlat->flatId)
 					{
-						if(!$objectFlat->visible)
+						// Объявление надо скрыть и этаж найден - значит объявление как минимум есть в базе
+						if($objectFlat->visible == "0" && in_array($objectFlat->floor, $announce['floors']))
 						{
 							$objectFlat->action = 'delete';
 							$objectFlat->announceId = $announce['id'];
@@ -209,7 +210,7 @@ class Parser extends CsvParser {
 
 							break;
 						}
-						elseif( dechex($announce['square']) == dechex(str_replace(', ', '.', $objectFlat->square)) && in_array($objectFlat->floor, $announce['floors']))
+						elseif($objectFlat->visible == "1" && in_array($objectFlat->floor, $announce['floors']))
 						{
 							$objectFlat->action = 'edit';
 							$objectFlat->announceId = $announce['id'];
@@ -220,11 +221,13 @@ class Parser extends CsvParser {
 							break;
 						}
 					}
-
 				}
 				// Если объявление не найдено
-				if(!isset($objectFlat->action))
-				$objectFlat->action = 'add';
+				if(empty($objectFlat->action)) {
+						if($objectFlat->visible == "1" && !empty($objectFlat->flatId))
+							$objectFlat->action = 'add';
+						else $objectFlat->action = null;
+					}
 			}
 
 			// Собираем объявы которые надо удалить и пишем в $data
@@ -294,7 +297,6 @@ class Parser extends CsvParser {
 					array_push($groupedData[$objectCompliancesList->$objectId], $data);
 				}
 			}
-			// @TODO возможно тут собирать информацию о не обработанных новостройках
 		}
 
 		return $groupedData;
@@ -343,6 +345,17 @@ class Parser extends CsvParser {
 	private function findFlat($objectGroup, $flatList, $stageId = 0)
 	{
 		foreach ($objectGroup as $i => $objectflat) {
+
+			// Если не определен хотя бы один из основных параметров - не обрабатываем
+			if(empty($objectflat->square) || empty($objectflat->floor) || empty($objectflat->rooms) || empty($objectflat->price)) {
+				// Записываем объявы, которые не удалось привязать
+				array_push($this->announcesNotUsed, $objectGroup[$i]);
+				// Эту объяву мы дальше не будем обрабатывать
+				unset($objectGroup[$i]);
+
+				continue;
+			}
+
 			$maybyFlat = array();
 			$_dd = 9999;
 			$maybyFlatId = 0;
@@ -356,7 +369,7 @@ class Parser extends CsvParser {
 				// Проверяем чтобы привязка осуществлялась только к планировке, у которой этаж и количество комнат совпададет
 				if($flat['rooms'] == $objectflat->rooms && in_array($objectflat->floor, $flat['floors'])) {
 					// Найдено точное соответствие
-					if($flat['square'] == $objectflat->square)
+					if(dechex($flat['square']) == dechex(str_replace(',', '.', $objectflat->square)))
 					{
 						$objectflat->flatId = intval($flat['id']);
 						continue;
@@ -364,7 +377,7 @@ class Parser extends CsvParser {
 					// Вычисляем разницу площадей
 					else
 					{
-						$dd = abs($flat['square'] - $objectflat->square);
+						$dd = abs(dechex($flat['square']) - dechex(str_replace(',', '.',$objectflat->square)));
 						if($dd < $_dd)
 						{
 							$_dd = $dd;

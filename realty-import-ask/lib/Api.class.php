@@ -52,8 +52,6 @@ abstract class Api {
 		$this->client->request_charset_encoding = 'UTF-8';
 		$this->client->return_type = 'phpvals';
 		//$this->client->setDebug(2);
-
-		//return $client;
 	}
 
 	protected function sendXMLRpc(xmlrpcmsg $message)

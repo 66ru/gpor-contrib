@@ -35,7 +35,7 @@ if($requestMethod === "post")
 	
 	if(($count = count($parser->announcesNotUsed)) > 0)
 	{
-		echo 'Объявления, которые не удалось привязать: '.$count .' шт.<br />';
+		echo 'Объявления, которые не удалось обработать (параметры не указаны или планировка не найдена): '.$count .' шт.<br />';
 		echo '<table border="1">
 						<thead>
 							<tr>
