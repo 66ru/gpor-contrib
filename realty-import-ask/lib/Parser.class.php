@@ -311,6 +311,8 @@ class Parser extends CsvParser {
 
 		$export = new Export();
 
+		$res = array();
+
 		foreach ($groupedData as $complexObjectId => $objectGroup)
 		{
 			// Выставляем id по дефолту 0
@@ -324,7 +326,9 @@ class Parser extends CsvParser {
 			$flatList = $export->getFlatListOfObject((int) $objectId);
 
 			// Перезаписываем данные с найденной планировкой
-			$groupedData[$objectId] = $this->findFlat($objectGroup, $flatList, (int) $stageId);
+			if (!isset($res[$objectId]))
+				$res[$objectId] = array();
+			$res[$objectId] = array_merge($res[$objectId], $this->findFlat($objectGroup, $flatList, (int) $stageId));
 
 			// Удаляем данные со сложным id (новостройка с планировкой)
 			if($stageId > 0)
@@ -333,7 +337,7 @@ class Parser extends CsvParser {
 			}
 		}
 
-		return $groupedData;
+		return $res;
 	}
 
 	/**
