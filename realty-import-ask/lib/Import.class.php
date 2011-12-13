@@ -13,7 +13,7 @@ class Import extends Api {
 	 */
 	public function importAnnounce($objectFlat)
 	{
-		$repor = array();
+		$report = array();
 		
 		$importData = array(
 			'flatId' 	 => $objectFlat->flatId, 
@@ -81,20 +81,6 @@ class Import extends Api {
 		//echo 'Удалено: '.$this->statistics['deleted'].'<br />';
 	}
 
-	/**
-	 * Формирует запросы к API на удаление неактуальных объявлений
-	 * @param array $announce2Delete
-	 */
-/*
-	public function deleteOldAnnounceList($announce2Delete = array())
-	{
-		foreach ($announce2Delete as $announce)
-		{
-			$this->deleteAnnounce($announce['id']);
-			$this->statistics['deleted']++;
-		}
-	}
-*/	
 	/**
 	 * Добавляет объявление
 	 * @param xmlrpcStruct $announceList
