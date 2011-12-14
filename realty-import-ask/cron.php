@@ -49,7 +49,7 @@ file_put_contents($statusFile, $myPid);
 			}
 
 			print($log);
-			$fp = fopen ($logFile, 'a+');
+			$fp = fopen ($logFile, 'r+');
 			fwrite($fp, $log);
 			fclose($fp);
 			
