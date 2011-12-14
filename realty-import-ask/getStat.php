@@ -5,7 +5,7 @@ $logFile = isset($params['logFile']) ? $params['logFile'] : false;
 if(file_exists($logFile))
 {
 	$log = file_get_contents($logFile);
-	unlink($logFile);
+	//unlink($logFile);
 	$stat = explode("\n", $log);
 	$resp = array();
 	foreach ($stat as $row)

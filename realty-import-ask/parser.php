@@ -72,12 +72,13 @@ function renderRealtyObjectsList($realtyObjectList = array(), $objectCompliances
 <script>
 var getStat = function() {
 	$.getJSON('./getStat.php', function(data) {
-		  
+
+		  $('#log').html('');
 		  $.each(data, function(key, val) {
 			if(key !="error") {
 				if(key!="total")
 				{
-					$('#content').append(key + ' Добавлено: ' + val.added + ' Отредактировано: ' + val.edited + ' Удалено: ' + val.deleted + ' Ошибок: ' + val.error + "<br />");
+					$('#log').append(key + ' Добавлено: ' + val.added + ' Отредактировано: ' + val.edited + ' Удалено: ' + val.deleted + ' Ошибок: ' + val.error);
 				}
 				else if(val != 0) {
 						$('#total').html('Осталось объявлений: ' + val);
@@ -120,7 +121,7 @@ $(function() {
 				t = setInterval("getStat()", 10000);
 				},
 			error: function(data, status) {
-				$('#content').append(data.responseText);
+				$('#log').html(data.responseText);
 				clearInterval(t);
 				$('#total').html('Импорт завершен');
 				$('input[type="submit"]').removeAttr('disabled');
@@ -186,6 +187,7 @@ $(function() {
 	<div id="result">
 		<h2>Отчет</h2>
 		<div id="total"></div>
+		<div id="log"></div>
 		<div id="content"></div>
 	</div>
 </body>

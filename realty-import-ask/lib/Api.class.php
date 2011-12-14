@@ -30,7 +30,7 @@ abstract class Api {
 
 		$this->_apiKey = isset($params['apiKey']) ? $params['apiKey'] : false;
 		$this->_apiUrl = isset($params['apiUrl']) ? $params['apiUrl'] : false;
-
+		
 		$this->developerId = isset($params['developerId']) ? $params['developerId'] : false;
 		$this->agencyId = isset($params['agencyId']) ? $params['agencyId'] : false;
 
@@ -64,7 +64,8 @@ abstract class Api {
 		}
 		else{
 			//неудача
-			throw new ErrorException("An error occurred: "." Reason: ".htmlspecialchars($xmlrpcresp->faultString()), htmlspecialchars($xmlrpcresp->faultCode()));
+			return array('errcode' => 500, 'errstr' => "An error occurred: "." Reason: ".htmlspecialchars($xmlrpcresp->faultString()).' '.htmlspecialchars($xmlrpcresp->faultCode()) );
+			//throw new ErrorException("An error occurred: "." Reason: ".htmlspecialchars($xmlrpcresp->faultString()), htmlspecialchars($xmlrpcresp->faultCode()));
 		}
 
 	}

@@ -7,6 +7,32 @@ class Import extends Api {
 	 */
 	public $statistics = array();
 
+	protected  $_errorLogFile;
+	
+	public function __construct()
+	{
+		parent::__construct();
+		$params = require ('config.php');
+
+		$this->_errorLogFile = isset($params['errorFile']) ? $params['errorFile'] : false;
+		
+		if (!$this->_errorLogFile)
+			die('Error. "errorFile" not found in config.php');
+		
+		$file = get_include_path().$this->_errorLogFile;
+		if (!$handle = fopen($file, 'a+')) {
+			throw new ErrorException("Cannot open file ($file)");
+		}
+		
+		if (fwrite($handle, '') === FALSE) {
+			throw new ErrorException("Cannot write to file (".$file.")");
+		}
+
+		@chmod($file, 0666);
+		fclose($handle);
+		$this->_errorLogFile = $file;
+	}
+
 	/**
 	 * Формирует запросы к API на изменение или добавление
 	 * @param unknown_type $data
@@ -52,6 +78,11 @@ class Import extends Api {
 					$status = 'Success';
 					unset($data[$objectId][$flatId]);
 				}
+				else 
+				{
+					$this->logError($objectId.' | '.$flatId.' | '.implode(" ",$report));
+					unset($data[$objectId][$flatId]);
+				}
 				$this->statistics[] = time().'|'.$objectId.'|'.$status.'|'.implode(" ",$report);
 				$operations++;
 				if($operations > $maxOperations)
@@ -68,6 +99,19 @@ class Import extends Api {
 		$this->statistics[] = time().'|'.'Total|'.$total;
 		
 		return $data;
+	}
+	
+	public function logError($error)
+	{
+		$error = date('d-m-Y G:i:s').': '.$error."\n";
+		if (!$handle = fopen($this->_errorLogFile, 'a')) {
+			throw new ErrorException("Cannot open file ($this->_errorLogFile)");
+		}
+		
+		if (fwrite($handle, $error) === FALSE) {
+			throw new ErrorException("Cannot write to file (".$this->_errorLogFile.")");
+		}
+		fclose($handle);
 	}
 
 	/**
