@@ -78,7 +78,7 @@ var getStat = function() {
 			if(key !="error") {
 				if(key!="total")
 				{
-					$('#log').append(key + ' Добавлено: ' + val.added + ' Отредактировано: ' + val.edited + ' Удалено: ' + val.deleted + ' Ошибок: ' + val.error);
+					$('#log').append(key + ' Добавлено: ' + val.added + ' Отредактировано: ' + val.edited + ' Удалено: ' + val.deleted + ' Ошибок: ' + val.error + '<br>');
 				}
 				else if(val != 0) {
 						$('#total').html('Осталось объявлений: ' + val);
