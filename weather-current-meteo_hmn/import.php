@@ -192,6 +192,9 @@ for ($i = 0; $i < 50; $i++) // kinda retarded shit...
                 $query = false;
             }
             $temperature = $query ? $query['val'] : $weather_quick['current_temp'];
+			$ekburgTemperature = require('ekburg.php');
+			if ($ekburgTemperature)
+				$temperature = $ekburgTemperature;
             $time = $query ? ($setOnlyCurrentWeather ? time() : $query['timekey']) : time();
 
             $client = new xmlrpc_client($apiUrl);
