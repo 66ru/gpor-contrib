@@ -5,11 +5,12 @@ return array(
     'hmnUrl' => '', // hmn.ru export files url
     'hmnCityId' => '', // hmn.ru city id
 
-    'useMeteo' => false, // if true Ñ fill the folowing lines!
+    'useMeteo' => false, // if true ï¿½ fill the folowing lines!
     'meteoMysqlHost' => '',
     'meteoMysqlDb' => '',
     'meteoMysqlUser' => '',
     'meteoMysqlPassword' => '',
 
+	'complaintEmail' => '',
 );
 ?>
