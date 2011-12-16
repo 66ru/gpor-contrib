@@ -237,7 +237,7 @@ foreach ($lastSourceUpdate as $source => $lastUpdate) {
 	if ($lastUpdate < time()-60*60*24*2) { // 2days
 		$brokenSources.= $source.' ';
 	}
-	if (!empty($brokenSources))
+	if (!empty($brokenSources) && !empty($params['complaintEmail']))
 		mail($params['complaintEmail'], 'weather updater', 'weather sources: '.$brokenSources.' are broken');
 }
 
