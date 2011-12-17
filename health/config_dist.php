@@ -30,6 +30,21 @@ return array (
 	
 	'apiUrl' => '', 
 	'apiKey' => '', // ключ для метода обновления КБ
+	
+	// досочные урлы
+	'latest_krasota_url' => '',
+	'latest_krasota_sell_url' => '',
+	'latest_krasota_buy_url' => '',
+	'latest_krasota_serv_url' => '',
+
+	'latest_zdorovie_url' => '',	
+	'latest_zdorovie_sell_url' => '',	
+	'latest_zdorovie_buy_url' => '',	
+	'latest_zdorovie_serv_url' => '',
+
+	'doska_zdorovie_url' => '',
+	'doska_krasota_url' => '',
+	'doska_addAnnounce_url' => '',
 
 );
 ?>

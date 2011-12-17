@@ -159,10 +159,45 @@ $healthXmlRpc->send(array('health_blogsBlock', base64_encode($res), 'base64' ));
 
 
 // объявления
-$announces = array ();
+$maxAnnounces = 10;
+$latestKrasota = @json_decode(@file_get_contents($config['latest_krasota_url']));
+$latestKrasota = $latestKrasota ? $latestKrasota : array();
+
+$latestKrasotaSell = @json_decode(@file_get_contents($config['latest_krasota_sell_url']));
+$latestKrasotaSell = $latestKrasotaSell ? $latestKrasotaSell : array();
+
+$latestKrasotaBuy = @json_decode(@file_get_contents($config['latest_krasota_buy_url']));
+$latestKrasotaBuy = $latestKrasotaBuy ? $latestKrasotaBuy : array();
+
+$latestKrasotaServ = @json_decode(@file_get_contents($config['latest_krasota_serv_url']));
+$latestKrasotaServ = $latestKrasotaServ ? $latestKrasotaServ : array();
+	
+$latestZdorovie = @json_decode(@file_get_contents($config['latest_zdorovie_url']));
+$latestZdorovie = $latestZdorovie ? $latestZdorovie : array();
+
+$latestZdorobieSell = @json_decode(@file_get_contents($config['latest_zdorovie_sell_url']));
+$latestZdorobieSell = $latestZdorobieSell ? $latestZdorobieSell : array();
+
+$latestZdorobieBuy = @json_decode(@file_get_contents($config['latest_zdorovie_buy_url']));
+$latestZdorobieBuy = $latestZdorobieBuy ? $latestZdorobieBuy : array();
+
+$latestZdorobieServ = @json_decode(@file_get_contents($config['latest_zdorovie_serv_url']));
+$latestZdorobieServ = $latestZdorobieServ ? $latestZdorobieServ : array();
+
+$data = array (
+		'all' => healthFindLatestAnnounces(array($latestKrasota, $latestZdorovie), $maxAnnounces),
+		'sell' => healthFindLatestAnnounces(array($latestKrasotaSell, $latestZdorobieSell), $maxAnnounces),
+		'serv' => healthFindLatestAnnounces(array($latestKrasotaServ, $latestZdorobieServ), $maxAnnounces),
+		'buy' => healthFindLatestAnnounces(array($latestKrasotaBuy, $latestZdorobieBuy), $maxAnnounces),
+);
 
 $res = healthRenderTemplate ('doska', array(
-		'announces' => $announces,
+		'data' => $data,
+		'urls' => array (
+		'zdorovie' => $config['doska_zdorovie_url'],
+		'krasota' => $config['doska_krasota_url'],
+		'announceAdd' => $config['doska_addAnnounce_url'],
+		)
 	));
 
 //echo $res;
@@ -184,4 +219,36 @@ function healthRenderTemplate ($template, $args)
 	return $res;
 }
 
+
+function healthFindLatestAnnounces ($args, $max = 10)
+{
+	$tmp = array();
+	foreach ($args as $arg)
+	{
+		foreach ($arg as $item)
+			$tmp[strtotime($item->updated)] = $item;
+	}
+	krsort($tmp);
+	if (count($tmp) > $max)
+		return array_slice($tmp, 0, $max);
+	return $tmp;
+}
+
+
+function healthAnnounceDate($date)
+{
+	$res = '';
+	$time = strtotime($date);
+	$yesterday = date('Y-m-d', (time()-(60*60*24)) );
+	$yesterday = strtotime($yesterday.' 00:00:00');
+	$yesterday2 = strtotime($yesterday.' 00:00:00') - 60*60*24;
+	
+	if ($time > $yesterday)
+		$res = 'сегодня';
+	elseif ($time > $yesterday2)
+		$res = 'вчера';
+	else
+		$res = date('d.m');
+	return $res;
+}
 ?>

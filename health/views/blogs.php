@@ -2,7 +2,7 @@
 if ($blogs)
 {
 	?>
-	<h3 class="b-blogs-list__title"><!-- a href=""><ins class="b-blogs-list__ico"></ins -->В блогах<!-- /a --></h3>
+	<h3 class="b-blogs-list__title">В блогах</h3>
 	<?php
 	foreach ($blogs as $blog)
 	{
@@ -15,7 +15,7 @@ if ($blogs)
 					if ($blog['count'])
 					{
 						?>
-						<sup><?php echo $blog['count']; ?></sup>
+						<ins class="g-social-count"><?php echo $blog['count']; ?></ins>
 						<?php 
 					}
 					?>

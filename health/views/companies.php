@@ -2,7 +2,7 @@
 if ($rubrics)
 {
 	?>
-	<h3 class="b-zdorovje-rubricator__title"><a href="<?php echo $link; ?>">Каталог организаций</a></h3>
+	<h3 class="b-zdorovje-rubricator__title">Каталог организаций</h3>
 		<ul class="b-zdorovje-rubricator__list">
 	<?
 	foreach ($rubrics as $rubric)
