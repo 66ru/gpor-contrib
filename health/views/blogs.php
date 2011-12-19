@@ -17,7 +17,7 @@ if ($blogs)
 					if ($blog['count'])
 					{
 						?>
-						<ins class="g-social-count"><?php echo $blog['count']; ?></ins>
+						<ins class="inline-block g-social-count"><?php echo $blog['count']; ?></ins>
 						<?php 
 					}
 					?>
