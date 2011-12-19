@@ -2,6 +2,8 @@
 if ($blogs)
 {
 	?>
+<div class="b-blogs-list rc3">
+	<div class="b-blogs-list_pad">
 	<h3 class="b-blogs-list__title">В блогах</h3>
 	<?php
 	foreach ($blogs as $blog)
@@ -23,5 +25,9 @@ if ($blogs)
 			</dl>
 		<?php
 	}
+	?>
+	</div>
+</div>
+	<?php
 }
 ?>
