@@ -52,14 +52,16 @@ if ($data && $data['all'])
 		<div id="healthDoska_<?php echo $k; ?>_table" style="<?php if(!$active){echo 'display: none;';} ?>">
 			<table class="b-advertisement-listing__items"><tbody>
 		<?php
+		$i = false;
 		foreach ($rows as $row)
 		{
 			?>
-			<tr>
+			<tr <?php if ($i){echo 'class="nodd"'; }?>>
 				<td class="date"><?php echo healthAnnounceDate($row->updated); ?></td>
 				<td class="descr"><a href="<?php echo $row->url; ?>"><?php echo $row->title; ?></a></td>
 			</tr>
 			<?php	
+			$i = $i ? false : true;
 		}
 		?>
 			</tbody></table>
