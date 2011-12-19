@@ -156,7 +156,7 @@ if (isset($config['host']) && isset($config['user']) && isset($config['password'
 			'username' => iconv('cp1251', 'UTF-8//IGNORE', $username[1]),
 			'user_url' => $config['domain'].'/user/' . $row['user_id'] . '/',
 			'title' => iconv('cp1251', 'UTF-8//IGNORE', $row['title']),
-			'blog_url' => $config['domain'].'/' . $row['user_id'] . '/blog/' . $row['id'] . '/',
+			'blog_url' => $config['domain'].'/user/' . $row['user_id'] . '/blog/' . $row['id'] . '/',
 			'count' => $row['cnt'],
 		);
 	}
