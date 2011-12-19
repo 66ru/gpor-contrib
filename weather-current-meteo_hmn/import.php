@@ -19,6 +19,16 @@ if (!$hmnUrl)
 if (!$hmnCityId)
 	die('Error. "hmnCityId" not found in config.php');
 
+$lastSourceUpdate = array();
+define('LASTSOURCEUPDATE_FILENAME','lastSourceUpdate.json');
+define('EKBURG_SOURCE','ekburg');
+define('HMN_SOURCE','hmn');
+define('METEODB_SOURCE','meteodb');
+if (file_exists(LASTSOURCEUPDATE_FILENAME)) {
+	$lastSourceUpdate = json_decode(file_get_contents(LASTSOURCEUPDATE_FILENAME), true);
+	if (empty($lastSourceUpdate))
+		$lastSourceUpdate = array();
+}
 
 if ($params['useMeteo']) {
     $meteoMysqlHost = isset($params['meteoMysqlHost']) ? $params['meteoMysqlHost'] : false;
@@ -191,7 +201,14 @@ for ($i = 0; $i < 50; $i++) // kinda retarded shit...
             } else {
                 $query = false;
             }
+			if (!empty($query['val']))
+				$lastSourceUpdate[METEODB_SOURCE] = time();
             $temperature = $query ? $query['val'] : $weather_quick['current_temp'];
+			$ekburgTemperature = require('ekburg.php');
+			if ($ekburgTemperature) {
+				$temperature = $ekburgTemperature;
+				$lastSourceUpdate[EKBURG_SOURCE] = time();
+			}
             $time = $query ? ($setOnlyCurrentWeather ? time() : $query['timekey']) : time();
 
             $client = new xmlrpc_client($apiUrl);
@@ -215,7 +232,15 @@ for ($i = 0; $i < 50; $i++) // kinda retarded shit...
     }
 }
 
+foreach ($lastSourceUpdate as $source => $lastUpdate) {
+	$brokenSources = '';
+	if ($lastUpdate < time()-60*60*24*2) { // 2days
+		$brokenSources.= $source.' ';
+	}
+	if (!empty($brokenSources) && !empty($params['complaintEmail']))
+		mail($params['complaintEmail'], 'weather updater', 'weather sources: '.$brokenSources.' are broken');
+}
 
-
+file_put_contents(LASTSOURCEUPDATE_FILENAME, json_encode($lastSourceUpdate));
 
 ?>
