@@ -18,7 +18,7 @@ foreach ($config as $k=>$v)
 $dataDir = $healthRootDir.'/data/';
 
 // собираем статистику просмотров за 2 месяца
-$fileName = $dataDir.'vewsStat.json';
+$fileName = $dataDir.'viewsStat.json';
 $stat = newsStatGetPeriodStat ($fileName, 'news.getNewsStat', array('sectionId' => false, 'type' => 'views'), $config);
 if ($stat)
 	newsStatWriteStatToFile ($fileName, $stat);
@@ -27,7 +27,7 @@ if ($config['sectionIds'])
 {
 	foreach($config['sectionIds'] as $sid)
 	{
-		$fileName = $dataDir.'vewsStatSection'.$sid.'.json';
+		$fileName = $dataDir.'viewsStatSection'.$sid.'.json';
 		$stat = newsStatGetPeriodStat ($fileName, 'news.getNewsStat', array('sectionId' => $sid, 'type' => 'views'), $config);
 		if ($stat)
 			newsStatWriteStatToFile ($fileName, $stat);
