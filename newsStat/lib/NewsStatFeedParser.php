@@ -60,7 +60,16 @@ class NewsStatFeedParser
 	protected function parseRss($url)
 	{
 		$result = array();
-		$rss = simplexml_load_file($url);
+		//$rss = simplexml_load_file($url);
+//		$ch = curl_init();
+//		curl_setopt($ch, CURLOPT_URL, $url);
+//		curl_setopt($ch, CURLOPT_HEADER, TRUE);
+//		curl_setopt($ch, CURLOPT_NOBODY, TRUE);
+//		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+//		$head = curl_exec($ch);
+//		$c = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+//		curl_close($ch);
+
 		$c = @file_get_contents($url);
 		if ($c)
 		{
@@ -88,13 +97,11 @@ class NewsStatFeedParser
 			else
 			{
 				$this->_lastError = 'Can\'t parse url '.$url;
-				echo $this->_lastError."\n";
 			}
 		}
 		else
 		{
 			$this->_lastError = 'Can\'t open url '.$url;
-			echo $this->_lastError."\n";
 			return false;
 		}
 		return $result;
@@ -130,6 +137,7 @@ class NewsStatFeedParser
 		}
 		fwrite($handle, implode('|', $feeds));
 		fclose($handle);
+		chmod ( $lockFile , 0777 );
 		return true;
 	}
 	
@@ -267,11 +275,10 @@ class NewsStatFeedParser
 			if (!$c)
 			{
 				$this->_lastError = 'Can\'t read file '.$this->_feedsFile;
-				echo $this->_lastError."\n";
 				return false;
 			}
 			
-			$rss = simplexml_load_string($c);
+			$rss = @simplexml_load_string($c);
 			if ($rss)
 			{
 				if ($rss->body->outline)
@@ -285,7 +292,6 @@ class NewsStatFeedParser
 			else
 			{
 				$this->_lastError = 'Can\'t parse feeds file '.$this->_feedsFile;
-				echo $this->_lastError."\n";
 			}			
 			
 		}

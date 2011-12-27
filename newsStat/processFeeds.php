@@ -22,7 +22,7 @@ $totalRunning = $parser->totalRunningProcesses();
 $max = $max - $totalRunning;
 if ($max > 0 && $totalFeeds)
 {
-	$command = $config['phpPath'].' runFeedParser.php';
+	$command = $config['phpPath'].' '.$newsStatRootDir.'/runFeedParser.php';
 	
 	$handle = popen($command, 'r');
 	echo "'$handle'; " . gettype($handle) . "\n";

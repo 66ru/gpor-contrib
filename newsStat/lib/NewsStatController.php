@@ -11,6 +11,20 @@ class NewsStatController
 	
 	public $client;
 	
+	static $months = array(
+   	  	  1 => 'Января',
+   	  	  2 => 'Февраля',
+   	  	  3 => 'Марта',
+   	  	  4 => 'Апреля',
+   	  	  5 => 'Мая',
+   	  	  6 => 'Июня',
+   	  	  7 => 'Июля',
+   	  	  8 => 'Августа',
+   	  	  9 => 'Сентября',
+   	  	  10 => 'Октября',
+   	  	  11 => 'Ноября',
+   	  	  12 => 'Декабря',
+	);
 
 	public function __construct($basePath, $config)
 	{
@@ -50,6 +64,9 @@ class NewsStatController
 				case 'next':
 					$this->_action = 'actionNextPage';
 					break;
+				case 'updateFeed':
+					$this->_action = 'actionRefreshFeed';
+					break;
 				default:
 					$this->_action = false;
 					break;
@@ -67,7 +84,10 @@ class NewsStatController
 	
 	public function actionMain()
 	{
+		$sections = $this->getSections();
 		$data = array(
+			'currentSectionId' => 0,
+			'currentSectionName' => $sections[0],
 			'todayViews' => $this->getDayViews(date('Y-m-d'), false),
 			'yesterdayViews' => $this->getDayViews(date('Y-m-d', (time()-60*60*24)), false),
 			'todayComments' => $this->getDayComments(date('Y-m-d'), false),
@@ -78,13 +98,13 @@ class NewsStatController
 			'commentsTop' => $this->getCommentsTop(false),
 			'feed' => $this->getFeeds(),
 			'ajax' => $this->isAjaxRequest(),
-			'config' => $this->_config,
 		);
 		
 		$sections = $this->getSections();
 		
 		$this->renderTemplate('main', array(
 			'data' => $data,
+			'config' => $this->_config,
 			'currentSectionId' => 0,
 			'currentSectionName' => $sections[0],
 			)
@@ -93,11 +113,7 @@ class NewsStatController
 	
 	public function getSections ()
 	{
-		return array(
-			0 => 'Общая статистика',
-			3 => 'Бизнес',
-		);
-		
+		return $this->_config['sections'];
 	}
 	
 	public function actionNextPage($currentSection = false)
@@ -126,7 +142,7 @@ class NewsStatController
 				}
 				else
 				{
-					$nextSectionId = array_slice(array_keys($sections), 1, ($i));
+					$nextSectionId = array_slice(array_keys($sections), $i, 1);
 					$nextSectionId = $nextSectionId[0];
 					$nextSectionName = $sections[$nextSectionId];
 					break;
@@ -147,6 +163,14 @@ class NewsStatController
 			'commentsTop' => $this->getCommentsTop($nextSectionId),
 			'ajax' => $this->isAjaxRequest(),
 		);
+		echo json_encode($data);
+		die();
+		
+	}
+	
+	public function actionRefreshFeed()
+	{
+		$data = $this->getFeeds();
 		echo json_encode($data);
 		die();
 		
@@ -174,7 +198,7 @@ class NewsStatController
 	
 	protected function getDayViews($date, $sectionId = false)
 	{
-		$data = $this->getViewsStat($sectionId);
+		$data = $this->getViewsStat($sectionId, 'light');
 		if ($data && isset($data[$date]))
 			return $data[$date];
 		return 0;
@@ -182,27 +206,95 @@ class NewsStatController
 	
 	protected function getDayComments($date, $sectionId = false)
 	{
-		$data = $this->getCommentsStat($sectionId);
+		$data = $this->getCommentsStat($sectionId, 'light');
 		if ($data && isset($data[$date]))
 			return $data[$date];
 		return 0;
 	}
 	
-	protected function getViewsStat($sectionId = false)
+	protected function getViewsStat($sectionId = false, $type = 'full')
 	{
 		$fileName = $sectionId ? 'viewsStatSection'.$sectionId.'.json' : 'viewsStat.json';
 		$data = $this->readDataFile ($this->getDataPath().'/'.$fileName);
-		if ($data)
+		if ($data && $type != 'full')
 			return $data;
+		elseif ($data)
+		{
+			$result = array();
+			$tmp = array();
+			foreach ($data as $date => $count)
+			{
+				$item = array (
+					'date' => self::date(strtotime($date)), 
+					'count' => $count, 
+					'average' => 0, 
+				);
+				$tmp[strtotime($date)] = $item;
+			}
+			$keys = array_keys($tmp);
+			sort($keys);
+			$i = 0;
+			foreach ($keys as $k)
+			{
+				if ($i >= $this->_config['graphDelay'])
+				{
+					$sum = $tmp[$k]['count'];
+					for ($x = 1; $x <= $this->_config['graphDelay']; $x++)
+					{
+						$sum += $result[$i - $x]['count'];
+					}
+						
+					$tmp[$k]['average'] = $sum > 0 ? ceil($sum / ($this->_config['graphDelay'] + 1)) : 0;
+				}
+				$result[] = $tmp[$k];
+				$i++;
+			}
+			
+			return $result;
+		}
 		return array();
 	}
 	
-	protected function getCommentsStat($sectionId = false)
+	protected function getCommentsStat($sectionId = false, $type = 'full')
 	{
 		$fileName = $sectionId ? 'commentsStatSection'.$sectionId.'.json' : 'commentsStat.json';
 		$data = $this->readDataFile ($this->getDataPath().'/'.$fileName);
-		if ($data)
+		if ($data && $type != 'full')
 			return $data;
+		elseif ($data)
+		{
+			$result = array();
+			$tmp = array();
+			foreach ($data as $date => $count)
+			{
+				$item = array (
+					'date' => self::date(strtotime($date)), 
+					'count' => $count, 
+					'average' => 0, 
+				);
+				$tmp[strtotime($date)] = $item;
+			}
+			$keys = array_keys($tmp);
+			sort($keys);
+			$i = 0;
+			foreach ($keys as $k)
+			{
+				if ($i >= $this->_config['graphDelay'])
+				{
+					$sum = $tmp[$k]['count'];
+					for ($x = 1; $x <= $this->_config['graphDelay']; $x++)
+					{
+						$sum += $result[$i - $x]['count'];
+					}
+						
+					$tmp[$k]['average'] = $sum > 0 ? ceil($sum / ($this->_config['graphDelay'] + 1)) : 0;
+				}
+				$result[] = $tmp[$k];
+				$i++;
+			}
+			
+			return $result;
+		}
 		return array();
 	}
 	
@@ -228,7 +320,16 @@ class NewsStatController
 	{
 		$data = $this->readDataFile ($this->getDataPath().'/feeds.json');
 		if ($data)
-			return $data;
+		{
+			$result = array();
+			foreach ($data as $row)
+			{
+				$row['md5'] = md5($row['link']);
+				$row['date'] = self::date($row['pubDate'], true, true);
+				$result[] = $row;
+			}
+			return $result;
+		}
 		return array();
 	}
 	
@@ -267,6 +368,8 @@ class NewsStatController
 		
 		if ($returnResult)
 			ob_start();
+		else
+			header('Content-Type: text/html; charset=utf-8'); 
 		include ($viewFile);
 		if ($returnResult)
 		{
@@ -277,6 +380,38 @@ class NewsStatController
 		return true;
 		
 	}
+	
+    public static function date($datetime = false, $todayFormat = true, $time = false)
+    {
+    	if( $datetime == false )
+    		$datetime = date('Y-m-d H:i:s');
+    		
+    	if( is_numeric($datetime) )
+    		$datetime = date('Y-m-d '.($time?'H:i:s':'00:00:00'), $datetime);
+    	else
+	   		$datetime = $datetime.(!$time?'00:00:00':'');  
+
+    	if( !preg_match('#(([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}))?\s*(([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2}))?#', trim($datetime), $p ) )
+    		return false;
+    		
+    	list(,, $y, $m, $d, , $h, $i, $s ) = array_map('intval', $p);
+    	
+    	$out = '';
+    	
+    	if( $m && $d )
+    	{
+    	    if( $todayFormat && $d.'-'.$m.'-'.$y == date('j-n-Y') )
+    	      $out = '';
+    	    else
+    		  $out = $d.' '.self::$months[$m].($y && $y != date('Y') ? ' '.$y : '');
+    	}
+    	
+    	if( $time && ($h > 0 || ($h == 0 && $i)) )
+    		$out .= ($out ? ' ' : '').($h < 10 ? '0' : '').$h.':'.($i < 10 ? '0' : '').$i.':'.($s < 10 ? '0' : '').$s;
+    	
+    	return $out;
+    }
+	
 	
 	
 }

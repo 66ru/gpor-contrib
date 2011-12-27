@@ -23,10 +23,12 @@ $stat = newsStatGetPeriodStat ($fileName, 'news.getNewsStat', array('sectionId' 
 if ($stat)
 	newsStatWriteStatToFile ($fileName, $stat);
 	
-if ($config['sectionIds'])
+if ($config['sections'])
 {
-	foreach($config['sectionIds'] as $sid)
+	foreach(array_keys($config['sections']) as $sid)
 	{
+		if (!$sid)
+			continue;
 		$fileName = $dataDir.'viewsStatSection'.$sid.'.json';
 		$stat = newsStatGetPeriodStat ($fileName, 'news.getNewsStat', array('sectionId' => $sid, 'type' => 'views'), $config);
 		if ($stat)
@@ -40,10 +42,12 @@ $stat = newsStatGetPeriodStat ($fileName, 'news.getNewsStat', array('sectionId' 
 if ($stat)
 	newsStatWriteStatToFile ($fileName, $stat);
 	
-if ($config['sectionIds'])
+if ($config['sections'])
 {
-	foreach($config['sectionIds'] as $sid)
+	foreach(array_keys($config['sections']) as $sid)
 	{
+		if (!$sid)
+			continue;
 		$fileName = $dataDir.'commentsStatSection'.$sid.'.json';
 		$stat = newsStatGetPeriodStat ($fileName, 'news.getNewsStat', array('sectionId' => $sid, 'type' => 'comments'), $config);
 		if ($stat)
@@ -65,10 +69,12 @@ $stat = $newsStatXmlRpc->send(array($config['maxNewsOnTop'], array(
 if (is_array($stat))
 	newsStatWriteStatToFile ($fileName, $stat);
 
-if ($config['sectionIds'])
+if ($config['sections'])
 {
-	foreach($config['sectionIds'] as $sid)
+	foreach(array_keys($config['sections']) as $sid)
 	{
+		if (!$sid)
+			continue;
 		$fileName = $dataDir.'viewsTopSection'.$sid.'.json';
 		$newsStatXmlRpc = new NewsStatXmlRpc($config['apiUrl'], $config['apiKey'], 'news.listTopNews');
 		$stat = $newsStatXmlRpc->send(array($config['maxNewsOnTop'], array(
@@ -96,10 +102,12 @@ $stat = $newsStatXmlRpc->send(array($config['maxNewsOnTop'], array(
 if (is_array($stat))
 	newsStatWriteStatToFile ($fileName, $stat);
 
-if ($config['sectionIds'])
+if ($config['sections'])
 {
-	foreach($config['sectionIds'] as $sid)
+	foreach(array_keys($config['sections']) as $sid)
 	{
+		if (!$sid)
+			continue;
 		$fileName = $dataDir.'commentsTopSection'.$sid.'.json';
 		$newsStatXmlRpc = new NewsStatXmlRpc($config['apiUrl'], $config['apiKey'], 'news.listTopNews');
 		$stat = $newsStatXmlRpc->send(array($config['maxNewsOnTop'], array(

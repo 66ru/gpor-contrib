@@ -13,33 +13,53 @@
 
 <body id="body">
 <style type="text/css">
-	* {line-height: 1.4em; font-family:	'Arial'; font-size:	12px;}
-	body {width: 1920px;}
+	* {line-height: 1.4em; font-family:	'Arial'; font-size:	12px; color: #646464;}
+	html, body {width: 1920px; margin: 0; padding: 0;}
+	
+	#head {background-color: #779f1a; height: 40px; margin-bottom: 20px;}
+	.pageTitle {display: block; text-align: center; height: 40px; line-height: 40px; color: #ffffff; font-size: 28px;}
+	
 	.statConainer {width: 640px; float: left; position: relative;}
 
-	.statConainer-graph {height: 450px; width: 640px;}
+	.statConainer-graph {height: 500px; width: 640px;}
 
-	.statConainer-current {margin: 0 auto; font-size: 12px; height: 80px;}
-	.statConainer-current-pre {float: left; padding-right: 10px;}
-	.statConainer-current-post {float: left; width: 300px;}
-	.statConainer-today {font-size: 32px;}
-	.statConainer-yesterday {font-size: 24px;}
+	.statConainer-current {position: relative; height: 80px; width: 640px;}
+	.statConainer-current-pre {position: absolute; width: 100px; padding-top: 12px; font-size: 18px; left: 120px; top: 0; }
+	.statConainer-current-post {position: absolute; left: 240px; top: 0;}
+	.statConainer-current-post__comments {left: 270px; top: 0;}
+	.statConainer-today-container {height: 50px; }
+	.statConainer-yesterday-container {height: 30px; }
+	.statConainer-today-count {font-size: 32px; float: left; width: 120px;}
+	.statConainer-yesterday-count {float: left; font-size: 24px; width: 120px;}
+	.statConainer-today {float: left; width: 120px; font-size: 18px; padding-top: 12px;}
+	.statConainer-yesterday {float: left; width: 120px; font-size: 18px; padding-top: 5px;}
 
+	.statConainer-top-header {font-size: 24px; height: 38px; border-bottom: 2px solid #ffab00; margin-bottom: 30px; padding-left: 10px;}
+	.statConainer-top {padding: 0 20px;}
+	.statConainer-top-list-item {position: relative; width: 590px; overflow: hidden; height: 30px; padding-left: 10px;}
+	.statConainer-top-list-today {width: 50px; position: absolute; left:10px; top: 0; color: #779f1a; font-size: 14px; font-weight: bold; height: 30px; line-height: 30px;}
+	.statConainer-top-list-all {width: 40px; position: absolute; left:50px; top: 0; font-size: 14px; height: 30px; line-height: 30px; }
+	.statConainer-top-list-link {width: 50px; position: absolute; width: 1000px; left:100px; top: 0; font-size: 14px; height: 30px; line-height: 30px;}
 
-	.statConainer-top-header {font-size: 32px;}
-	.statConainer-top-list li {margin-top: 0.846em;padding-left: 20px;position: relative;}
-	.statConainer-top-list-today {width: 50px; flost: left;}
-	.statConainer-top-list-all {width: 50px; flost: left;}
-
-	#feed {width: 640px; float: left; position: relative;}
+	#feed {width: 620px; float: left; position: relative; padding-right: 20px;}
+	.statConainer-feed-header {font-size: 24px; margin-bottom: 20px; padding-left: 10px;}
 	.feed-list-header {font-size: 32px;}
-	.feed-list li {margin-top: 0.846em;padding-left: 20px;position: relative;}
-	.feed-list-itemSource {width: 100px; flost: left;}
+	.feed-list {}
+	.feed-list-item {height: 50px; border-bottom: 1px solid #cccccc; margin-bottom: 5px; padding: 0 10px;}
+	.feed-list-itemSource {width: 600px; font-size: 12px; white-space: nowrap; overflow: hidden; height: 30px; line-height: 30px;}
+	.feed-list-itemLink {display: block; width: 600px; overflow: hidden; font-size: 14px; white-space: nowrap; overflow: hidden; height: 20px; line-height: 20px;}
+	.feed-list-itemDate {color: #779f1a; padding-right: 5px;}
 
 	.clear {clear: both;}
+	.newItem {display:none;}
+	.recordCount {color: #52ad5a;}
+	.lowCount {color: #dc3912;}
+	.newestItemClass {background-color: #E6F6DA; border-bottom: 1px solid #CAE9B5;}
 
-	a {color: #037DD3;text-decoration: underline;}
-	ol, ul {list-style: none outside none;}
+	a {color: #037DD3;text-decoration: none;}
+	ol, ul {list-style: none outside none; margin: 0; padding: 0;}
+	h1, h2 {padding: 0; margin: 0;}
+	.odd {background-color: #F2F6E8;}
 </style>
 
 <script type="text/javascript">
@@ -47,15 +67,19 @@
     //google.setOnLoadCallback(initGraphs);
 </script>
 	<div id="head">
-		<h1></h1>
+		<h1 class="pageTitle">Статистика новостей</h1>
 	</div>
 	
 	<div id="viewsStat" class="statConainer">
 		<div class="statConainer-current">
-			<div class="statConainer-current-pre">Просмотров:</div>
+			<div class="statConainer-current-pre">Просмотров</div>
 			<div class="statConainer-current-post">
-				<span class="statConainer-today"><?php echo $data['todayViews']; ?></span> сегодня<br/>
-				<span class="statConainer-yesterday"><?php echo $data['yesterdayViews']; ?></span> вчера
+				<div class="statConainer-today-container">
+					<div class="statConainer-today-count">0</div><div class="statConainer-today">сегодня</div>
+				</div>
+				<div class="statConainer-yesterday-container">
+					<div class="statConainer-yesterday-count">0</div><div class="statConainer-yesterday">вчера</div>
+				</div>
 			</div>
 		</div>
 
@@ -64,33 +88,22 @@
 		
 		<div class="statConainer-top">
 			<h2 class="statConainer-top-header">Самые просматриваемые</h2>
-			<ul class="statConainer-top-list">
-				<?php 
-				if ($data['viewsTop'])
-				{
-					foreach ($data['viewsTop'] as $news)
-					{
-						?>
-						<li>
-							<div class="statConainer-top-list-today"><?php echo $news['views']; ?></div>
-							<div class="statConainer-top-list-all"><?php echo $news['viewsTotal']; ?></div>
-							<a href="<?php echo $news['link']; ?>"><?php echo $news['title']; ?></a>
-						</li>
-						<?php
-					}
-				}
-				?>
-			</ul>
+			<div class="statConainer-top-list">
+			</div>
 		</div>
 
 	</div>
 	
 	<div id="commentsStat" class="statConainer statConainer_comments">
 		<div class="statConainer-current">
-			<div class="statConainer-current-pre">Комментариев:</div>
-			<div class="statConainer-current-post">
-				<span class="statConainer-today"><?php echo $data['todayComments']; ?></span> сегодня<br/>
-				<span class="statConainer-yesterday"><?php echo $data['yesterdayComments']; ?></span> вчера
+			<div class="statConainer-current-pre">Комментариев</div>
+			<div class="statConainer-current-post statConainer-current-post__comments">
+				<div class="statConainer-today-container">
+					<div class="statConainer-today-count">0</div><div class="statConainer-today">сегодня</div>
+				</div>
+				<div class="statConainer-yesterday-container">
+					<div class="statConainer-yesterday-count">0</div><div class="statConainer-yesterday">вчера</div>
+				</div>
 			</div>
 		</div>
 
@@ -99,43 +112,14 @@
 		
 		<div class="statConainer-top">
 			<h2 class="statConainer-top-header">Самые комментируемые</h2>
-			<ul class="statConainer-top-list">
-				<?php 
-				if ($data['commentsTop'])
-				{
-					foreach ($data['commentsTop'] as $news)
-					{
-						?>
-						<li>
-							<div class="statConainer-top-list-today"><?php echo $news['comments']; ?></div>
-							<div class="statConainer-top-list-all"><?php echo $news['commentsTotal']; ?></div>
-							<a href="<?php echo $news['link']; ?>"><?php echo $news['title']; ?></a>
-						</li>
-						<?php
-					}
-				}
-				?>
-			</ul>
+			<div class="statConainer-top-list">
+			</div>
 		</div>
 	</div>
 	
 	<div id="feed">
-		<h2 class="statConainer-top-header">Последние новости</h2>
+		<h2 class="statConainer-feed-header">Последние новости</h2>
 		<ul class="feed-list">
-				<?php 
-				if ($data['feed'])
-				{
-					foreach ($data['feed'] as $news)
-					{
-						?>
-						<li>
-							<div class="feed-list-itemSource"></div>
-							<a href="<?php echo $news['link']; ?>"><?php echo $news['title']; ?></a>
-						</li>
-						<?php
-					}
-				}
-				?>
 		</ul>
 	</div>
 
@@ -146,8 +130,12 @@ $(document).ready(function(){
 			'sections' : [],
 			'statData' : <? echo json_encode($data); ?>,
 			'feedData' : <? echo json_encode($data['feed']); ?>,
+			'topItemHeight' : 30,
+			'feedItemHeight' : 50,
 			'currentSectionId' : <? echo $currentSectionId; ?>,
-			'currentSectionName' : "<? echo $currentSectionName; ?>"
+			'currentSectionName' : "<? echo $currentSectionName; ?>",
+			'refreshStatInterval' : <? echo $config['refreshStatInterval']*1000; ?>,
+			'refreshFeedInterval' : <? echo $config['refreshFeedInterval']*1000; ?>
 		}
 	);
 });
