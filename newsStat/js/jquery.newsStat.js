@@ -47,6 +47,7 @@
 					duration: 1000,
 					easing: 'out'
 				},
+				colors:['#D1DBBC','#004411']
 			},
 			'currentSectionId' : '',
 			'currentSectionName' : '',
@@ -167,7 +168,7 @@
 					addClass = o.lowCountClass;
 				div1.addClass(addClass);
 				
-				div1.html(htmlCode);
+				div1.html(formatThousands(htmlCode));
 				$(todayCountContainer).after(div1);
 		    	toggleCurrentRow(obj, o.todayCountClass );
 		    	
@@ -182,7 +183,7 @@
 					addClass = o.recordCountClass;
 				div2.addClass(addClass);
 				
-				div2.html(htmlCode);
+				div2.html(formatThousands(htmlCode));
 				$(yesterdayCountContainer).after(div2);
 				setTimeout(function(){
 			    	toggleCurrentRow(obj, o.yesterdayCountClass);
@@ -246,8 +247,8 @@
 			    				li.addClass(o.oddClass);
 		    						
 		    				li.css('height', '1px');
-		    				htmlCode = '<div class="statConainer-top-list-today">+'+todayCount+'</div>';
-		    				htmlCode += '<div class="statConainer-top-list-all">'+allCount+'</div>';
+		    				htmlCode = '<div class="statConainer-top-list-today">+'+formatThousands(todayCount)+'</div>';
+		    				htmlCode += '<div class="statConainer-top-list-all">'+formatThousands(allCount)+'</div>';
 		    				htmlCode += '<a class="statConainer-top-list-link" href="'+data[i]['link']+'">'+data[i]['title']+'</a>';
 		    				li.html(htmlCode);
 		    				$($rows.eq(i)).after(li);
@@ -271,8 +272,8 @@
 			    				li.addClass(o.oddClass);
 
 		    				li.css('height', '1px');
-		    				htmlCode = '<div class="statConainer-top-list-today">+'+todayCount+'</div>';
-		    				htmlCode += '<div class="statConainer-top-list-all">'+allCount+'</div>';
+		    				htmlCode = '<div class="statConainer-top-list-today">+'+formatThousands(todayCount)+'</div>';
+		    				htmlCode += '<div class="statConainer-top-list-all">'+formatThousands(allCount)+'</div>';
 		    				htmlCode += '<a class="statConainer-top-list-link" href="'+data[i]['link']+'">'+data[i]['title']+'</a>';
 		    				li.html(htmlCode);
 		    				$rows = $(obj).append(li);
@@ -346,6 +347,7 @@
 		    			if (data[i])
 		    			{
 		    				sourceName = data[i]['sourceName'];
+		    				sourceLink = data[i]['sourceLink'];
 		    				title = data[i]['title'];
 		    				link = data[i]['link'];
 		    				date = data[i]['date'];
@@ -357,8 +359,7 @@
 		    				li.attr("md5", data[i]['md5']);
 		    				li.css('height', '1px');
 		    				htmlCode = '<a class="feed-list-itemLink" href="'+link+'">'+title+'</a>';
-		    				htmlCode += '<div class="feed-list-itemSource"><span class="feed-list-itemDate">'+date+'</span>'+sourceName+'</div>';
-		    				htmlCode += '<div class="clear">';
+		    				htmlCode += '<div class="feed-list-itemSource"><span class="feed-list-itemDate">'+date+'</span><a href="'+sourceLink+'">'+sourceName+'</a></div>';
 		    				li.html(htmlCode);
 		    				$($rows.eq(i)).after(li);
 		    			}
@@ -372,6 +373,7 @@
 		    			if (data[i])
 		    			{
 		    				sourceName = data[i]['sourceName'];
+		    				sourceLink = data[i]['sourceLink'];
 		    				title = data[i]['title'];
 		    				link = data[i]['link'];
 		    				date = data[i]['date'];
@@ -383,8 +385,7 @@
 		    				li.attr("md5", data[i]['md5']);
 		    				li.css('height', '1px');
 		    				htmlCode = '<a class="feed-list-itemLink" href="'+link+'">'+title+'</a>';
-		    				htmlCode += '<div class="feed-list-itemSource"><span class="feed-list-itemDate">'+date+'</span>'+sourceName+'</div>';
-		    				htmlCode += '<div class="clear">';
+		    				htmlCode += '<div class="feed-list-itemSource"><span class="feed-list-itemDate">'+date+'</span><a href="'+sourceLink+'">'+sourceName+'</a></div>';
 		    				li.html(htmlCode);
 		    				$rows = $(obj).append(li);
 		    			}
@@ -475,6 +476,16 @@
 		    	commentsGraph.draw(data[current], o.graphOptions);
 		    }
 
+		    function formatThousands (val){
+		    	//val = new Number(this);
+		    	if (val < 1000)
+		    		return val;
+		    	val = (val > 0) ? Math.ceil(val) : Math.floor(val);
+		    	var arr = val.round(0).toFixed(0).split('.');
+		    	arr[0] = (val < 0 ? '-' : '') + String.leftPad((val < 0 ? arr[0].substring(1) : arr[0]), 1, '0');
+		    	arr[0] = Number.injectIntoFormat(arr[0].reverse(), '000 0', true).reverse();
+		    	return arr.join('.');
+		    }
 
 		    // init
 		    initViewsGraph (statData['viewsStat']);
@@ -486,3 +497,4 @@
 
 		};
 	})(jQuery);
+

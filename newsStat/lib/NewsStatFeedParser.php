@@ -77,7 +77,7 @@ class NewsStatFeedParser
 			if ($rss)
 			{
 				$result = array(
-						'sourceLink' => (string)$rss->channel->link,
+						'sourceLink' => (string)$url,
 						'sourceName' => (string)$rss->channel->title,
 						'items' => array(),
 					);

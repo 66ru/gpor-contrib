@@ -13,6 +13,10 @@ return array (
 			35 => 'Новости авто',
 		), // из каких рубрик надо собирать статистику (id => name)
 	'graphDelay' => 3, // за сколько предыдущих дней считать среднее
+	// какие фиды не показывать в ленте
+	'excludeFeeds' => array (
+		'http://www.bankinform.ru/news/rss/?t=804'
+	),
 
 	'apiUrl' => '',
 	'apiKey' => '',

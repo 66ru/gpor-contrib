@@ -31,6 +31,7 @@ $feedsDir = $parser->getResultDir();
 $dh  = opendir($feedsDir);
 		
 $n = 0;
+$md5 = array();
 while (false !== ($filename = readdir($dh)))
 {
 	if ($filename === '.' || $filename === '..')
@@ -51,10 +52,17 @@ while (false !== ($filename = readdir($dh)))
 		{
 			foreach ($data->items as $item)
 			{
+				if ($config['excludeFeeds'] && in_array($data->sourceLink, $config['excludeFeeds']))
+					continue;
+				if (strtotime($item->pubDate) > time())
+					continue;
+				if (isset($md5[md5($item->title)]))
+					continue;
 				$_item = array('pubDate'=>strtotime($item->pubDate), 'title'=>$item->title, 'link'=>$item->link);
 				$_item['sourceName'] = $data->sourceName;
 				$_item['sourceLink'] = $data->sourceLink;
 				$allNews[] = $_item;
+				$md5[md5($item->title)] = 1;
 			}
 		}
 	}

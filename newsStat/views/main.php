@@ -7,6 +7,7 @@
 
 	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 	<script src="js/jquery-1.4.2.js"  type="text/javascript"></script>
+	<script src="js/number_functions.js"  type="text/javascript"></script>
 	<script src="js/jquery.newsStat.js"  type="text/javascript"></script>
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 </head>
@@ -37,9 +38,9 @@
 	.statConainer-top-header {font-size: 24px; height: 38px; border-bottom: 2px solid #ffab00; margin-bottom: 30px; padding-left: 10px;}
 	.statConainer-top {padding: 0 20px;}
 	.statConainer-top-list-item {position: relative; width: 590px; overflow: hidden; height: 30px; padding-left: 10px;}
-	.statConainer-top-list-today {width: 50px; position: absolute; left:10px; top: 0; color: #779f1a; font-size: 14px; font-weight: bold; height: 30px; line-height: 30px;}
-	.statConainer-top-list-all {width: 40px; position: absolute; left:50px; top: 0; font-size: 14px; height: 30px; line-height: 30px; }
-	.statConainer-top-list-link {width: 50px; position: absolute; width: 1000px; left:100px; top: 0; font-size: 14px; height: 30px; line-height: 30px;}
+	.statConainer-top-list-today {width: 60px; position: absolute; left:10px; top: 0; color: #779f1a; font-size: 14px; font-weight: bold; height: 30px; line-height: 30px;}
+	.statConainer-top-list-all {width: 50px; position: absolute; left:70px; top: 0; font-size: 14px; height: 30px; line-height: 30px; }
+	.statConainer-top-list-link {position: absolute; width: 1000px; left:120px; top: 0; font-size: 14px; height: 30px; line-height: 30px;}
 
 	#feed {width: 620px; float: left; position: relative; padding-right: 20px;}
 	.statConainer-feed-header {font-size: 24px; margin-bottom: 20px; padding-left: 10px;}
@@ -47,6 +48,7 @@
 	.feed-list {}
 	.feed-list-item {height: 50px; border-bottom: 1px solid #cccccc; margin-bottom: 5px; padding: 0 10px;}
 	.feed-list-itemSource {width: 600px; font-size: 12px; white-space: nowrap; overflow: hidden; height: 30px; line-height: 30px;}
+	.feed-list-itemSource a {color: #646464; text-decoration: none; }
 	.feed-list-itemLink {display: block; width: 600px; overflow: hidden; font-size: 14px; white-space: nowrap; overflow: hidden; height: 20px; line-height: 20px;}
 	.feed-list-itemDate {color: #779f1a; padding-right: 5px;}
 
