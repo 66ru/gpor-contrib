@@ -52,7 +52,8 @@
 			'currentSectionId' : '',
 			'currentSectionName' : '',
 			'refreshStatInterval' : 10000,
-			'refreshFeedInterval' : 15000
+			'refreshFeedInterval' : 15000,
+			'reloadPageInterval' : 3600
 			
 		};
 
@@ -494,6 +495,9 @@
 		    setInterval(function(){refreshFeed();}, o.refreshFeedInterval);
 		    refreshStat(o.statData);
 		    updateFeed(o.feedData, feedContainer);
+		    setInterval(function(){
+		    	window.location.reload();
+		    }, o.reloadPageInterval);
 
 		};
 	})(jQuery);

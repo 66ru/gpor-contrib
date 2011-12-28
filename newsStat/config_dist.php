@@ -22,5 +22,8 @@ return array (
 	'apiKey' => '',
 	'refreshStatInterval' => 10,
 	'refreshFeedInterval' => 15,
+	'reloadPageInterval' => 60*60, // принудительная перезагрузка страницы
+	
+	'footerText' => '', // подпись в футере
 );
 ?>

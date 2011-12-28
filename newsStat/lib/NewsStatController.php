@@ -236,20 +236,18 @@ class NewsStatController
 			$i = 0;
 			foreach ($keys as $k)
 			{
-				if ($i >= $this->_config['graphDelay'])
+				$delay = $i >= $this->_config['graphDelay'] ? $this->_config['graphDelay'] : $i;
+				$sum = $tmp[$k]['count'];
+				for ($x = 1; $x <=$delay; $x++)
 				{
-					$sum = $tmp[$k]['count'];
-					for ($x = 1; $x <= $this->_config['graphDelay']; $x++)
-					{
-						$sum += $result[$i - $x]['count'];
-					}
-						
-					$tmp[$k]['average'] = $sum > 0 ? ceil($sum / ($this->_config['graphDelay'] + 1)) : 0;
+					$sum += $result[$i - $x]['count'];
 				}
+					
+				$tmp[$k]['average'] = $sum > 0 ? ceil($sum / ($delay + 1)) : 0;
 				$result[] = $tmp[$k];
 				$i++;
 			}
-			
+
 			return $result;
 		}
 		return array();
@@ -279,16 +277,14 @@ class NewsStatController
 			$i = 0;
 			foreach ($keys as $k)
 			{
-				if ($i >= $this->_config['graphDelay'])
+				$delay = $i >= $this->_config['graphDelay'] ? $this->_config['graphDelay'] : $i;
+				$sum = $tmp[$k]['count'];
+				for ($x = 1; $x <=$delay; $x++)
 				{
-					$sum = $tmp[$k]['count'];
-					for ($x = 1; $x <= $this->_config['graphDelay']; $x++)
-					{
-						$sum += $result[$i - $x]['count'];
-					}
-						
-					$tmp[$k]['average'] = $sum > 0 ? ceil($sum / ($this->_config['graphDelay'] + 1)) : 0;
+					$sum += $result[$i - $x]['count'];
 				}
+					
+				$tmp[$k]['average'] = $sum > 0 ? ceil($sum / ($delay + 1)) : 0;
 				$result[] = $tmp[$k];
 				$i++;
 			}
