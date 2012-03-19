@@ -17,6 +17,7 @@ return array(
 		'performances' => 'http://bilektron.org/api/afisha.php?act=performances&referal=r66', // performances api url
 		'movie'        => 'http://bilektron.org/api/afisha.php?act=filmdesc&referal=r66&filmId={id}',  // movie api url
 		'image'        => '{url}{filesDir}/images/{id}.{ext}', // internal images url
+		'purchaseLink' => 'http://bilektron.org/{seanceId}/', // url for seance
 	),
 
 	'filesDir' => 'files', // files dir (relative to root)
