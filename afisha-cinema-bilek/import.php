@@ -5,6 +5,7 @@
  * Time: 16:22
  */
 define('DS', '/');
+mb_internal_encoding("UTF-8");
 include_once ('../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 class afishaCinemaBilekParser
 {
@@ -90,13 +91,13 @@ class afishaCinemaBilekParser
 			}
 			$this->movieStack[$movieId] = $movie;
 		}
-
+		if($this->params['debug']) echo "afisha.listPlaces\n";
 		$remotePlaces = $this->sendData("afisha.listPlaces");
 		$placesToSend = array();
 		foreach ($this->places as $placeId => $place) {
 			foreach ($remotePlaces as $rplaceId => $rplace) {
-				if (preg_match('|' . $place['name'] . '|i', $rplace['name'])) $place['found'] = $rplaceId;
-				if (preg_match('|' . $place['name'] . '|i', $rplace['synonym'])) $place['found'] = $rplaceId;
+				if ($this->matchName($place['name'] , $rplace['name'])) $place['found'] = $rplaceId;
+				if ($this->matchName($place['name'] , $rplace['synonym'])) $place['found'] = $rplaceId;
 			}
 			if (isset($place['found'])) {
 				$this->places[$placeId]['remoteId'] = $place['found'];
@@ -107,27 +108,30 @@ class afishaCinemaBilekParser
 			}
 		}
 		if (sizeof($placesToSend)) {
-			$p = $this->sendData('afisha.postPlace', $placesToSend);
-
-			$remotePlaces = array_merge($remotePlaces, $p);
+			if($this->params['debug']) echo "afisha.postPlace\n";
+			$this->sendData('afisha.postPlace', $placesToSend);
 		}
+
+		if($this->params['debug']) echo "afisha.listPlaces\n";
+		$remotePlaces = $this->sendData("afisha.listPlaces");
 
 		foreach ($remotePlaces as $rplaceId => $rplace) {
 			foreach ($this->places as $placeId => $place) {
-				if (preg_match('|' . $place['name'] . '|i', $rplace['name'])) $place['remoteId'] = $rplaceId;
-				if (preg_match('|' . $place['name'] . '|i', $rplace['synonym'])) $place['remoteId'] = $rplaceId;
+				if ($this->matchName($place['name'], $rplace['name'])) $place['remoteId'] = $rplaceId;
+				if ($this->matchName($place['name'], $rplace['synonym'])) $place['remoteId'] = $rplaceId;
 				$this->places[$placeId] = $place;
 				if (!isset($place['remoteId'])) unset($this->place[$placeId]);
 			}
 		}
 
+		if($this->params['debug']) echo "afisha.listMovies\n";
 		$exrternalMovies = $this->sendData('afisha.listMovies');
 		$moviesToSend    = array();
 		foreach ($this->movieStack as $movieId => $movie) {
 			foreach ($exrternalMovies as $eMovieId => $eMovie) {
-				if (preg_match('|' . $movie['name'] . '|i', $eMovie['title'])) $movie['remoteId'] = $eMovieId;
-				if (preg_match('|' . $movie['name'] . '|i', $eMovie['originalTitle'])) $movie['remoteId'] = $eMovieId;
-				if (preg_match('|' . $movie['name'] . '|i', $eMovie['synonym'])) $movie['remoteId'] = $eMovieId;
+				if ($this->matchName($movie['name'], $eMovie['title'])) $movie['remoteId'] = $eMovieId;
+				if ($this->matchName($movie['name'], $eMovie['originalTitle'])) $movie['remoteId'] = $eMovieId;
+				if ($this->matchName($movie['name'], $eMovie['synonym'])) $movie['remoteId'] = $eMovieId;
 			}
 			if (!isset($movie['remoteId']) || (isset($movie['remoteId']) && !empty($movie['edited']) && $movie['edited'] == '0')) {
 				$moviesToSend[] = $movie;
@@ -137,14 +141,15 @@ class afishaCinemaBilekParser
 		}
 
 		if (sizeof($moviesToSend)) {
+			if($this->params['debug']) echo "afisha.postMovie\n";
 			$p = $this->sendData('afisha.postMovie', $moviesToSend);
 			if ($exrternalMovies && $p) {
 				$exrternalMovies = array_merge($exrternalMovies, $p);
 				foreach ($this->movieStack as $movieId => $movie) {
 					foreach ($exrternalMovies as $eMovieId => $eMovie) {
-						if (preg_match('|' . $movie['name'] . '|i', $eMovie['title'])) $movie['remoteId'] = $eMovieId;
-						if (preg_match('|' . $movie['name'] . '|i', $eMovie['originalTitle'])) $movie['remoteId'] = $eMovieId;
-						if (preg_match('|' . $movie['name'] . '|i', $eMovie['synonym'])) $movie['remoteId'] = $eMovieId;
+						if ($this->matchName($movie['name'], $eMovie['title'])) $movie['remoteId'] = $eMovie['id'];
+						if ($this->matchName($movie['name'], $eMovie['originalTitle'])) $movie['remoteId'] = $eMovie['id'];
+						if ($this->matchName($movie['name'], $eMovie['synonym'])) $movie['remoteId'] = $eMovie['id'];
 					}
 					if (!isset($movie['remoteId'])) {
 						unset($this->movieStack[$movieId]);
@@ -159,7 +164,7 @@ class afishaCinemaBilekParser
 		foreach($this->places as $placeId => $place){
 			foreach ($place['performances'] as $eventId => $event) {
 				if(isset($this->movieStack[(int)$event['filmId']]['remoteId'])) {
-					$seances[$eventId] = array(
+					$seances[] = array(
 						'movieId' => $this->movieStack[(int)$event['filmId']]['remoteId'],
 						'placeId' => $place['remoteId'],
 						'purchaseLink' => $this->getUrl('purchaseLink', array('seanceId' => $event['id'])),
@@ -169,7 +174,12 @@ class afishaCinemaBilekParser
 			}
 		}
 
-		$this->sendData('afisha.postSeances',$seances);
+		if(sizeof($seances)) {
+			for($i = 0; $i<sizeof($seances);$i += 250){
+				if($this->params['debug']) echo "afisha.postSeances " .$i . " - " . min(sizeof($seances),($i+250)) . " of total " . min(sizeof($seances),($i+250)) ."\n";
+				$this->sendData('afisha.postSeances',array_slice($seances,$i,250));
+			}
+		}
 	}
 
 	/*
@@ -180,8 +190,10 @@ class afishaCinemaBilekParser
 	{
 		if ($this->params['debug'] && is_file($this->getFilePath($name, $params))) {
 			$filedata = file_get_contents($this->getFilePath($name, $params));
+			if(!$filedata) return false;
 		} else {
 			$filedata = file_get_contents($this->getUrl($name, $params));
+			if(!$filedata) return false;
 			$fn       = fopen($this->getFilePath($name, $params), 'w+');
 			fwrite($fn, $filedata);
 			fclose($fn);
@@ -242,6 +254,16 @@ class afishaCinemaBilekParser
 			return false;
 		} else
 			return $res->val;
+	}
+
+	private function matchName($a, $b)
+	{
+		$a = mb_strtolower($a);
+		$b = mb_strtolower($b);
+		$a = preg_replace('|[\P{L}\P{N}]|u', '', $a);
+		$b = preg_replace('|[\P{L}\P{N}]|u', '', $b);
+		if ($a == $b) return true;
+		return false;
 	}
 }
 
