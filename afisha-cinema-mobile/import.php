@@ -2,15 +2,19 @@
 <?php
 $DR = $_SERVER['DOCUMENT_ROOT'] = '/var/www/contrib/afisha-cinema-mobile';
 include_once ('../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
-$debug = 1;
-
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+$debug = false;
+if($debug) {
+	error_reporting(E_ALL);
+	ini_set('display_errors', 1);
+}
 set_time_limit(0);
 mb_internal_encoding("UTF-8");
 if(is_file("config.php"))
 	include "config.php";
-else echo "config.php not found";
+else {
+	echo "config.php not found";
+	die;
+}
 $moviesToSend = array();
 
 $cur_day = date('d-m-Y');

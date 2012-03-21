@@ -39,7 +39,7 @@ class afishaCinemaBilekParser
 		$this->params = array_merge($this->params, include 'config.php');
 
 		foreach ($this->params as $key => $param) {
-			if (empty($param)) {
+			if (!isset($param)) {
 				echo 'missing ' . $key . 'param in config file';
 				die;
 			}
@@ -251,7 +251,7 @@ class afishaCinemaBilekParser
 			print "An error occurred: ";
 			print " Code: " . htmlspecialchars($res->faultCode());
 			print " Reason: '" . htmlspecialchars($res->faultString()) . "' \n";
-			return false;
+			die;
 		} else
 			return $res->val;
 	}
