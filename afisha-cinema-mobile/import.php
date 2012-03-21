@@ -428,8 +428,8 @@ function matchName($a, $b)
 {
 	$a = mb_strtolower($a);
 	$b = mb_strtolower($b);
-	$a = preg_replace('|[\P{L}\P{N}]|u', '', $a);
-	$b = preg_replace('|[\P{L}\P{N}]|u', '', $b);
+	$a = preg_replace('|[^\p{L}\p{Nd}]|u', '', $a);
+	$b = preg_replace('|[^\p{L}\p{Nd}]|u', '', $b);
 	if ($a == $b) return true;
 	return false;
 }

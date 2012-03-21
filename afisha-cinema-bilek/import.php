@@ -164,7 +164,7 @@ class afishaCinemaBilekParser
 		foreach($this->places as $placeId => $place){
 			foreach ($place['performances'] as $eventId => $event) {
 				if(isset($this->movieStack[(int)$event['filmId']]['remoteId'])) {
-					$seances[] = array(
+					$seances[$eventId] = array(
 						'movieId' => $this->movieStack[(int)$event['filmId']]['remoteId'],
 						'placeId' => $place['remoteId'],
 						'purchaseLink' => $this->getUrl('purchaseLink', array('seanceId' => $event['id'])),
@@ -260,8 +260,8 @@ class afishaCinemaBilekParser
 	{
 		$a = mb_strtolower($a);
 		$b = mb_strtolower($b);
-		$a = preg_replace('|[\P{L}\P{N}]|u', '', $a);
-		$b = preg_replace('|[\P{L}\P{N}]|u', '', $b);
+		$a = preg_replace('|[^\p{L}\p{Nd}]|u', '', $a);
+		$b = preg_replace('|[^\p{L}\p{Nd}]|u', '', $b);
 		if ($a == $b) return true;
 		return false;
 	}
