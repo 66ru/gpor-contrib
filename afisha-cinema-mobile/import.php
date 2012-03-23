@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
-$DR = $_SERVER['DOCUMENT_ROOT'] = '/var/www/contrib/afisha-cinema-mobile';
-include_once ($DR . '../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
+$DR = dirname(__FILE__);
+include_once ($DR.'/../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 $debug = false;
 if(is_file("config.php"))
 	include "config.php";
