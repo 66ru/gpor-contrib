@@ -176,7 +176,7 @@ class afishaCinemaBilekParser
 
 		if(sizeof($seances)) {
 			for($i = 0; $i<sizeof($seances);$i += 250){
-				if($this->params['debug']) echo "afisha.postSeances " .$i . " - " . min(sizeof($seances),($i+250)) . " of total " . min(sizeof($seances),($i+250)) ."\n";
+				if($this->params['debug']) echo "afisha.postSeances " .$i . " - " . min(sizeof($seances),($i+250)) . " of total " . sizeof($seances) ."\n";
 				$this->sendData('afisha.postSeances',array_slice($seances,$i,250));
 			}
 		}

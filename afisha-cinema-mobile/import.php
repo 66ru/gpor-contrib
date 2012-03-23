@@ -1,20 +1,21 @@
 #!/usr/bin/php
 <?php
 $DR = $_SERVER['DOCUMENT_ROOT'] = '/var/www/contrib/afisha-cinema-mobile';
-include_once ('../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
+include_once ($DR . '../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 $debug = false;
-if($debug) {
-	error_reporting(E_ALL);
-	ini_set('display_errors', 1);
-}
-set_time_limit(0);
-mb_internal_encoding("UTF-8");
 if(is_file("config.php"))
 	include "config.php";
 else {
 	echo "config.php not found";
 	die;
 }
+if($debug) {
+	error_reporting(E_ALL);
+	ini_set('display_errors', 1);
+}
+set_time_limit(0);
+mb_internal_encoding("UTF-8");
+
 $moviesToSend = array();
 
 $cur_day = date('d-m-Y');
@@ -43,15 +44,14 @@ $fn = fopen($DR . '/afisha.mobile.parse.txt', 'w');
 fwrite($fn, serialize($all_cinemas));
 fclose($fn);
 
-
+if ($debug) echo "Sending afisha.listMovies\n";
+$eMovies = sendData('afisha.listMovies');
 foreach ($all_cinemas as $movieId => $movie) {
 	if ($debug) {
 		echo $movie['name'];
 		echo ": ";
 	}
 
-	if ($debug) echo "Sending afisha.listMovies\n";
-	$eMovies = sendData('afisha.listMovies');
 	$found   = false;
 	foreach ($eMovies as $eMovieId => $eMovie) {
 		if (matchName($movie['name'], $eMovie['title'])) $found = $eMovie;
@@ -62,11 +62,11 @@ foreach ($all_cinemas as $movieId => $movie) {
 
 	if (!$found) {
 		if ($debug) echo "film not found in syn\n";
-		$moviesToSend[$movieId] = $movie;
+		$moviesToSend[] = $movie;
 	}
 	elseif ($found && $found['edited'] == '0') {
 		$movie['externalId']    = $found['id'];
-		$moviesToSend[$movieId] = $movie;
+		$moviesToSend[] = $movie;
 		if ($debug) echo $movie['externalId'] . "\n";
 	}
 }
@@ -110,7 +110,8 @@ foreach ($all_cinemas as $movieId => $movie) {
 		if (!$found) {
 			if ($debug) echo "place not found in syn\n";
 			$placesToSend[$placeName] = array('name' => $placeName);
-		}
+		} else
+			if ($debug) echo "place found in syn\n";
 	}
 }
 $pre = array();
@@ -134,15 +135,12 @@ foreach ($all_cinemas as $movieId => $movie) {
 			if ($debug) echo $placeName . " - закрыт для импорта\n";
 			continue;
 		}
-		if ($debug) echo "\t" . $placeName . ": \n";
 		$found = false;
 		foreach ($ePlaces as $ePlaceId => $ePlace) {
 			if (matchName($placeName, $ePlace['name'])) $found = $ePlace;
 			if (matchName($placeName, $ePlace['synonym'])) $found = $ePlace;
 		}
-		if (!$found) {
-			if ($debug) echo "place not found in syn\n";
-		} else {
+		if ($found) {
 			$placeStack[$placeName] = $found;
 			foreach ($seances as $num => $datetime) {
 				$time = strtotime($datetime);
@@ -158,7 +156,7 @@ foreach ($all_cinemas as $movieId => $movie) {
 }
 
 for($i = 0; $i<sizeof($seanceStack);$i += 250){
-	if($debug) echo "afisha.postSeances " .$i . " - " . min(sizeof($seanceStack),($i+250)) . " of total " . min(sizeof($seanceStack),($i+250)) ."\n";
+	if($debug) echo "afisha.postSeances " .$i . " - " . min(sizeof($seanceStack),($i+250)) . " of total " . sizeof($seanceStack) ."\n";
 	sendData('afisha.postSeances',array_slice($seanceStack,$i,250));
 }
 
@@ -419,7 +417,7 @@ function sendData($name, $params = array())
 		print "An error occurred: ";
 		print " Code: " . htmlspecialchars($res->faultCode());
 		print " Reason: '" . htmlspecialchars($res->faultString()) . "' \n";
-		return false;
+		die;
 	} else
 		return $res->val;
 }
