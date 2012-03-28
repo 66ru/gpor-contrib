@@ -56,7 +56,9 @@ foreach ($all_cinemas as $movieId => $movie) {
 	foreach ($eMovies as $eMovieId => $eMovie) {
 		if (matchName($movie['name'], $eMovie['title'])) $found = $eMovie;
 		if (matchName($movie['name'], $eMovie['originalTitle'])) $found = $eMovie;
-		if (matchName($movie['name'], $eMovie['synonym'])) $found = $eMovie;
+		if($eMovie['synonym'])
+			foreach(unserialize($eMovie['synonym']) as $syn)
+				if (matchName($movie['name'], $syn)) $found = $eMovie;
 
 	}
 
@@ -83,7 +85,9 @@ foreach ($all_cinemas as $movieId => $movie) {
 	foreach ($eMovies as $eMovieId => $eMovie) {
 		if (matchName($movie['name'], $eMovie['title'])) $found = $eMovie;
 		if (matchName($movie['name'], $eMovie['originalTitle'])) $found = $eMovie;
-		if (matchName($movie['name'], $eMovie['synonym'])) $found = $eMovie;
+		if($eMovie['synonym'])
+			foreach(unserialize($eMovie['synonym']) as $syn)
+				if (matchName($movie['name'], $syn)) $found = $eMovie;
 	}
 	if ($found) {
 		$all_cinemas[$movieId]['externalId'] = $found['id'];
@@ -105,7 +109,9 @@ foreach ($all_cinemas as $movieId => $movie) {
 		$found = false;
 		foreach ($ePlaces as $ePlaceId => $ePlace) {
 			if (matchName($placeName, $ePlace['name'])) $found = $ePlace;
-			if (matchName($placeName, $ePlace['synonym'])) $found = $ePlace;
+			if($ePlace['synonym'])
+				foreach(unserialize($ePlace['synonym']) as $syn)
+					if (matchName($placeName, $syn)) $found = $ePlace;
 		}
 		if (!$found) {
 			if ($debug) echo "place not found in syn\n";
@@ -138,7 +144,9 @@ foreach ($all_cinemas as $movieId => $movie) {
 		$found = false;
 		foreach ($ePlaces as $ePlaceId => $ePlace) {
 			if (matchName($placeName, $ePlace['name'])) $found = $ePlace;
-			if (matchName($placeName, $ePlace['synonym'])) $found = $ePlace;
+			if($ePlace['synonym'])
+				foreach(unserialize($ePlace['synonym']) as $syn)
+					if (matchName($placeName, $syn)) $found = $ePlace;
 		}
 		if ($found) {
 			$placeStack[$placeName] = $found;

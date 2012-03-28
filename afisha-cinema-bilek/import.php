@@ -98,7 +98,9 @@ class afishaCinemaBilekParser
 		foreach ($this->places as $placeId => $place) {
 			foreach ($remotePlaces as $rplaceId => $rplace) {
 				if ($this->matchName($place['name'] , $rplace['name'])) $place['found'] = $rplaceId;
-				if ($this->matchName($place['name'] , $rplace['synonym'])) $place['found'] = $rplaceId;
+				if($rplace['synonym'])
+					foreach(unserialize($rplace['synonym']) as $syn)
+						if ($this->matchName($place['name'] , $syn)) $place['found'] = $rplaceId;
 			}
 			if (isset($place['found'])) {
 				$this->places[$placeId]['remoteId'] = $place['found'];
@@ -132,7 +134,9 @@ class afishaCinemaBilekParser
 			foreach ($exrternalMovies as $eMovieId => $eMovie) {
 				if ($this->matchName($movie['name'], $eMovie['title'])) $movie['remoteId'] = $eMovieId;
 				if ($this->matchName($movie['name'], $eMovie['originalTitle'])) $movie['remoteId'] = $eMovieId;
-				if ($this->matchName($movie['name'], $eMovie['synonym'])) $movie['remoteId'] = $eMovieId;
+				if($eMovie['synonym'])
+					foreach(unserialize($eMovie['synonym']) as $syn)
+						if ($this->matchName($movie['name'], $syn)) $movie['remoteId'] = $eMovieId;
 			}
 			if (!isset($movie['remoteId']) || (isset($movie['remoteId']) && !empty($movie['edited']) && $movie['edited'] == '0')) {
 				$moviesToSend[] = $movie;
@@ -150,7 +154,9 @@ class afishaCinemaBilekParser
 					foreach ($exrternalMovies as $eMovieId => $eMovie) {
 						if ($this->matchName($movie['name'], $eMovie['title'])) $movie['remoteId'] = $eMovie['id'];
 						if ($this->matchName($movie['name'], $eMovie['originalTitle'])) $movie['remoteId'] = $eMovie['id'];
-						if ($this->matchName($movie['name'], $eMovie['synonym'])) $movie['remoteId'] = $eMovie['id'];
+						if($eMovie['synonym'])
+							foreach(unserialize($eMovie['synonym']) as $syn)
+								if ($this->matchName($movie['name'], $syn)) $movie['remoteId'] = $eMovie['id'];
 					}
 					if (!isset($movie['remoteId'])) {
 						unset($this->movieStack[$movieId]);
