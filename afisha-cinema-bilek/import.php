@@ -79,7 +79,7 @@ class afishaCinemaBilekParser
 					     'id'  => $movieId,
 					     'ext' => $ext
 					));
-				if (!is_file($path))
+				/*if (!is_file($path))
 					copy($logoUrl[1], $path);
 				$movie['logoUrl'] = $this->getUrl('image',
 					array(
@@ -87,7 +87,8 @@ class afishaCinemaBilekParser
 					     'ext'      => $ext,
 					     'url'      => $this->params['url'],
 					     'filesDir' => $this->params['filesDir'],
-					));
+					));*/
+				$movie['logoUrl'] = $logoUrl[1];
 			}
 			$this->movieStack[$movieId] = $movie;
 		}
