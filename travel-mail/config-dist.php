@@ -1,6 +1,6 @@
 <?php
 return array(
 	'apiUrl' => '',
-    'apiKey' => '', // needs 'currency.setCurrency' method access
+    'apiKey' => '', // needs 'contextblock.list' and 'contextblock.update' method access
 );
 ?>
