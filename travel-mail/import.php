@@ -89,7 +89,7 @@ foreach($blockText as $link => $text)
     $message->addparam($p0);
     $p1 = new xmlrpcval($block, 'string');
     $message->addparam($p1);
-    $p2 = new xmlrpcval(base64_encode('<div class="content-block" style="padding-top: 20px; padding-left: 20px;"><span style="color: #666666; font-size: 0.8em;">Путешествия@mail.ru:</span><p><a href="'.$link.'"_blank">'.$text.'</a></p></div>'), 'string');
+    $p2 = new xmlrpcval(base64_encode('<div class="content-block" style="padding-top: 20px; padding-left: 20px;"><span style="color: #666666; font-size: 0.8em;">Путешествия@mail.ru:</span><p><a href="'.$link.'" target="_blank">'.$text.'</a></p></div>'), 'string');
     $message->addparam($p2);
     $p3 = new xmlrpcval('base64', 'string');
     $message->addparam($p3);
