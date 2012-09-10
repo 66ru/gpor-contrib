@@ -23,9 +23,11 @@ curl_close($ch);
 
 $content = str_replace('href="/','href="http://'.$host.'/',$content);
 $content = str_replace('href=\'/','href=\'http://'.$host.'/',$content);
+$content = str_replace('<li class="head_menu_item head_menu_item-begin rc3">', '<li class="head_menu_item head_menu_item-begin rc3" style="display: none;">', $content);
 $content = preg_replace('#href="([^h])#','href="http://'.$host.'/$1',$content);
 $content = preg_replace('#href=\'([^h])#','href="http://'.$host.'/$1',$content);
 $content = preg_replace('/action="([^"]+)"/i','action="http://'.$host.'$1"',$content);
+$content = preg_replace('/GporAuth\.run \(function\(token\).*\s*.*\s*.*\);/', '', $content);
 
 $fn = fopen($filePath.'index.html','w');
 fwrite($fn, $content);
