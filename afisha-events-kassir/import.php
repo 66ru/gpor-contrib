@@ -1,7 +1,12 @@
 <?php
 
+header( 'Content-Type: text/html; charset=utf-8');
 $DR = dirname(__FILE__);
 include_once ($DR.'/../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
+
+if (!is_file("config.php"))
+	die( "config.php not found" );
+include "config.php";
 
 
 class AfishaEventsKassir
@@ -15,10 +20,6 @@ class AfishaEventsKassir
 
 	public function __construct()
 	{
-		if (!is_file("config.php"))
-			die( "config.php not found" );
-		include "config.php";
-
 		if (self::DEBUG)
 		{
 			error_reporting(E_ALL);
@@ -53,11 +54,15 @@ class AfishaEventsKassir
 
 
 	/**
-	 *
+	 * Получаем данные с Gpor
 	 */
 	private function getGporEvents()
 	{
 		$this->output(__METHOD__);
+
+		$this->_gporEventsData = $this->sendApiRequest('afisha.getEvents');
+		$this->output("\t\tTotalPlaces: ".count($this->_gporEventsData['places']));
+		$this->output("\t\tTotalEvents: ".count($this->_gporEventsData['events']));
 	}
 
 
@@ -104,15 +109,65 @@ class AfishaEventsKassir
 			$id = $locData['id'];
 			$this->_kassirEventsData['events'][$id] = $locData;
 		}
+
+		$this->output("\t\tTotalPlaces: ".count($this->_kassirEventsData['places']));
+		$this->output("\t\tTotalEvents: ".count($this->_kassirEventsData['events']));
 	}
 
 
 	/**
-	 *
+	 * Сравниваем и обновляем места событий
 	 */
 	private function comparePlaces()
 	{
 		$this->output(__METHOD__);
+
+		$placesToSend = array();
+
+		$oldPlacesCount = 0;
+		$newPlacesCount = 0;
+
+		foreach ($this->_kassirEventsData['places'] as $placeIdKassir => $placeKassir)
+		{
+			$found = false;
+			foreach ($this->_gporEventsData['places'] as $placeIdGpor => $placeGpor)
+			{
+				if ( $this->matchName( $placeKassir['title'], $placeGpor['title'] ) )
+					$found = $placeKassir;
+
+				if ( $placeGpor['synonym'] )
+				{
+					foreach ( unserialize($placeGpor['synonym']) as $syn )
+					{
+						if ( $this->matchName( $placeKassir['title'], $syn) )
+							$found = $placeKassir;
+					}
+				}
+
+				if ($found)
+					break;
+			}
+
+			if (!$found)
+			{
+				$this->output( "\tNew place ['".$placeKassir['title']."']" );
+				$placesToSend[] = $placeKassir;
+				$newPlacesCount++;
+			}
+			else
+			{
+				$this->output( "\tFound ['".$placeKassir['title']."'] id=".$found['id'] );
+				$placeKassir['externalId'] = $found['id'];
+				$placesToSend[] = $placeKassir;
+				$oldPlacesCount++;
+			}
+		}
+
+		$this->output( "" );
+		$this->output( "\t$newPlacesCount new places" );
+		$this->output( "\t$oldPlacesCount old places" );
+/*		if ($debug) echo "Sending afisha.postMovie, count: " . sizeof($moviesToSend) . "\n";
+		sendData('afisha.postMovie', $moviesToSend);*/
 	}
 
 
@@ -126,7 +181,47 @@ class AfishaEventsKassir
 
 
 	/**
-	 * Парсинг XML в массив
+	 * Отправить API-запрос на gpor
+	 */
+	function sendApiRequest($name, $params = array())
+	{
+		global $apiKey, $apiUrl;
+
+		$this->output( "\tCall API method: $name" );
+
+		$client	= new xmlrpc_client($apiUrl);
+		$client->request_charset_encoding	= 'UTF-8';
+		$client->return_type				= 'phpvals';
+		$client->debug						= 0;
+
+		$msg = new xmlrpcmsg($name);
+		$p1 = new xmlrpcval($apiKey, 'string');
+		$msg->addparam($p1);
+
+		if ($params)
+		{
+			$p2 = php_xmlrpc_encode($params);
+			$msg->addparam($p2);
+		}
+	
+		$client->accepted_compression = 'deflate';
+		$res = $client->send($msg, 60 * 5, 'http11');
+
+		if ($res->faultcode())
+		{
+			ob_end_clean();
+			print "An error occurred: ";
+			print " Code: " . htmlspecialchars($res->faultCode());
+			print " Reason: '" . htmlspecialchars($res->faultString()) . "' \n";
+			die;
+		}
+
+		return $res->val;
+}
+
+
+	/**
+	 * Парсинг XML объекта в массив
 	 */
 	private function parseXmlObject($arrObjData, $arrSkipIndices = array())
 	{
@@ -148,6 +243,24 @@ class AfishaEventsKassir
 			}
 		}
 		return $arrData;
+	}
+
+
+	/**
+	 * Сравниваем два текстовых поля
+	 */
+	function matchName($a, $b)
+	{
+		$a = mb_strtolower($a);
+		$b = mb_strtolower($b);
+
+		// Вырезаем все несимвольные и нецифровые символы
+		$a = preg_replace('|[^\p{L}\p{Nd}]|u', '', $a);
+		$b = preg_replace('|[^\p{L}\p{Nd}]|u', '', $b);
+
+		if ($a == $b)
+			return true;
+		return false;
 	}
 
 
