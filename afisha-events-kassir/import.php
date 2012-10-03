@@ -11,7 +11,7 @@ include "config.php";
 
 class AfishaEventsKassir
 {
-	const DEBUG = true;
+	const DEBUG = false;
 
 	// Данные, полученные с gpor и с kassir
 	private $_gporEventsData = array();
@@ -114,8 +114,7 @@ class AfishaEventsKassir
 			"placeId"     => $this->getGporExternalId( $event['location'] ),
 			"seances"     => serialize( array( (string)strtotime($event['date']) ) ),
 			"image"       => $event['image'],
-			"siteBooking" => $event['url'],
-			"type"        => $event['rubricator']
+			"siteBooking" => $event['url']
 		);
 
 		$res = $this->sendApiRequest('afisha.postEvent', $eventData);
@@ -296,16 +295,16 @@ class AfishaEventsKassir
 					}
 				}
 
+				// Сравниваем места
+				if ($found)
+				{
+					$placeIdGpor = $this->getGporExternalId( $eventKassir['location'] );
+					if ($placeIdGpor != $found['placeId'])
+						$found = false;
+				}
+
 				if ($found)
 					break;
-			}
-
-			// Сравниваем места
-			if ($found)
-			{
-				$placeIdGpor = $this->getGporExternalId( $eventKassir['location'] );
-				if ($placeIdGpor != $found['placeId'])
-					$found = false;
 			}
 
 			if (!$found)
