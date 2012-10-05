@@ -11,7 +11,9 @@ include "config.php";
 
 class AfishaEventsKassir
 {
-	const DEBUG = false;
+	const DEBUG = true;
+	const HALL_URL = 'kassir_getHallList.xml';
+	const EVENTS_URL = 'kassir_getEventList.xml';
 
 	// Данные, полученные с gpor и с kassir
 	private $_gporEventsData = array();
@@ -147,7 +149,7 @@ class AfishaEventsKassir
 		$this->_kassirEventsData['events'] = array();
 
 		// Места
-		$url = 'http://66.localhost/kassir_getHallList.xml';
+		$url = self::HALL_URL;
 		$this->output("\tparse ".$url);
 
 		$xml = file_get_contents($url);
@@ -164,7 +166,7 @@ class AfishaEventsKassir
 		}
 
 		// События
-		$url = 'http://66.localhost/kassir_getEventList.xml';
+		$url = self::EVENTS_URL;
 		$this->output("\tparse ".$url);
 
 		$xml = file_get_contents($url);
