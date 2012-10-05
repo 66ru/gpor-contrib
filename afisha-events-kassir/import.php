@@ -11,7 +11,7 @@ include "config.php";
 
 class AfishaEventsKassir
 {
-	const DEBUG = true;
+	const DEBUG = false;
 	const HALL_URL = 'kassir_getHallList.xml';
 	const EVENTS_URL = 'kassir_getEventList.xml';
 
