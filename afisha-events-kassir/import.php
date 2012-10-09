@@ -11,9 +11,10 @@ include "config.php";
 
 class AfishaEventsKassir
 {
-	const DEBUG = false;
+	const DEBUG = true;
 	const HALL_URL = 'kassir_getHallList.xml';
 	const EVENTS_URL = 'kassir_getEventList.xml';
+	const WEB_AGENT_ID = '115034268';
 
 	// Данные, полученные с gpor и с kassir
 	private $_gporEventsData = array();
@@ -116,7 +117,7 @@ class AfishaEventsKassir
 			"placeId"     => $this->getGporExternalId( $event['location'] ),
 			"seances"     => serialize( array( (string)strtotime($event['date']) ) ),
 			"image"       => $event['image'],
-			"siteBooking" => $event['url']
+			"siteBooking" => "http://www.kassir.ru/__wa/".self::WEB_AGENT_ID."/".str_replace('http://','',$event['url'])
 		);
 
 		$res = $this->sendApiRequest('afisha.postEvent', $eventData);
