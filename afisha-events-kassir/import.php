@@ -112,11 +112,13 @@ class AfishaEventsKassir
 	{
 		$this->output(__METHOD__);
 
+        echo "\n".$event['date'];
+
 		$eventData = array(
 			"title"       => $event['title'],
 			"description" => $event['text'],
 			"placeId"     => $this->getGporExternalId( $event['location'] ),
-			"seances"     => serialize( array( (string)strtotime($event['date']) ) ),
+			"seances"     => serialize( array( (string)strtotime(str_replace('+0400', '+0600', $event['date']) ) ) ), // тупой kassir.ru отдает местное время, но сдвиг московский
 			"image"       => $event['image'],
 			"siteBooking" => "http://www.kassir.ru/__wa/".self::WEB_AGENT_ID."/".str_replace('http://','',$event['url'])
 		);
