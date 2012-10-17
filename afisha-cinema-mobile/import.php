@@ -3,8 +3,8 @@
 $DR = dirname(__FILE__);
 include_once ($DR.'/../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 $debug = false;
-if(is_file("config.php"))
-	include "config.php";
+if(is_file($DR."/config.php"))
+	include $DR."/config.php";
 else {
 	echo "config.php not found";
 	die;
