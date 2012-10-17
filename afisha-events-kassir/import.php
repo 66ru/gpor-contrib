@@ -1,17 +1,18 @@
 <?php
+date_default_timezone_set('Asia/Yekaterinburg');
 
 header( 'Content-Type: text/html; charset=utf-8');
 $DR = dirname(__FILE__);
 include_once ($DR.'/../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 
-if (!is_file("config.php"))
+if (!is_file($DR."/config.php"))
 	die( "config.php not found" );
-include "config.php";
+include $DR."/config.php";
 
 
 class AfishaEventsKassir
 {
-	const DEBUG = true;
+	const DEBUG = false;
 	const HALL_URL = 'kassir_getHallList.xml';
 	const EVENTS_URL = 'kassir_getEventList.xml';
 	const WEB_AGENT_ID = '115034268';
