@@ -112,8 +112,6 @@ class AfishaEventsKassir
 	{
 		$this->output(__METHOD__);
 
-        echo "\n".$event['date'];
-
 		$eventData = array(
 			"title"       => $event['title'],
 			"description" => $event['text'],
@@ -323,7 +321,7 @@ class AfishaEventsKassir
 			else
 			{
 				// Сравниваем сеансы
-				$kassirDate = (string)strtotime($eventKassir['date']);
+                $kassirDate = (string)strtotime(str_replace('+0400', '+0600', $eventKassir['date']) );
 				if (!in_array($kassirDate, unserialize($found['seances'])))
 				{
 					$this->output( "\tNew seance ['".$eventKassir['title']."'] id=".$found['id']." placeId=".$found['placeId'] );
