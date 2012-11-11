@@ -1,0 +1,537 @@
+/**
+ * @package portal
+ */
+
+/**
+ * Рекоммендации
+ *
+ * 1 Все имена (id, классы) могут содержать в себе только латинские буквы
+ *   в нижнем регистре, цифры, знак «-» и знак «_». Знак «_» может служить
+ *   только для указания наследования. Все имена должны означать то, что они
+ *   отображают, а не как они это отображают:
+ *   .green-text { color: green; } — Это плохо!
+ *   .user-info { color: green; } — Это хорошо!
+ * 2 Стараться не использовать стандартное css наследование. Вместо этого нужно
+ *   использовать уникальные классы вида grandparent_parent_child
+ * 3 Правила для IE6 и IE7 стоит выносить в отдельные файлы только если в
+ *   них используются нестандартные свойства или это влияет на приоритетность
+ *   применения правил. В остальных случаях нужно указывать #ie, #ie_lt-7,
+ *   #ie_lt-8, в начале селектора и которые действуют только внутри #frame!
+ * 4 Не обращать внимания на опечатки в комментариях — мне стыдно.
+ * 5 Необходимо пользоваться CSSDoc {@link http://cssdoc.net/attachment/wiki/CssdocDraft/cssdoc - 0.2.22.pdf}
+ *   для разделения на секции и описания нетривильных правил.
+ * 6 Свойства в правилах и аттрибуты html-элементов располагаются строго в
+ *   алфавитном порядке
+ * 7 Длинные строки (длиннее 80 символов) не допускаются
+ * 8 Стараться все картинки делать спрайтами
+ * 9 z-index распределяются следующим образом:
+ *   192-255 для глобальных слоёв
+ *   128-192 для окон
+ *   до 128 для локальных словёв
+ *
+ * @section guides
+ */
+
+/**
+ * Известные баги
+ *
+ * 1 Инлайн комментарии внутри правила неверно распознаются IE6. Необходимо
+ *   или использовать многострочные комментарии или ставить в конце 2 звёздочки
+ *   вместо одной
+ * 2 Внутрь инлайн-блоков иногда лучше положить дополнительный блочный элемент
+ *   для Оперы
+ *
+ * @section bugs
+ */
+
+/**
+ * Общие правила
+ * @subpackage common
+ */
+
+.invisible {
+    left: -999em;
+    position: absolute;
+    top: -999em;
+}
+
+.hidden {
+	display: none !important;
+}
+
+/**
+ * Класс чтобы упростить работу с инлайн-блоками
+ * @see portal.commonIe.inlineBlocks
+ * @section inlineBlocks
+ */
+.inline-block,
+.js_inline-block {
+    display: -moz-inline-stack;
+    display: inline-block;
+}
+
+/**
+ * @bugfix Неверное позиционирование внутри инлайн-блоков
+ * @affected Opera
+ */
+.opera_inline-block-wrap {
+    display: block;
+}
+
+/**
+ * @see portal.commonIe.pseudolink
+ * @see inlineBlocks
+ * @section pseudolink
+ */
+.pseudolink,
+.js_pseudolink {
+    border-bottom: 1px dashed #037DD3;
+    color: #037DD3;
+    cursor: pointer;
+    display: -moz-inline-stack;
+    display: inline-block;
+}
+
+/**
+ * @section icons
+ */
+
+ /**
+ * Иконка клубов
+ * @subsection comments
+ */
+.club-icon {
+	background:url("../img/icons.png") no-repeat scroll -35px -1373px transparent;
+	display:inline-block;
+	height:18px;
+	width:18px;
+}
+
+
+/**
+ * Количество комментариев
+ * @subsection comments
+ */
+.comments,
+.comments-count {
+    background: url('../img/icons.png') no-repeat -251px -471px;
+}
+
+.comments-count
+ {
+    font-size: 0.846em;
+    padding-left: 12px;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+/**
+ * Ссылка на пользователя
+ * @subsection user
+ */
+.js_user-m-on,
+.js_user-m-off,
+.js_user-f-on,
+.js_user-f-off,
+.js_user-u-on,
+.js_user-u-off {
+    background: url('../img/icons.png') no-repeat;
+    padding-left: 11px;
+    font-weight: bold;
+}
+
+.js_user-m-on {
+    background-position: -317px 4px;
+}
+
+.js_user-m-off {
+    background-position: -309px -55px;
+}
+
+.js_user-f-on {
+    background-position: -301px -115px;
+}
+
+.js_user-f-off {
+    background-position: -293px -175px;
+}
+
+.js_user-u-on {
+    background-position: -285px -234px;
+}
+
+.js_user-u-off {
+    background-position: -277px -293px;
+}
+
+.user-link-service {
+    background-repeat: no-repeat;
+    padding-left: 20px;
+    height: 16px;
+    line-height: 16px;
+}
+.user-link-service__vkontakte { background-image:url("../img/social-mini-icons.png");background-position: 0px 2px; }
+.user-link-service__facebook { background-image:url("../img/social-mini-icons.png");background-position: 0px -12px; }
+.user-link-service__twitter { background-image:url("../img/social-mini-icons.png");background-position: 0px -26px; }
+.user-link-service__yandex { background-image:url("../img/social-mini-icons.png");background-position: 0px -288px; }
+.user-link-service__lj { background-image:url("../img/social-mini-icons.png");background-position: 0px -40px; }
+
+
+
+/**
+ * @subsection media
+ * @see inlineBlocks
+ * @see portal.commonIe.icons.media
+ */
+.has-photo, .has-video, .has-audio, .has-poll, .has-infograph, .has-online {
+    background: url('../img/icons.png') no-repeat;
+    display: -moz-inline-stack;
+    display: inline-block;
+    height: 12px;
+    text-indent: -999em;
+    vertical-align: middle;
+}
+
+.has-photo {
+    background-position: 0 -20px;
+    width: 27px;
+}
+
+.has-video {
+    background-position: -27px -20px;
+    width: 32px;
+}
+
+.has-video {
+    background-position: -27px -20px;
+    width: 32px;
+}
+
+.has-audio {
+    background-position: -59px -20px;
+    width: 32px;
+}
+
+.has-poll {
+    background-position: -91px -20px;
+    width: 12px;
+}
+
+.has-infograph {
+    background-position: -103px -20px;
+    width: 11px;
+}
+.has-online {
+	background-position: -116px -20px;
+	width: 35px;
+}
+/**
+ * @section message
+ */
+.message, .js_message {
+    padding: 7px 10px;
+}
+
+.message_success, .js_message_success {
+    background-color: #EAF5CE;
+    border: 1px solid #779C22;
+    color: #000000;
+}
+
+.message_fail, .js_message_fail {
+    background-color: #FFD6BF;
+    border: 1px solid #DE4713;
+    color: #A32D05;
+}
+
+/**
+ * @section loader
+ */
+.js_loader {
+    background: url('../img/backgrounds-x.png') repeat-x 0 -170px;
+    height: 14px;
+    width: 160px;
+}
+
+* html .js_loader {
+    background-image: url('../img/backgrounds-x.ie.png');
+}
+
+/**
+ * Оформрелие фильра TWIG subString($start, $end, $png) 
+ * для $png = 1
+ */
+
+.substring-filter-png {
+	color: inherit !important; 
+	font-size: inherit !important; 
+	line-height: inherit !important; 
+	font-style: inherit !important; 
+	font-weight: inherit !important;
+	letter-spacing: inherit !important;
+	text-indent: inherit !important;
+	position: absolute !important; 
+	margin: inherit !important;
+	margin-left: -30px !important;  
+	width: 30px !important; 
+	display: inline !important; 
+	text-decoration: none !important;
+	border: none !important;
+	background: url('../img/substring-png.png') no-repeat right 0 !important;
+ }
+
+a:hover .substring-filter-png {
+	text-decoration: none !important;
+}
+
+
+
+.b-pushout-left_20 {
+	margin-left:-20px;
+}
+
+.b-pushin-left_20 {
+	padding-left:20px;
+}
+
+.b-pushout-left_17 {
+	margin-left:-17px;
+}
+
+.b-pushin-left_17 {
+	padding-left:17px;
+
+
+}
+
+.b-pushout-right_20 {
+	margin-right:-20px;
+}
+
+.b-pushin-right_15 {
+	padding-right:15px;
+}
+
+.b-pushin-right_20 {
+	padding-right:20px;
+}
+
+.b-pushout-right_17 {
+	margin-right:-17px;
+}
+
+.b-pushin-right_17 {
+	padding-right:17px;
+}
+
+
+
+
+
+/**
+* Классы для распорок
+*/
+
+.b-sep {
+	clear:both;
+}
+
+.b-sep-2 {
+	height: 2px;
+}
+
+.b-sep-3 {
+	height: 3px;
+}
+
+.b-sep-4 {
+	height: 4px;
+}
+
+.b-sep-5 {
+	height: 5px;
+}
+
+.b-sep-6 {
+	height: 6px;
+}
+
+.b-sep-7 {
+	height: 7px;
+}
+
+.b-sep-7 {
+	height: 7px;
+}
+
+.b-sep-8 {
+	height: 8px;
+}
+
+.b-sep-10 {
+	height: 10px;
+}
+
+.b-sep-15 {
+	height: 15px;
+}
+
+.b-sep-20 {
+	height: 20px;
+}
+
+.b-sep-25 {
+	height: 25px;
+}
+
+.b-sep-30 {
+	height: 30px;
+}
+
+.b-sep-40 {
+	height: 40px;
+}
+
+.b-sep-50 {
+	height: 50px;
+}
+
+/**/
+
+.search_zone .hidden {
+	display: none;
+}
+
+.search_zone {
+	border-bottom: 1px dashed #fff;
+	cursor: pointer;
+	float: left;
+}
+
+/* классы для быстрого редактирования блоков (при клике - редактирование, при выходе кликом из формы - сохранение (скрытие формы) */
+
+.jsOriginal {
+
+}
+
+.jsEdittable {
+	display: none;
+	margin-bottom: 5px;
+}
+
+#foot div.v5-logo {
+    padding-left:60px;
+    padding-top:8px;
+    position:relative;
+}
+#foot div.v5-logo a {
+    color:#CEDCAC;
+    font-size:12px;
+    text-decoration:none;
+}
+#foot div.v5-logo a {
+    display:inline-block;
+}
+#foot div.v5-logo a img {
+    border:0 none;
+    left:0;
+    position:absolute;
+    top:0;
+}
+* html #foot div.v5-logo a img {
+    left:-60px;
+}
+#foot div.v5-logo span.v5-footer-links {
+    color:#CEDCAC;
+    font-size:12px;
+    vertical-align:bottom;
+}
+#foot ul.v5-menu {
+    list-style-type:none;
+    margin:0 0 0 -14px;
+    padding:4px 0 0;
+}
+#foot ul.v5-menu li {
+    border-right:1px solid #FFFFFF;
+    display:inline-block;
+    font-size:12px;
+    font-weight:bold;
+    line-height:11px;
+    padding:0 14px;
+}
+* html #foot ul.v5-menu li {
+    display:inline;
+}
+#foot ul.v5-menu li.v5-last {
+    border-right:medium none;
+}
+#foot ul.v5-menu li a {
+    color:#FFFFFF;
+    text-decoration:underline;
+}
+#foot div.v5-counters {
+    position:absolute;
+    right:5px;
+    top:10px;
+}
+
+/* стандартный текстовый блок */
+.c-standart-text-block {  }
+.c-standart-text-block strong { font-weight: bold; }
+.c-standart-text-block ol,
+.c-standart-text-block ul { list-style-type: disc; padding-left: 30px; margin-bottom: 10px; line-height: 1.4; }
+.c-standart-text-block p { margin-bottom: 10px; }
+.c-standart-text-block table { border: 1px solid black; }
+
+
+.rabota-not-found .content-block { margin-top: 15px; }
+.rabota-not-found .content-block p { font-size: 24px; text-align: center; margin: 0; }
+
+.hotels-not-found .content-block { margin-top: 15px; }
+.hotels-not-found .content-block p { font-size: 24px; text-align: center; margin: 0; }
+
+.search-not-found .content-block { margin-top: 15px; }
+.search-not-found .content-block p { font-size: 24px; text-align: center; margin: 0; }
+
+.out-head-wrap-content {
+	height: auto; 
+	margin: 0 auto;
+	position: relative;
+}
+
+
+/* content-block */
+.content-block p {
+	margin: .5em 0;
+	line-height: 1.25;
+}
+
+/* стили для заголовков в контент-блоках */
+.content-block h1,
+.content-block h2,
+.content-block h3 { font-size: 18px; margin: 0 0 8px 0; line-height: 1.4; font-weight: normal; }
+
+.content-block h1.big-header,
+.content-block h2.big-header,
+.content-block h3.big-header { font-size: 24px; margin: 0 0 10px 0; }
+
+.content-block h1.middle-header,
+.content-block h2.middle-header,
+.content-block h3.middle-header { font-size: 18px; margin: 0 0 10px 0; }
+
+.content-block h1.small-header,
+.content-block h2.small-header,
+.content-block h3.small-header { font-size: 13px; font-weight: bold; margin: 0 0 10px 0; }
+
+.content-block p,
+.content-block li { font-size: 13px; margin-bottom: 9px; line-height: 1.4; }
+
+
+
+/* нестандартные контент блоки */
+.content-block .recommended .title { padding-top: 2px; padding-bottom: 2px; }
+.content-block .recommended .text { margin-bottom: 0; font-weight: bold; color: white; font-size: 13px; }
+.content-block .hotesls_news-h a { color: black; text-decoration: none; }
+.content-block .advert_attention { margin-bottom: -8px; }
+.content-block .advert_phone { margin-bottom: -9px; }
+.right-context-text-job h2, .right-context-text-job h3{ font: bold 13px/18px Arial, Tahoma, Sans-Serif; margin-bottom: 10px; }

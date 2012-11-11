@@ -1,0 +1,49 @@
+/**
+ * @package portal
+ */
+
+/**
+ * Плавающие (floating) блоки для IE<=7
+ *
+ * @subpackage floatIe
+ */
+
+/**
+ * @see portal.float.context
+ * @section context
+ */
+
+/**
+ * Включенный hasLayout создаёт внутри блока контекст форматирования, а также
+ * заставляет блоки c clear вести себя как нужно
+ *
+ * @bugfix IE hasLayout
+ * @see portal.common.hasLayout
+ * @affected IE6, IE7
+ * @css-for IE6, IE7
+ */
+.context,
+.js_context {
+    zoom: 1;
+}
+
+/**
+ * Очистка потока
+ *
+ * Для корректной работы правил очистки в IE<=7
+ * необходимо применять их к элементам, у которых есть какое-либо содержание.
+ * Если же содержания не должно быть и элемент не должен быть виден, т.е. должен
+ * использоваться исключительно для очистки, то в html его надо писать как:
+ * <div class="clear"><!-- --></div>
+ *
+ * @bugfix IE hasLayout
+ * @see portal.commonIe.hasLayout
+ * @see portal.float.clear
+ * @affected IE6, IE7
+ * @css-for IE6
+ * @section clear
+ */
+.clear,
+.js_clear {
+    zoom: 1;
+}

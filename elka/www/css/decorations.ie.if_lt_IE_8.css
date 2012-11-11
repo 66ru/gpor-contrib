@@ -1,0 +1,105 @@
+/**
+ * @package portal
+ */
+
+/**
+ * Декоративные элементы для IE<=7
+ *
+ * @subpackage decorationsIe
+ */
+
+/**
+ * @see portal.decorations.frames
+ * @section frames
+ */
+
+/**
+ * Без этого всё разъезжается
+ *
+ * @bugfix IE inline-block
+ * @affected IE6
+ * @css-for IE6
+ */
+* html .frame_wrap,
+* html .js_frame_wrap {
+    display: inline;
+    zoom: 1;
+}
+
+/**
+ * @bugfix IE hasLayout
+ * @affected IE6, IE7
+ * @css-for IE6, IE7
+ */
+.frame_top-left,
+.js_frame_top-left,
+.frame_top-right,
+.js_frame_top-right,
+.frame_bottom-left,
+.js_frame_bottom-left,
+.frame_bottom-right,
+.js_frame_bottom-right {
+    zoom: 1;
+}
+
+/**
+ * @see http://www.brunildo.org/test/abs_h100.html
+ * @bugfix Растягивание абсолютных блоков
+ * @affected IE6
+ * @css-for IE6
+ */
+* html .frame_top-left,
+* html .js_frame_top-left,
+* html .frame_top-right,
+* html .js_frame_top-right {
+    height: expression(parentNode.clientHeight);
+}
+
+/**
+ * @see http://www.brunildo.org/test/abs_h100.html
+ * @bugfix Растягивание абсолютных блоков
+ * @affected IE6
+ * @css-for IE6
+ */
+* html .frame_top-left,
+* html .js_frame_top-left,
+* html .frame_bottom-left,
+* html .js_frame_bottom-left {
+    width: expression(parentNode.clientWidth);
+}
+
+/**
+ * @section corners
+ * @see portal.decorations.corners
+ */
+* html .rc-tl .rocon-tl {
+    -ie-rc-tl: expression(this.parentNode.className && this.parentNode.className.match(/\\brc-tl\\b/) ? runtimeStyle.display = 'none' : '', this.className += ' rc-tl-clear');
+}
+
+* html .rc-tl .rc-tl-clear {
+    -ie-rc-tl: expression('') !important;
+}
+
+* html .rc-tr .rocon-tr {
+    -ie-rc-tr: expression(this.parentNode.className && this.parentNode.className.match(/\\brc-tr\\b/) ? runtimeStyle.display = 'none' : '', this.className += ' rc-tr-clear');
+}
+
+* html .rc-tr .rc-tr-clear {
+    -ie-rc-tr: expression('') !important;
+}
+
+* html .rc-bl .rocon-bl {
+    -ie-rc-bl: expression((this.parentNode.className && this.parentNode.className.match(/\\brc-bl\\b/) ? runtimeStyle.display = 'none' : ''), this.className += ' rc-bl-clear');
+}
+
+* html .rc-bl .rc-bl-clear {
+    -ie-rc-bl: expression('') !important;
+}
+
+* html .rc-br .rocon-br {
+    -ie-rc-br: expression((this.parentNode.className && this.parentNode.className.match(/\\brc-br\\b/) ? runtimeStyle.display = 'none' : ''), this.className += ' rc-br-clear');
+}
+
+* html .rc-br .rc-br-clear {
+    -ie-rc-br: expression('') !important;
+}

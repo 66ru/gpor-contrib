@@ -1,5 +1,5 @@
 <?php
-class VitrinaMenuWidget extends CWidget {
+class ElkaMenuWidget extends CWidget {
 
     public $uri = false;
 
@@ -7,13 +7,9 @@ class VitrinaMenuWidget extends CWidget {
 		parent::run();
 
         $items = array (
-            array ('link' => array('/vitrinaShop/index'), 'caption' => 'Магазины', 'regexp' =>  '/shop*'),
-            array ('link' => array('/vitrinaCollection/section', 'sectionId'=>311), 'caption' => 'Для женщин', 'regexp' => '/coll/cat311.*'),
-            array ('link' => array('/vitrinaCollection/section', 'sectionId'=>313), 'caption' => 'Для мужчин', 'regexp' => '/coll/cat313.*'),
-            array ('link' => array('/vitrinaCollection/section', 'sectionId'=>314), 'caption' => 'Для детей', 'regexp' => '/coll/cat314.*'),
-            array ('link' => array('/vitrinaCollection/section', 'sectionId'=>315), 'caption' => 'Обувь', 'regexp' => '/coll/cat315.*'),
-            array ('link' => array('/vitrinaAction/index'), 'caption' => 'Акции', 'regexp' => '/action*'),
-            array ('link' => array('/vitrinaWidget/create'), 'caption' => 'Создать стиль', 'regexp' => '/mystyle*'),
+            array ('link' => array('/site/index'), 'caption' => 'О проекте', 'regexp' =>  false),
+            array ('link' => array('/site/join'), 'caption' => 'Обратная связь', 'regexp' =>  '/join*'),
+            array ('link' => array('/site/gifts'), 'caption' => 'Подарки', 'regexp' =>  '/gifts*'),
         );
 
         $uri = $this->uri ? $this->uri : Yii::app()->request->getRequestUri();
@@ -31,6 +27,8 @@ class VitrinaMenuWidget extends CWidget {
             $item['active'] = $isActive;
             $tmp[] = $item;
         }
+        if (!$active)
+            $tmp[0]['active'] = true;
         $items = $tmp;
 
 		$this->render('menu', array(

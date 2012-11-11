@@ -1,0 +1,244 @@
+/**
+ * @package portal
+ */
+
+/**
+ * Основной каркас
+ *
+ * Минимальная ширина страницы 960px. Максимальная 1280px
+ *
+ * @subpackage frame
+ */
+
+/**
+ * @section reflowFix
+ */
+
+/**
+ * Из-за того, что reflow не выполняется при вертикальном ресайзе футер
+ * остаётся на месте и никуда не двигается, пока не сделать горизонтальный
+ * ресайз или не совершить какое-нибудь действие на странице
+ *
+ * Сначала добавляем position: relative для html (нужно для Оперы)
+ *
+ * @bugfix Не выполняется reflow в Opera и IE8 при вертикальном ресайзе
+ * @see http://brunildo.org/test/minheightIE8OP10.html
+ * @affected Opera, IE8
+ * @css-for Opera
+ */
+html {
+	position: relative;
+}
+
+/**
+ * Т.к. если блоку с min-heigth добавить position: relative в опере фикс перестаёт
+ * работать, создаим отдельный элемент для этих целей
+ *
+ * @bugfix Не выполняется reflow в Opera и IE8 при вертикальном ресайзе
+ * @link http://brunildo.org/test/minheightIE8OP10.html
+ * @affected Opera, IE8
+ * @css-for Opera
+ */
+#opera_frame_reflow {
+    float: left;
+    /*
+    min-height: 100%;
+    */
+    width: 0;
+}
+
+/**
+ * @bugfix Не выполняется reflow в Opera и IE8 при вертикальном ресайзе
+ * @link http://brunildo.org/test/minheightIE8OP10.html
+ * @affected Opera, IE8
+ * @css-for Opera
+ */
+#opera_frame_reflow:after {
+    content: '';
+	height: 0%;
+    position: absolute;
+}
+
+/**
+ * @bugfix Не выполняется reflow в Opera и IE8 при вертикальном ресайзе
+ * @link http://brunildo.org/test/minheightIE8OP10.html
+ * @affected Opera, IE8
+ * @css-for IE8
+ */
+#ie_frame_reflow #opera_frame_reflow:after {
+    display: table;
+	position: static;
+}
+
+/**
+ * @bugfix Пустая строка при маленьком разрешении
+ * @affected IE6, IE7
+ * @css-for IE6
+ */
+* html #opera_frame_reflow {
+    display: none;
+}
+
+/**
+ * @bugfix Пустая строка при маленьком разрешении
+ * @affected IE6, IE7
+ * @css-for IE7
+ */
+*+html #opera_frame_reflow {
+    display: none;
+}
+
+/**
+ * @section frame
+ */
+
+#frame {
+    position: relative;
+    min-height: 100%;
+}
+
+/**
+ * @bugfix Поддержка минимальной высоты в IE6
+ * @affected IE6
+ * @css-for IE6
+ */
+* html #frame {
+    height: 100%;
+}
+
+/**
+ * @bugfix Поддержка минимальной ширины в IE6
+ * @affected IE6
+ * @css-for IE6
+ */
+ 
+* html body {
+    padding-left: 1000px;
+}
+
+/**
+ * @bugfix Поддержка минимальной ширины в IE6
+ * @affected IE6
+ * @css-for IE6
+ */
+ 
+#ie_lt-7,
+#ie_lt-7 #foot-wrap {
+    margin-left: -1000px;
+}
+
+#ie_lt-7 #head-wrap {
+	position:relative;
+	z-index:100;
+}
+
+
+/**
+ * @bugfix Поддержка максимальной ширины в IE6
+ * @link http://www.cssplay.co.uk/boxes/maxwidth.html
+ * @affected IE6
+ * @css-for IE6
+ */
+.ie_max-width_left_frame,
+.ie_max-width_right_frame {
+    display: inline;
+    font-size: 0;
+    height: 10px;
+    line-height: 0;
+    position: relative;
+    width: 50%;
+}
+
+/**
+ * @bugfix Поддержка максимальной ширины в IE6
+ * @link http://www.cssplay.co.uk/boxes/maxwidth.html
+ * @affected IE6
+ * @css-for IE6
+ */
+.ie_max-width_left_frame {
+    float: left;
+    margin-right: -640px;
+}
+
+/**
+ * @bugfix Поддержка максимальной ширины в IE6
+ * @link http://www.cssplay.co.uk/boxes/maxwidth.html
+ * @affected IE6
+ * @css-for IE6
+ */
+.ie_max-width_right_frame {
+    float: right;
+    margin-left: -640px;
+}
+
+#head-wrap,
+#body-wrap,
+#foot-wrap {
+    min-width: 1000px;
+	position: relative;
+}
+
+#head-wrap,
+#foot-wrap {
+    background-color: #779F1A;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+#head-wrap {
+	background-image: url('../img/backgrounds-x.png');
+	background-position: 0 0;
+	background-repeat: repeat-x;
+	position: static;
+}
+
+head-wrap, #head {
+	height: 91px !important;
+	margin-bottom: 6px;
+}
+.head_menu-top-logo a {
+	margin-top: 0px !important;
+}
+/**
+ * Чтобы распорка для Оперы и IE8 не мешала внутренним context блокам
+ * создадим из обёртки контекст с помощью float: left;
+ */
+#body-wrap {
+	float: left;
+    padding: 0 0 80px;
+    position: relative;
+	width: 100%;
+}
+
+body #body {
+	margin-top: 21px;
+}
+
+/**
+ * Для IE<=7 оставим всё как есть, т.к. распорка для Оперы и IE8 скрывается +
+ * контекст создаётся проще, а также потому что в IE6 для max-width
+ * используются дополнительные float блоки
+ */
+#ie_lt-8 #body-wrap {
+	float: none;
+	width: auto;
+}
+
+#foot-wrap {
+    bottom: 0;
+    top: auto;
+}
+
+#foot-wrap,
+#foot {
+    height: 60px;
+}
+
+#head, #body, #foot {
+    margin: 0 auto;
+    max-width: 1280px;
+    padding: 0 1%;
+    position: relative;
+}

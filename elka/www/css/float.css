@@ -1,0 +1,51 @@
+/**
+ * @package portal
+ */
+
+/**
+ * Плавающие (floating) блоки
+ *
+ * @subpackage float
+ */
+
+/**
+ * Создание контекста форматирования
+ * для предотвращения выпадения плавающих блоков из родителя
+ * Применяется непосредственно к родителю
+ *
+ * @see portal.floatIe.context
+ * @section context
+ */
+
+/**
+ * Для браузеров, которые поддерживают псевдоэлемент :after создаём такой элемент
+ * и указываем для него clear:both и т.к. он создаётся непосредственно последним
+ * внутри контейнера то он будет растягивать его по высоте самого
+ * высокого элемента
+ */
+.context:after,
+.js_context:after {
+    clear: both;
+    content: '';
+    display: block;
+}
+
+/**
+ * Очистка потока
+ *
+ * @see portal.floatIe.clear
+ * @section clear
+ */
+.clear,
+.js_clear {
+    clear: both;
+}
+
+
+.fleft {
+	float: left;
+}
+
+.fright {
+	float: right;	
+}

@@ -1,0 +1,247 @@
+/**
+ * @package portal
+ */
+
+/**
+ * Декоративные элементы
+ *
+ * @subpackage decorations
+ */
+
+/**
+ * Рамки
+ *
+ * Примери использования:
+ *
+ * .frame_wrap {
+ *     padding: <top margin>px <right margin>px <bottom margin>px <left margin>px;
+ * }
+ *
+ * .frame_content {
+ *     background-color: <background-color>;
+ * }
+ *
+ * .frame_bottom-left,
+ * .frame_bottom-right,
+ * .frame_top-left,
+ * .frame_top-right {
+ *     background: url('<image url>') no-repeat;
+ *     left: -<right margin>px;
+ * }
+ *
+ * .frame_top-left,
+ * .frame_top-right {
+ *     top: -<bottom margin>px;
+ * }
+ *
+ * .frame_top-right,
+ * .frame_bottom-right {
+ *     width: <right margin>px;
+ * }
+ *
+ * .frame_bottom-left,
+ * .frame_bottom-right {
+ *     height: <bottom margin>px;
+ * }
+ *
+ * .frame_top-right {
+ *     clip: rect(<bottom margin>px auto auto auto);
+ * }
+ *
+ * .frame_top-left {
+ *     clip: rect(<bottom margin>px auto auto <right margin>px);
+ * }
+ *
+ * .frame_bottom-left {
+ *     clip: rect(auto auto auto <right margin>px);
+ * }
+ *
+ * @section frames
+ */
+
+.frame_wrap,
+.js_frame_wrap {
+    position: relative;
+}
+
+.frame_content,
+.js_frame_content {
+    position: relative;
+    z-index: 1;
+}
+
+.frame_top-left,
+.js_frame_top-left,
+.frame_top-right,
+.js_frame_top-right,
+.frame_bottom-left,
+.js_frame_bottom-left,
+.frame_bottom-right,
+.js_frame_bottom-right {
+    font-size: 0;
+    position: absolute;
+    z-index: 0;
+}
+
+.frame_top-left,
+.js_frame_top-left,
+.frame_top-right,
+.js_frame_top-right {
+    height: 100%;
+}
+
+.frame_top-left,
+.js_frame_top-left,
+.frame_bottom-left,
+.js_frame_bottom-left {
+    width: 100%;
+}
+
+.frame_top-right,
+.js_frame_top-right,
+.frame_bottom-right,
+.js_frame_bottom-right {
+    margin-left: 100%;
+}
+
+/**
+ * @subsection cute
+ */
+.frames_cute_frame,
+.js_frames_cute_frame {
+    margin: 0 -4px;
+}
+
+.frames_cute_frame_wrap,
+.js_frames_cute_frame_wrap {
+    padding: 9px 11px 9px 11px;
+}
+
+.frames_cute_frame_content,
+.js_frames_cute_frame_content {
+    background-color: white;
+    padding: 5px 5px 5px 3px;
+}
+
+.frames_cute_frame_bottom-left,
+.js_frames_cute_frame_bottom-left,
+.frames_cute_frame_bottom-right,
+.js_frames_cute_frame_bottom-right,
+.frames_cute_frame_top-left,
+.js_frames_cute_frame_top-left,
+.frames_cute_frame_top-right,
+.js_frames_cute_frame_top-right {
+    background: url('../img/frames/cute.png') no-repeat;
+    left: -11px;
+}
+
+.frames_cute_frame_top-left,
+.js_frames_cute_frame_top-left,
+.frames_cute_frame_top-right,
+.js_frames_cute_frame_top-right {
+    top: -9px;
+}
+
+.frames_cute_frame_top-right,
+.js_frames_cute_frame_top-right,
+.frames_cute_frame_bottom-right,
+.js_frames_cute_frame_bottom-right {
+    width: 11px;
+}
+
+.frames_cute_frame_bottom-left,
+.js_frames_cute_frame_bottom-left,
+.frames_cute_frame_bottom-right,
+.js_frames_cute_frame_bottom-right {
+    height: 9px;
+}
+
+.frames_cute_frame_top-right,
+.js_frames_cute_frame_top-right {
+    clip: rect(9px auto auto auto);
+}
+
+.frames_cute_frame_top-left,
+.js_frames_cute_frame_top-left {
+    clip: rect(9px auto auto 11px);
+}
+
+.frames_cute_frame_bottom-left,
+.js_frames_cute_frame_bottom-left {
+    clip: rect(auto auto auto 11px);
+}
+
+.news_single_image img {
+	position: relative;
+	top: 2px;
+}
+
+/**
+ * @section hr
+ */
+.hr,
+.js_hr {
+    border-top: 1px solid #CCCCCC;
+    height: 0;
+}
+
+.hr hr,
+.js_hr hr {
+    display: none;
+}
+
+/**
+ * Обнуляем уголки rocon, т.к. он рисует все сразу
+ * @section corners
+ */
+.js .rc-tl {
+    border-top-left-radius: 0;
+    -webkit-border-top-left-radius: 0;
+    -khtml-border-top-left-radius: 0;
+    -moz-border-radius-topleft: 0;
+}
+
+.js .rc-tl>.rocon-tl {
+    display: none;
+}
+
+.js .rc-tr {
+    border-top-right-radius: 0;
+    -webkit-border-top-right-radius: 0;
+    -khtml-border-top-right-radius: 0;
+    -moz-border-radius-topright: 0;
+}
+
+.js .rc-tr>.rocon-tr {
+    display: none;
+}
+
+.js .rc-bl {
+    border-bottom-left-radius: 0;
+    -webkit-border-bottom-left-radius: 0;
+    -khtml-border-bottom-left-radius: 0;
+    -moz-border-radius-bottomleft: 0;
+}
+
+.js .rc-bl>.rocon-bl {
+    display: none;
+}
+
+.js .rc-br {
+    border-bottom-right-radius: 0;
+    -webkit-border-bottom-right-radius: 0;
+    -khtml-border-bottom-right-radius: 0;
+    -moz-border-radius-bottomright: 0;
+}
+
+.js .rc-br>.rocon-br {
+    display: none;
+}
+
+.g-line-dashed {
+	height:1px;	
+	line-height:1px;
+	font-size:1px;
+	border:none;
+	background:url(../img/dotted-pic.gif) repeat-x;	
+}

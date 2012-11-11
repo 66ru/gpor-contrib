@@ -41,10 +41,21 @@ class FormsFormRender extends CForm
     );
     public $renderSafeAttributes = false;
     public $startPageIndex = false;
+    public function getDefaultOptions () {
+        return array(
+                'method'=>'post',
+                'htmlOptions' => array('class' => 'b-form__form'),
+            );
+    }
 
     protected $output = '';
 
     public function init() {
+    }
+
+    protected function getUniqueId()
+    {
+        return 'yform_'.get_class($this->model);
     }
 
     public function render()
@@ -60,6 +71,8 @@ class FormsFormRender extends CForm
             }
         }
         $this->configure($this->model->getFormRenderData());
+
+        $this->activeForm = array_merge($this->getDefaultOptions(), $this->activeForm );
 
         $oldReq = CHtml::$afterRequiredLabel;
         CHtml::$afterRequiredLabel = '&nbsp;<span class="b-form__label__star">*</span>';
