@@ -303,7 +303,7 @@ class AfishaEventsKassir
 				if ($found)
 				{
 					$placeIdGpor = $this->getGporExternalId( $eventKassir['location'] );
-					if ($placeIdGpor != $found['placeId'])
+                    if($placeIdGpor !== false && $placeIdGpor != $found['placeId'])
 						$found = false;
 				}
 
@@ -350,12 +350,15 @@ class AfishaEventsKassir
 
 	/**
 	 * Получить externalId по ID кассира
+     *
+     * @param integer $placeIdKassir // location id на kassir.ru
+     * @return integer|boolean
 	 */
 	private function getGporExternalId( $placeIdKassir )
 	{
-		// Если externalId не найден, то это пипец ошибка,
-		// значит не все новые события были добавлены на GPOR и надо дебажить код выше 
-		return $this->_kassirEventsData['places'][$placeIdKassir]['externalId'];
+		// Если externalId не найден, то отдаем false,
+		// значит не все новые события были добавлены на GPOR и надо дебажить код выше
+		return isset($this->_kassirEventsData['places'][$placeIdKassir]['externalId']) ? $this->_kassirEventsData['places'][$placeIdKassir]['externalId'] : false;
 	}
 
 
@@ -371,7 +374,7 @@ class AfishaEventsKassir
 		$client	= new xmlrpc_client($apiUrl);
 		$client->request_charset_encoding	= 'UTF-8';
 		$client->return_type				= 'phpvals';
-		$client->debug						= $isDebug;
+		$client->debug						= self::DEBUG;
 
 		$msg = new xmlrpcmsg($name);
 		$p1 = new xmlrpcval($apiKey, 'string');
