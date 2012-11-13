@@ -1,12 +1,19 @@
-<div class="elka13HeadRight">
-    <div class="countPresent countPresentReady">
-        <b><?php echo $checked; ?></b><ins class="countPresentReadyIco"></ins>
-        <div class="countPresentSign"><?php echo StringUtils::pluralEnd($checked, array('Подарок', 'Подарка', 'Подарков')); ?> в офисе</div>
+<div class="b-container b-container_color_grey">
+    <div class="b-container__inner">
+        <div class="b-separator b-separator_size_10"></div>
+        <h2 class="b-header b-header_size_h2">Участники проекта</h2>
+											
+        <div class="elka2013Users">
+            <a class="b-link-user b-link-user_social_vk" href="">Kate K</a>&nbsp; &nbsp;
+            <a class="b-link-user b-link-user_status_online b-link-user_gender_male" href="">Ирина Красных</a>&nbsp; &nbsp;
+            <a class="b-link-user b-link-user_status_online b-link-user_gender_female " href="">BORODA ©</a>&nbsp; &nbsp;
+            <a class="b-link-user  b-link-user_gender_male" href="">Елена Белая</a>&nbsp; &nbsp;
+            <a class="b-link-user b-link-user_social_vk" href="">ka4aka</a>&nbsp; &nbsp;
+            <a class="b-link-user b-link-user_status_online b-link-user_gender_male" href="">Дударев</a>&nbsp; &nbsp;
+            <a class="b-link-user b-link-user_status_online b-link-user_gender_female " href="">La Koshka</a>&nbsp; &nbsp;
+            <a class="b-link-user  b-link-user_gender_male" href="">CђronoS</a>&nbsp; &nbsp;
+        </div>
+											
+        <div class="b-separator b-separator_size_20"></div>
     </div>
-    <div class="countPresent countPresentFindDed">
-        <b><?php echo $none; ?></b><ins class="countPresentFindDedIco"></ins>
-        <div class="countPresentSign"><?php echo StringUtils::pluralEnd($none, array('Письмо', 'Письма', 'Писем')); ?> ждут Деда Мороза</div>
-    </div>
-    <p>Вы можете стать участником нашей акции и подарить детям-сиротам желанный новогодний подарок.</p>
-    <p class="red">Нажмите кнопку и следуйте инструкцям.</p>
 </div>

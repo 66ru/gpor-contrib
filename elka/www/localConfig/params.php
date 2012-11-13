@@ -17,4 +17,6 @@ return array(
 
 	'filePath' => '/home/stepanoff/web/gpor-contrib/elka/files', // Путь до файлов с фидами
 
+    'adminLogin' => 'admin',
+    'adminPassword' => 'ltlvjhjp',
 );

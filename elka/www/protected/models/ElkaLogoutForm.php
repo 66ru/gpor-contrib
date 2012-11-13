@@ -1,47 +1,15 @@
 <?php
-class ElkaLoginForm extends CFormModel
+class ElkaLogoutForm extends CFormModel
 {
-	public $login;
-	public $password;
-
-	public static function admins()
-	{
-		return array(
-			Yii::app()->params['adminLogin'] => Yii::app()->params['adminPassword'],
-			);
-	}
-	
 	public function rules()
     {
         return array(
-			array('login', 'required', 'message' => 'Укажите логин' ),
-            array('password', 'required', 'message' => 'Укажите пароль' ),
-            array('password', 'checkPassword'),
 		);
-    }
-
-    public function checkPassword ($attribute, $params) {
-        $admins = self::admins();
-        foreach ($admins as $k => $v) {
-            if ($this->login == $k) {
-                if ($this->$attribute == $v) {
-                    return true;
-                }
-            }
-        }
-        $this->addError($attribute, 'Логин или пароль указан неверно');
-    }
-    
-    public function afterValidate()
-    {
-    	return parent::afterValidate();
     }
 
     public function attributeLabels()
     {
         return array(
-        	'login' => 'Логин',
-        	'comment' => 'Пароль',
         );
     }
 
@@ -58,12 +26,6 @@ class ElkaLoginForm extends CFormModel
     public function getFormElements ()
     {
         $res = array(
-            'login' => array(
-                'type' => 'text',
-            ),
-            'password' => array(
-                'type' => 'password',
-            ),
         );
         return $res;
 
@@ -74,7 +36,7 @@ class ElkaLoginForm extends CFormModel
         $res = array();
         $res['submit'] = array(
             'type' => 'submit',
-            'label'=> 'Войти',
+            'label'=> 'Выйти',
         );
         return $res;
     }

@@ -33,7 +33,7 @@ class StringUtils
         $str = str_replace( '\\', '\\\\', $str);
         
         if( $normalize )
-            $str = $this->normalize( $str );
+            $str = self::normalize( $str );
             
     	$str = htmlspecialchars( $str, ENT_QUOTES);
     	$str = preg_replace('@\&amp;#\d+;@', '&mdash;', $str);

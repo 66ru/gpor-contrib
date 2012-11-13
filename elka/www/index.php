@@ -9,7 +9,7 @@ $config=dirname(__FILE__).'/protected/config/main.php';
 
 define('ROOT_PATH', dirname(__FILE__));
 define('BASE_PATH', dirname(__FILE__). DS . '..');
-define('FILES_PATH', dirname(__FILE__). DS . 'files');
+define('FILES_PATH', dirname(__FILE__). DS . '..' . DS . 'files');
 define('LIB_PATH', dirname(__FILE__). DS . '..' . DS . '..' . DS . '_lib');
 
 defined('YII_DEBUG') or define('YII_DEBUG', $yiiDebug);

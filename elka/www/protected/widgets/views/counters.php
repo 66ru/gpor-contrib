@@ -1,20 +1,12 @@
-<ul>
-<?
-$i = 1;
-foreach ($items as $item)
-{
-    if ($item['active']) {
-        echo '<span class="elka13Menu-el__cur">'.$item['caption'].'</span>';
-    }
-    else {
-        $opts = array();
-        echo CHtml::link($item['caption'], $item['link'], $opts);
-    }
-
-    if ($i < count($items)) {
-        echo '&nbsp;|&nbsp;';
-    }
-    $i++;
-}
-?>
-</ul>
+<div class="elka13HeadRight">
+    <div class="countPresent countPresentReady">
+        <b><?php echo $checked; ?></b><ins class="countPresentReadyIco"></ins>
+        <div class="countPresentSign"><?php echo StringUtils::pluralEnd($checked, array('Подарок', 'Подарка', 'Подарков')); ?> в офисе</div>
+    </div>
+    <div class="countPresent countPresentFindDed">
+        <b><?php echo $none; ?></b><ins class="countPresentFindDedIco"></ins>
+        <div class="countPresentSign"><?php echo StringUtils::pluralEnd($none, array('Письмо', 'Письма', 'Писем')); ?> ждут Деда Мороза</div>
+    </div>
+    <p>Вы можете стать участником нашей акции и подарить детям-сиротам желанный новогодний подарок.</p>
+    <p class="red">Нажмите кнопку и следуйте инструкцям.</p>
+</div>

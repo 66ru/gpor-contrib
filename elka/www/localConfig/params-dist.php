@@ -17,4 +17,7 @@ return array(
 
     'filePath' => '',
 
+    'adminLogin' => '',
+    'adminPassword' => '',
+
 );

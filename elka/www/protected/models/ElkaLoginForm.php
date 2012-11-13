@@ -1,36 +1,36 @@
 <?php
-class ElkaJoinForm extends CFormModel
+class ElkaLoginForm extends CFormModel
 {
-    const THEME_GIFT = 10;
-    const THEME_MONEY = 20;
-    const THEME_QUESTION = 30;
+	public $login;
+	public $password;
 
-	public $theme; // для одного срока
-	public $comment; // минимальный срок для интервала сроков
-	public $name; // максимальный срок для интервала сроков
-	public $phone;
-	public $email;
-
-	public static function themeTypes()
+	public static function admins()
 	{
 		return array(
-			self::THEME_GIFT => 'Хочу купить подарок',
-			self::THEME_MONEY => 'Могу помочь материально',
-			self::THEME_QUESTION => 'Вопрос по проведению акции',
+			Yii::app()->params['adminLogin'] => Yii::app()->params['adminPassword'],
 			);
 	}
 	
 	public function rules()
     {
         return array(
-			array('comment', 'safe' ),
-			array('name', 'required', 'message' => 'Укажите ваше имя и фамилию' ),
-            array('phone', 'required', 'message' => 'Укажите ваш телефон' ),
-            array('email', 'required', 'message' => 'Укажите ваш электронный адрес' ),
-            array('email', 'email', 'message' => 'Адрес электронной почты указан неверно. Пример: mymail@gmail.com' ),
+			array('login', 'required', 'message' => 'Укажите логин' ),
+            array('password', 'required', 'message' => 'Укажите пароль' ),
+            array('password', 'checkPassword'),
 		);
     }
-    
+
+    public function checkPassword ($attribute, $params) {
+        $admins = self::admins();
+        foreach ($admins as $k => $v) {
+            if ($this->login == $k) {
+                if ($this->$attribute == $v) {
+                    return true;
+                }
+            }
+        }
+        $this->addError($attribute, 'Логин или пароль указан неверно');
+    }
     
     public function afterValidate()
     {
@@ -40,11 +40,8 @@ class ElkaJoinForm extends CFormModel
     public function attributeLabels()
     {
         return array(
-        	'theme' => 'Тема письма',
-        	'comment' => 'Комментарий',
-        	'name' => 'Ваши имя и фамилия',
-        	'phone' => 'Контактный телефон',
-        	'email' => 'Контактный e-mail',
+        	'login' => 'Логин',
+        	'comment' => 'Пароль',
         );
     }
 
@@ -61,21 +58,11 @@ class ElkaJoinForm extends CFormModel
     public function getFormElements ()
     {
         $res = array(
-            'theme' => array(
-                'type' => 'dropdownlist',
-                'items' => self::themeTypes(),
-            ),
-            'comment' => array(
-                'type' => 'textarea',
-            ),
-            'name' => array(
+            'login' => array(
                 'type' => 'text',
             ),
-            'phone' => array(
-                'type' => 'text',
-            ),
-            'email' => array(
-                'type' => 'text',
+            'password' => array(
+                'type' => 'password',
             ),
         );
         return $res;
@@ -87,7 +74,7 @@ class ElkaJoinForm extends CFormModel
         $res = array();
         $res['submit'] = array(
             'type' => 'submit',
-            'label'=> 'Отправить',
+            'label'=> 'Войти',
         );
         return $res;
     }

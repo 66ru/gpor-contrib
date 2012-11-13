@@ -7,7 +7,7 @@ class ElkaMenuWidget extends CWidget {
 		parent::run();
 
         $items = array (
-            array ('link' => array('/site/index'), 'caption' => 'О проекте', 'regexp' =>  false),
+            array ('link' => array('/site/index'), 'caption' => 'Главная', 'regexp' =>  false),
             array ('link' => array('/site/join'), 'caption' => 'Обратная связь', 'regexp' =>  '/join*'),
             array ('link' => array('/site/gifts'), 'caption' => 'Подарки', 'regexp' =>  '/gifts*'),
         );

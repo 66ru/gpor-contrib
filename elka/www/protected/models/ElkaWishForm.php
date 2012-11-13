@@ -1,50 +1,38 @@
 <?php
-class ElkaJoinForm extends CFormModel
+class ElkaWishForm extends CFormModel
 {
-    const THEME_GIFT = 10;
-    const THEME_MONEY = 20;
-    const THEME_QUESTION = 30;
+    const STATUS_NONE = 0;
+    const STATUS_WAIT = 10;
+    const STATUS_CHECKED = 20;
 
-	public $theme; // для одного срока
-	public $comment; // минимальный срок для интервала сроков
-	public $name; // максимальный срок для интервала сроков
-	public $phone;
-	public $email;
+	public $status;
+	public $santaName;
+	public $santaLink;
+	public $id;
 
-	public static function themeTypes()
+	public static function statusTypes()
 	{
 		return array(
-			self::THEME_GIFT => 'Хочу купить подарок',
-			self::THEME_MONEY => 'Могу помочь материально',
-			self::THEME_QUESTION => 'Вопрос по проведению акции',
+			self::STATUS_NONE => 'Поарок никто не взял',
+			self::STATUS_WAIT => 'Подарок взят, но пока еще нет в офисе',
+			self::STATUS_CHECKED => 'Подарок в офисе',
 			);
 	}
 	
 	public function rules()
     {
         return array(
-			array('comment', 'safe' ),
-			array('name', 'required', 'message' => 'Укажите ваше имя и фамилию' ),
-            array('phone', 'required', 'message' => 'Укажите ваш телефон' ),
-            array('email', 'required', 'message' => 'Укажите ваш электронный адрес' ),
-            array('email', 'email', 'message' => 'Адрес электронной почты указан неверно. Пример: mymail@gmail.com' ),
+			array('santaName, santaLink', 'safe' ),
+			array('id, status', 'required'),
 		);
     }
     
-    
-    public function afterValidate()
-    {
-    	return parent::afterValidate();
-    }
-
     public function attributeLabels()
     {
         return array(
-        	'theme' => 'Тема письма',
-        	'comment' => 'Комментарий',
-        	'name' => 'Ваши имя и фамилия',
-        	'phone' => 'Контактный телефон',
-        	'email' => 'Контактный e-mail',
+        	'santaName' => 'Имя (или ник на 66) дарителя',
+        	'santaLink' => 'Ссылка на профиль на 66',
+        	'status' => 'Статус подарка',
         );
     }
 
@@ -61,20 +49,17 @@ class ElkaJoinForm extends CFormModel
     public function getFormElements ()
     {
         $res = array(
-            'theme' => array(
+            'status' => array(
                 'type' => 'dropdownlist',
-                'items' => self::themeTypes(),
+                'items' => self::statusTypes(),
             ),
-            'comment' => array(
-                'type' => 'textarea',
+            'id' => array(
+                'type' => 'hidden',
             ),
-            'name' => array(
+            'santaName' => array(
                 'type' => 'text',
             ),
-            'phone' => array(
-                'type' => 'text',
-            ),
-            'email' => array(
+            'santaLink' => array(
                 'type' => 'text',
             ),
         );

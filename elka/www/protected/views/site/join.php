@@ -6,6 +6,7 @@
 <script src="/js/js-steps-form.js"  type="text/javascript"></script>
 
 <div class="b-separator b-separator_size_5"></div>
+<a name="form"></a>
 <h2 class="b-header b-header_size_h2 b-header_margin_left-20">Стать участником акции</h2>
 
 <div class="b-container b-container_color_green">
