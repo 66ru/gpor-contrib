@@ -11,6 +11,7 @@ return array(
 
 	/* email */
 	'adminEmail' => '', // this is used in error pages and in rss (webMaster)
+    'managerEmail' => '',
 	'senderEmail' => '',
 
 	'phpPath' => '', // Path to php

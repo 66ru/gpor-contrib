@@ -20,10 +20,19 @@ class ElkaJoinForm extends CFormModel
 			);
 	}
 	
+    public static function getTheme($themeId)
+    {
+        $themes = self::themeTypes();
+
+        if (isset($themes[$themeId]))
+            return $themes[$themeId];
+        return '';
+    }
+
 	public function rules()
     {
         return array(
-			array('comment', 'safe' ),
+			array('theme, comment', 'safe' ),
 			array('name', 'required', 'message' => 'Укажите ваше имя и фамилию' ),
             array('phone', 'required', 'message' => 'Укажите ваш телефон' ),
             array('email', 'required', 'message' => 'Укажите ваш электронный адрес' ),

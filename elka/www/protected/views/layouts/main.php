@@ -9,9 +9,8 @@
 	<meta property="og:type" content="page"/>
 	<meta property="og:image" content="/img/logo.png"/>
 	<meta property="og:site_name" content="<?php echo Yii::app()->params['siteName']; ?>"/>
-	<link href="http://t.66.ru/_66new/v2/misc/favicon.ico" type="image/x-icon" rel="icon" />
-	<link href="http://t.66.ru/_66new/v2/misc/favicon.ico" type="image/x-icon" rel="shortcut icon" />
-
+      <link rel="icon" href="http://www.66.ru/favicon66.ico" type="image/x-icon">
+      <link rel="shortcut icon" href="http://www.66.ru/favicon66.ico" type="image/x-icon">
 	
 	<link rel="stylesheet" type="text/css" href="/css/reset.css" />
 	<link href="/css/common.css" rel="stylesheet"  type="text/css" />

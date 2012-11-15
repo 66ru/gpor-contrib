@@ -1,5 +1,5 @@
 <ul>
-<?
+<?php
 $i = 1;
 foreach ($items as $item)
 {

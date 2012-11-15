@@ -62,6 +62,24 @@ class SiteController extends Controller
             if ($cForm->model->validate()) {
                 // todo: отправить письмо
                 $submittedText = '<p>Спасибо, ваше письмо отправлено.</p><p>Мы обязательно с вами свяжемся.</p>';
+
+                $fields = array(
+                    'name' => $cForm->model->name,
+                    'theme' => ElkaJoinForm::getTheme($cForm->model->theme),
+                    'email' => $cForm->model->email,
+                    'phone' => $cForm->model->phone,
+                    'comment' => $cForm->model->comment,
+                );
+                $html = $this->renderPartial('application.views.mail.feedback', $fields, true);
+
+                $message = array(
+                    'to_email' => Yii::app()->params['managerEmail'],
+                    'to_username' => 'admin',
+                    'from_email' => Yii::app()->params['senderEmail'],
+                    'subject' => 'Елка желаний - '.ElkaJoinForm::getTheme($cForm->model->theme),
+                    'html' => $html,
+                );
+                MailHelper::sendMail($message);
             }
 
             if (Yii::app()->request->isAjaxRequest) {

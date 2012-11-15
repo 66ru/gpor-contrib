@@ -23,6 +23,7 @@
 <p><strong>Тема</strong>: <?php echo $theme; ?></p>
 <p><strong>Имя</strong>: <?php echo $name; ?></p>
 <p><strong>Телефон</strong>: <?php echo $phone; ?></p>
+<p><strong>E-mail</strong>: <?php echo $email; ?></p>
 <p><strong>Комментарий</strong>:<br><?php echo nl2br($comment); ?></p>
 
 
