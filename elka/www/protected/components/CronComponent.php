@@ -16,23 +16,11 @@ class CronComponent extends CApplicationComponent {
 	 */
 	public function getCommands() {
         return array (
-            'removeSessionTokens' => array (
-                'class' => 'RemoveSessionTokensCommand',
-                'title' => 'Удаление старых сессионых токенов',
-                'name' => 'removeSessionTokens',
+            'generateNews' => array (
+                'class' => 'GenerateNewsCommand',
+                'title' => 'Получение новостей',
+                'name' => 'generateNews',
                 'period' => '/10 * * * *',
-            ),
-            'removeStorageTokens' => array (
-                'class' => 'RemoveStorageTokensCommand',
-                'title' => 'Удаление протухших токенов',
-                'name' => 'removeStorageTokens',
-                'period' => '0 3 * * *',
-            ),
-            'updateUserInfo' => array (
-                'class' => 'UpdateUserInfoCommand',
-                'title' => 'Обновление данных пользователей',
-                'name' => 'updateUsers',
-                'period' => '* * * * *',
             ),
         );
 	}
@@ -40,14 +28,14 @@ class CronComponent extends CApplicationComponent {
 	protected function getCommand($command) {
 		$commands = $this->getCommands();
 		if (!isset($commands[$command]))
-			throw new CronException(Yii::t('auth_backend', 'Undefined command name: {command}', array('{command}' => $command)), 500);
+			throw new CronException(Yii::t('cron', 'Undefined command name: {command}', array('{command}' => $command)), 500);
 		return $commands[$command];
 	}
 	
 	public function getCommandClass($command) {
         $commands = $this->getCommands();
 		if (!isset($commands[$command]))
-			throw new CronException(Yii::t('essentialdata', 'Undefined command name: {command}', array('{command}' => $command)), 500);
+			throw new CronException(Yii::t('cron', 'Undefined command name: {command}', array('{command}' => $command)), 500);
 		$command = $commands[$command];
 		
 		$class = $command['class'];

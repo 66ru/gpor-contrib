@@ -20,13 +20,13 @@ if (isset($_SERVER['argv'][2]) && $_SERVER['argv'][2]=='noinit')
 	$noinit = true;
 	
 
-if ( $noinit || Yii::app()->essentialData->initService($name) )
+if ( $noinit || Yii::app()->cron->initCommand($name) )
 {
     echo date('Y-m-d H:i:s'), " - $name\n";
-	Yii::app()->essentialData->runService($name);
+	Yii::app()->cron->runCommand($name);
 }
 else {
-    echo date('Y-m-d H:i:s'), " - $name. Not initalized.\n";
+    echo date('Y-m-d H:i:s'), " - $name. Not initialized.\n";
 }
 
 ?>

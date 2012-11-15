@@ -13,8 +13,20 @@ class ElkaSantasWidget extends CWidget {
     public function run() {
 		parent::run();
 
-        $items = $this->getWishes();
+        $res = $this->getWishes();
+
+        $items = array();
+        foreach ($res as $item) {
+            if ($item['santaName']) {
+                $items[] = array(
+                    'santaName' => $item['santaName'],
+                    'santaLink' => $item['santaLink'],
+                );
+            }
+        }
+
 		$this->render('santas', array(
+            'items' => $items,
 		));
     }
 

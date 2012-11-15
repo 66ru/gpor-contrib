@@ -70,6 +70,13 @@ class XmlRpc
 		return $this->_response;
 	}
 	
+    public function getResponseValue ()
+    {
+        if ($this->_response && is_object($this->_response) && $this->_response->val) {
+            return $this->_response->val;
+        }
+    }
+
 	public function getLastError ()
 	{
 		return $this->_lastError;
@@ -83,11 +90,13 @@ class XmlRpc
 		$this->_response = $xmlrpcresp;
 		
 		if(!$xmlrpcresp->faultCode()){
-			if ($xmlrpcresp->errcode)
+            /*
+			if ($xmlrpcresp && $xmlrpcresp->__isset('errcode'))
 			{
 				$this->_lastError = "An error occurred: "." Reason: ".htmlspecialchars(implode(',', $xmlrpcresp->errors));
 				return false;
 			}
+            */
 			return true;
 		}
 		else{

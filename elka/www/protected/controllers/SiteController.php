@@ -26,6 +26,15 @@ class SiteController extends Controller
         return $items;
     }
 
+    protected function getNews () {
+        $items = array();
+        $c = file_get_contents(FILES_PATH . DS . 'elka_news.json');
+        if ($c) {
+            $items = CJSON::decode($c);
+        }
+        return $items;
+    }
+
     protected function saveWishes ($items) {
         file_put_contents(FILES_PATH . DS . 'elka_list.json', CJSON::encode($items));
         return true;
@@ -82,6 +91,8 @@ class SiteController extends Controller
 
         }
 
+        $this->pageTitle = 'Стань участником акции'.Yii::app()->params['title'];
+
         $this->render ('join', array(
             'cForm' => $cForm,
             'submittedText' => $submittedText,
@@ -90,7 +101,13 @@ class SiteController extends Controller
 
 	public function actionIndex()
 	{
-        $this->render ('main', array());
+        $news = $this->getNews();
+
+        $this->pageTitle = 'Благотворительная акция &laquo;Ёлка желаний&raquo;'.Yii::app()->params['title'];
+
+        $this->render ('main', array(
+            'news' => $news,
+        ));
 	}
 	
     public function actionGifts()
@@ -134,6 +151,8 @@ class SiteController extends Controller
         foreach ($items as $item) {
             $res[$item['status']][] = $item;
         }
+
+        $this->pageTitle = 'Список желаний детей'.Yii::app()->params['title'];
 
         $this->render ('gifts', array(
             'data' => $res,

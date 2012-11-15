@@ -9,12 +9,13 @@ date_default_timezone_set('Asia/Yekaterinburg');
 require('yiiCronCommon.php');
 
 $directory =  realpath( dirname(__FILE__) );
-$runFile = Yii::app()->params['phpPath'] . ' ' . $directory . DS . 'runner.php ';
+$runFile = Yii::app()->params['phpPath'] . ' ' . $directory . '/runner.php ';
 
-$services = Yii::app()->essentialData->getServices();
+$services = Yii::app()->cron->getCommands();
 
 foreach ( $services as $name => $options )
 {
-    passthru($runFile . $name . ' >> ' . $directory . DS . 'cron.log &');
+    echo $runFile . $name . ' >> ' . $directory . '/cron.log &'."\n";
+    passthru($runFile . $name . ' >> ' . $directory . '/cron.log &');
 }
 ?>

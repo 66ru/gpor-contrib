@@ -7,6 +7,5 @@
         <b><?php echo $none; ?></b><ins class="countPresentFindDedIco"></ins>
         <div class="countPresentSign"><?php echo StringUtils::pluralEnd($none, array('Письмо', 'Письма', 'Писем')); ?> ждут Деда Мороза</div>
     </div>
-    <p>Вы можете стать участником нашей акции и подарить детям-сиротам желанный новогодний подарок.</p>
-    <p class="red">Нажмите кнопку и следуйте инструкцям.</p>
+    <?php echo Yii::app()->params['announceText']; ?>
 </div>

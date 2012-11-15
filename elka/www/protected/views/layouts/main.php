@@ -112,17 +112,12 @@
 							<div class="context">
 								<div class="col-1 span-10">
 									<div class="elka13Donate">
-										<div class="elka13Donate-label">Помочь материально:</div>
-										<div class="elka13Donate-moneybag elka13Donate-moneybag-webmoney">41001344006673</div>
-										<div class="elka13Donate-moneybag elka13Donate-moneybag-yandexmoney">41001344006673</div>
+										<?php echo Yii::app()->params['donateText']; ?>
 									</div>
 								</div>
 								<div class="col-11 span-5">
 									<div class="socialBtnContainer">
-										<a class="socialBtn socialBtnFb" href=""><ins></ins></a>
-										<a class="socialBtn socialBtnVk" href=""><ins></ins></a>
-										<a class="socialBtn socialBtnTw" href=""><ins></ins></a>
-										<a class="socialBtn socialBtnOk" href=""><ins></ins></a>
+										<?php echo Yii::app()->params['socialButtonsText']; ?>
 									</div>
 								</div>
 							</div>								
@@ -144,22 +139,10 @@
 											
 											<div class="b-separator b-separator_size_10"></div>
 											
-											<h2 class="b-header b-header_size_h2">Поддержка проекта</h2>
-											
-											<div class="b-announce b-announce_frame_white">
-												<a style="background: url(http://s.66.ru/new66/a1/e3/6e/7e/a1e36e7e_resizedScaled_180to120.jpg) center center no-repeat; height: 60px;" class="b-announce__pic" href="/konkurs/2/list/3/"></a>
-											</div>										
-											<div class="b-separator b-separator_size_10"></div>
-											<div class="b-announce b-announce_frame_white">
-												<a style="background: url(http://s.66.ru/new66/a1/e3/6e/7e/a1e36e7e_resizedScaled_180to120.jpg) center center no-repeat; height: 60px;" class="b-announce__pic" href="/konkurs/2/list/3/"></a>
-											</div>											
-											<div class="b-separator b-separator_size_10"></div>
-											<div class="b-announce b-announce_frame_white">
-												<a style="background: url(http://s.66.ru/new66/a1/e3/6e/7e/a1e36e7e_resizedScaled_180to120.jpg) center center no-repeat; height: 60px;" class="b-announce__pic" href="/konkurs/2/list/3/"></a>
-											</div>																						
-											
+											<?php echo Yii::app()->params['partnersText']; ?>
+
 											<div class="b-separator b-separator_size_20"></div>
-											
+
 										</div>
 									</div>
 									
@@ -178,7 +161,7 @@
    <div id="foot-wrap" class="ie_layout">
     <div id="foot" class="ie_layout">
 		<div class="footer-content">
-		Проект портала <a href="">66.ru</a></div>
+		<?php echo Yii::app()->params['footerText']; ?></div>
 		</div>
    </div>
    <!--[if IE 8]></div><![endif]-->

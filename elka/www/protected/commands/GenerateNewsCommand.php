@@ -1,48 +1,40 @@
 <?php
-
-Yii::import('application.extensions.croncommand.*');
-
-class CronFixCommand extends CConsoleCommand
+class GenerateNewsCommand extends CronCommand
 {
-    /**
-     * Запуск консольной команды
-     * @param mixed $args Не используется
-     */
-	public function run($args)
+    protected function getFileName () {
+        return FILES_PATH . DS . 'elka_news.json';
+    }
+
+	public function run()
 	{
-        $commands = array_keys( CronCommand::getCronCommands() );
-        $commands = array_unique($commands);
+        $apiUrl = Yii::app()->params['apiUrl'];
+        $apiKey = Yii::app()->params['apiKey'];
+        $xmlRpc = new XmlRpc($apiUrl, $apiKey);
+        $xmlRpc->setApiCommand('news.listNews');
 
-        $criteria = new CDbCriteria();
-        $criteria->condition    = '`finishTime` IS NULL';
-        $criteria->order        = 'launchTime';
-        $running = Yii::app()->db->commandBuilder->createFindCommand('cron', $criteria)->queryAll();
+        $news = array();
 
-        foreach($running as $item)
-        {
-            $found = false;
-            unset($output);
-            unset($result);
-            exec('ps ax | grep '.$item['command'],$output,$result);
-            foreach($output as $line)
-            {
-                if(strpos($line,'runner.php')!==false)
-                {
-                    $found=true;
-                    break;
-                }
-            }
-            unset($output);
-            unset($result);
-            if(!$found)
-            {
-                $criteria = new CDbCriteria();
-                $criteria->addCondition('command=:command');
-                $criteria->params = array(':command'=>$item['command']);
-                Yii::app()->db->commandBuilder->createDeleteCommand('cron', $criteria)->execute();
+        $params = array(
+            'News',
+            array(
+                array('type' => 'number', 'value' => Yii::app()->params['gporNewsSectionId'], 'field' => 'sectionId'),
+            ),
+            array('id','simpletitle','title','postTime','annotation', 'commentsCount', 'titlelink', 'fulltitlelink', 'link', 'imageurl', 'sectionId', 'containPhoto', 'containVideo', 'containAudio', 'infograph', 'havePoll','newMainImageURL', 'online'),
+            array(
+                'limit' => 10
+            ),
+        );
+        if ($xmlRpc->send($params)) {
+            $res = $xmlRpc->getResponseValue();
+            $maxPostTime = strtotime(date('Y-01-01 00:00:00', time()));
+            foreach ($res as $item) {
+                if ($item['postTime'] < $maxPostTime )
+                    continue;
+                $news[] = $item;
             }
         }
 
+        file_put_contents($this->getFileName(), CJSON::encode($news));
 
     }
 }

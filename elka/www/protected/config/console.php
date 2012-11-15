@@ -1,7 +1,7 @@
 <?php
 $params = array();
-$localConfigFile = dirname(__FILE__).DS.'../../localConfig/params.php';
-$localDistConfigFile = dirname(__FILE__).DS.'../../localConfig/params-dist.php';
+$localConfigFile = dirname(__FILE__).'/../../localConfig/params.php';
+$localDistConfigFile = dirname(__FILE__).'/../../localConfig/params-dist.php';
 if (file_exists($localDistConfigFile))
 	$localDistConfig = require($localDistConfigFile);
 else
@@ -17,45 +17,45 @@ foreach ($params as $k=>$v)
 	if (is_string($v) && empty($v))
 		$emptyKeys[] = $k;
 }
+
+/*
 if (sizeof($emptyKeys))
 {
 	echo "Error: params\n".implode("\n", $emptyKeys)."\nrequired";
 	die();
 }
+*/
 
 return array(
-    'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
+    'basePath'=>dirname(__FILE__).'/..',
     'name'=>$params['appName'],
-    'runtimePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'data',
+    'runtimePath' => dirname(__FILE__).'/../../../data',
     'language' => 'ru',
     'commandMap' => array(
 //        'mailsend'                  => $extDir . DS . 'mailer' . DS . 'MailSendCommand.php',
     ),
 
-	// preloading 'log' component
 	'preload'=>array('log'),
 
-	// autoloading model and component classes
+	// autoloading model, component and helper classes
 	'import'=>array(
-		'application.models.*',
-		'application.components.*',
-		'application.extensions.*',
-		'application.extensions.essentialdata.*',
-		'application.extensions.essentialdata.services.*',
-		'application.extensions.essentialdata.drivers.*',
-    	'application.helpers.*',
-		'application.widgets.*',
+        'application.models.*',
+        'application.commands.*',
+        'application.components.*',
+        'application.models.*',
+        'application.widgets.*',
+        'application.extensions.*',
+        'application.helpers.*',
+        'application.widgets.*',
     ),
 
-	// application components
+	'params'=>$params,
+
 	'components'=>array(
-        'urlManager'=>require(dirname(__FILE__).'/urlManager.php'),
-        
-        'cache' => array(
-			'class' => 'CFileCache',
-			'cachePath' => ROOT_PATH. DS . 'protected' . DS . 'runtime' . DS . 'cache',
+        'cron' => array(
+			'class' => 'CronComponent',
+			'logPath' => FILES_PATH,
 		),
-        
         'log'=>array(
 			'class'=>'CLogRouter',
 			'routes'=>array(
@@ -69,10 +69,19 @@ return array(
         'errorHandler' => array(
         	'class' => 'application.components.ExtendedErrorHandler'
         ),
+		'clientScript'=>array(
+			'class'=>'application.components.ExtendedClientScript',
+			'combineFiles'=>false,
+			'compressCss'=>false,
+			'compressJs'=>false,
+		),
+        'urlManager'=> require(dirname(__FILE__) . '/urlManager.php'),
 
-		'essentialData' => require(dirname(__FILE__).'/essentialData.php'),
+        'cache' => array(
+			'class' => 'CFileCache'
+		),
+    ),
 
-	),
-	'params'=>$params,
-	'modules'=>require(dirname(__FILE__).'/modules.php'),
+    'modules'=> require(dirname(__FILE__) . '/modules.php'),
+
 );
