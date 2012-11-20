@@ -5,11 +5,12 @@ class ElkaJoinForm extends CFormModel
     const THEME_MONEY = 20;
     const THEME_QUESTION = 30;
 
-	public $theme; // для одного срока
-	public $comment; // минимальный срок для интервала сроков
-	public $name; // максимальный срок для интервала сроков
+	public $theme;
+	public $comment;
+	public $name;
 	public $phone;
 	public $email;
+    public $giftTo;
 
 	public static function themeTypes()
 	{
@@ -32,7 +33,7 @@ class ElkaJoinForm extends CFormModel
 	public function rules()
     {
         return array(
-			array('theme, comment', 'safe' ),
+			array('theme, comment, giftTo', 'safe' ),
 			array('name', 'required', 'message' => 'Укажите ваше имя и фамилию' ),
             array('phone', 'required', 'message' => 'Укажите ваш телефон' ),
             array('email', 'required', 'message' => 'Укажите ваш электронный адрес' ),
@@ -73,6 +74,9 @@ class ElkaJoinForm extends CFormModel
             'theme' => array(
                 'type' => 'dropdownlist',
                 'items' => self::themeTypes(),
+            ),
+            'giftTo' => array(
+                'type' => 'hidden',
             ),
             'comment' => array(
                 'type' => 'textarea',

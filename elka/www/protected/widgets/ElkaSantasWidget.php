@@ -18,7 +18,7 @@ class ElkaSantasWidget extends CWidget {
         $items = array();
         foreach ($res as $item) {
             if ($item['santaName']) {
-                $items[] = array(
+                $items[$item['santaName'].$item['santaLink']] = array(
                     'santaName' => $item['santaName'],
                     'santaLink' => $item['santaLink'],
                 );

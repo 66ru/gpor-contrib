@@ -13,18 +13,66 @@ class SiteController extends Controller
         $c = file_get_contents(FILES_PATH . DS . 'elka_list.json');
         if ($c) {
             $tmp = CJSON::decode($c);
+
             foreach ($tmp as $id => $item) {
                 $items[$id] = array_merge(array(
                     'id' => '',
                     'name' => '',
                     'age' => '',
                     'wish' => '',
+                    'santaName' => '',
+                    'santaLink' => '',
                     'status' => 0,
                 ), $item);
             }
         }
         return $items;
     }
+
+    protected function updateWishes () {
+        $items = array();
+        $res = array();
+        $c = file_get_contents(FILES_PATH . DS . 'elka_list.json');
+        if ($c) {
+            $tmp = CJSON::decode($c);
+
+            foreach ($tmp as $id => $item) {
+                $items[$item['name']] = array_merge(array(
+                    'id' => '',
+                    'name' => '',
+                    'age' => '',
+                    'wish' => '',
+                    'santaName' => '',
+                    'santaLink' => '',
+                    'status' => 0,
+                ), $item);
+            }
+
+            $fp = fopen(FILES_PATH . DS . 'elka_list2.csv', 'r');
+            while (($buffer = fgets($fp, 4096)) !== false) {
+                $_item = explode(';', $buffer);
+                if (empty($_item[0]) || empty($_item[1]))
+                    continue;
+                $_item = array(
+                    'name' => $_item[1],
+                    'age' => $_item[2],
+                    'wish' => $_item[3].($_item[4] ? ' ('.$_item[4].')' : ''),
+                    'santaName' => $_item[5],
+                );
+
+                $items[$_item['name']]['wish'] = $_item['wish'];
+            }
+            $res = array();
+            foreach($items as $item) {
+                if ($item['name'] == 'Ф.И.О.')
+                    continue;
+                $res[$item['id']] = $item;
+            }
+            $this->saveWishes($res);
+        }
+        return $res;
+    }
+
 
     protected function getNews () {
         $items = array();
@@ -50,6 +98,7 @@ class SiteController extends Controller
             $items = $this->getWishes();
             if (isset($items[$id])) {
                 $form->theme = ElkaJoinForm::THEME_GIFT;
+                $form->giftTo = $id;
                 $form->comment = 'Хочу купить подарок: '.$items[$id]['name'].' ('.$items[$id]['wish'].')';
             }
         }
@@ -60,7 +109,6 @@ class SiteController extends Controller
         $submittedText = false;
         if ($cForm->submitted()) {
             if ($cForm->model->validate()) {
-                // todo: отправить письмо
                 $submittedText = '<p>Спасибо, ваше письмо отправлено.</p><p>Мы обязательно с вами свяжемся.</p>';
 
                 $fields = array(
@@ -80,6 +128,16 @@ class SiteController extends Controller
                     'html' => $html,
                 );
                 MailHelper::sendMail($message);
+
+                if ($cForm->model->giftTo) {
+                    $items = $this->getWishes();
+                    $id = (int)$cForm->model->giftTo;
+                    if (isset($items[$id])) {
+                        $items[$id]['status'] = ElkaWishForm::STATUS_WAIT;
+                        $items[$id]['santaName'] = $cForm->model->name;
+                        $this->saveWishes($items);
+                    }
+                }
             }
 
             if (Yii::app()->request->isAjaxRequest) {
