@@ -40,15 +40,21 @@ class afishaCinemaKinohodParser
 		}
 	}
 
-	public function loadPlace($id) {
-		$url = $this->params['kApiUrl'].$id.'/schedules?apikey='.$this->params['kApiKey'];
-		$result = file_get_contents($url);
-		$result = json_decode($result,1); 
-		
-		return $result;
+	public function loadPlace($id,$dateString) 
+	{
+		$url = $this->params['kApiUrl'].$id.'/schedules?date='.$dateString.'&apikey='.$this->params['kApiKey'];
+		$headers = get_headers($url);
+		if (substr($headers[0], 9, 3) == '200')
+		{
+			$result = file_get_contents($url);
+			$result = json_decode($result,1); 
+			return $result;
+		}
+		else 
+			return false;	
 	}
 
-	public function run()
+	public function run($dateString)
 	{
 		$this->loadParams();
 		$existingMovies = $this->sendData('afisha.listMovies');
@@ -58,17 +64,24 @@ class afishaCinemaKinohodParser
 		// and matches it with existing cinemas(places)
 		foreach ($this->params['accessPlaces'] as $rPlaceName => $rPlaceId) 
 		{
-			$tmp = array('ePlaceId'=>0,'data'=>$this->loadPlace($rPlaceId));
-			$this->places[$rPlaceId] = $tmp;
-
-			foreach ($existingPlaces as $ePlace) 
+			$tmp = array('ePlaceId'=>0,'data'=>$this->loadPlace($rPlaceId,$dateString));
+				
+			if ($tmp['data']) 
 			{
-				if ($this->matchName($tmp['data'][0]['cinema']['title'], $ePlace['name'])) // 0 is here 'cause we take only first movie to get cinema's title
-					$this->places[$rPlaceId]['ePlaceId'] = $ePlace['id'];
-				if ($ePlace['synonym']) 
-					foreach(unserialize($ePlace['synonym']) as $syn)
-						if ($this->matchName($tmp['data'][0]['cinema']['title'], $syn))
-							$this->places[$rPlaceId]['ePlaceId'] = $ePlace['id'];
+				$this->places[$rPlaceId] = $tmp;
+				foreach ($existingPlaces as $ePlace) 
+				{
+					if ($this->matchName($tmp['data'][0]['cinema']['title'], $ePlace['name'])) // 0 is here 'cause we take only first movie to get cinema's title
+						$this->places[$rPlaceId]['ePlaceId'] = $ePlace['id'];
+					if ($ePlace['synonym']) 
+						foreach(unserialize($ePlace['synonym']) as $syn)
+							if ($this->matchName($tmp['data'][0]['cinema']['title'], $syn))
+								$this->places[$rPlaceId]['ePlaceId'] = $ePlace['id'];
+				}
+			}
+			else 
+			{
+				if($this->params['debug']) echo('Error loading '.$rPlaceName.' @ '.$dateString."\n");	
 			}
 		}
 
@@ -182,5 +195,8 @@ class afishaCinemaKinohodParser
 }
 
 
-$p = new afishaCinemaKinohodParser();
-$p->run();
+for ($i=0;$i<7;$i++) //for a week
+{
+	$p = new afishaCinemaKinohodParser();
+	$p->run(date('dmY', strtotime("+".$i." days")));	
+}
