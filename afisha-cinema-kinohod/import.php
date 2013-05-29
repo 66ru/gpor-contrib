@@ -11,6 +11,7 @@ class afishaCinemaKinohodParser
 	'apiKey'       => '',
 
 	'kApiUrl' 	  => '',
+	'kApiMediaUrl'=> '',
 	'kApiKey'	  => '',
 	'kPurchaseUrl' => '',
 
@@ -23,6 +24,7 @@ class afishaCinemaKinohodParser
 
 	private $places = array();
 	private $seances = array();
+	private $moviesData = array();
 
 	private function loadParams()
 	{
@@ -105,29 +107,91 @@ class afishaCinemaKinohodParser
 								$this->places[$rPlaceId]['data'][$rMovieKey]['movie']['eMovieId'] = $eMovie['id'];
 				}
 
-				// This prepare seances to send
-				foreach ($rMovie['schedules'] as $seance) {
-					$newSeance = array();
-					$date = date_parse($seance['startTime']);
-					$newSeance['seanceTime'] = mktime($date['hour'], $date['minute'], $date['second'], $date['month'], $date['day'], $date['year']);
-					$newSeance['placeId'] = $place['ePlaceId'];
-					$newSeance['movieId'] = $this->places[$rPlaceId]['data'][$rMovieKey]['movie']['eMovieId'];
-					if ($seance['isSaleAllowed']) $newSeance['purchaseLink'] = $this->params['kPurchaseUrl'].$seance['id'];
-					$this->seances[] = $newSeance;
-				} 
+
+				
+				if (isset($this->places[$rPlaceId]['data'][$rMovieKey]['movie']['eMovieId']))
+				{
+					//shortcut
+					$emid = $this->places[$rPlaceId]['data'][$rMovieKey]['movie']['eMovieId'];
+
+					// This prepares posters and trailers to send, in case movie doesnt have it
+					
+					if ((!($existingMovies[$emid]['trailer']))||(!($existingMovies[$emid]['poster'])))
+					{
+						if (!isset($this->moviesData[$emid]))
+						{	
+							$this->moviesData[$emid] = array();
+							$this->moviesData[$emid]['externalId'] = $emid;
+						}
+
+						if (isset($this->places[$rPlaceId]['data'][$rMovieKey]['movie']['poster']))
+						{
+							$poster = $this->places[$rPlaceId]['data'][$rMovieKey]['movie']['poster'];	
+							$this->moviesData[$emid]['logoUrl'] = $this->params['kApiMediaUrl'].'o/'.substr($poster, 0,2).'/'.substr($poster, 2,2).'/'.$poster;	
+							$this->moviesData[$emid]['update'] = 1;
+						}	
+
+						if (isset($this->places[$rPlaceId]['data'][$rMovieKey]['movie']['trailer'][0]['mobile_mp4']['filename'])) // we need only one trailer
+						{
+							$trailer = $this->places[$rPlaceId]['data'][$rMovieKey]['movie']['trailer'][0]['mobile_mp4']['filename'];	
+							$this->moviesData[$emid]['trailerUrl'] = $this->params['kApiMediaUrl'].'o/'.substr($trailer, 0,2).'/'.substr($trailer, 2,2).'/'.$trailer;	
+							$this->moviesData[$emid]['update'] = 1;
+						}
+
+						if (isset($this->places[$rPlaceId]['data'][$rMovieKey]['movie']['trailer'][0]['default']['filename'])) // we need only one trailer, but this will overwrite mobile trailer by default one
+						{
+							$trailer = $this->places[$rPlaceId]['data'][$rMovieKey]['movie']['trailer'][0]['default']['filename'];	
+							$this->moviesData[$emid]['trailerUrl'] = $this->params['kApiMediaUrl'].'o/'.substr($trailer, 0,2).'/'.substr($trailer, 2,2).'/'.$trailer;	
+							$this->moviesData[$emid]['update'] = 1;
+						}
+					}	
+
+					// This prepare seances to send
+					foreach ($rMovie['schedules'] as $seance) 
+					{
+						$newSeance = array();
+						$date = date_parse($seance['startTime']);
+						$newSeance['seanceTime'] = mktime($date['hour'], $date['minute'], $date['second'], $date['month'], $date['day'], $date['year']);
+						$newSeance['placeId'] = $place['ePlaceId'];
+						$newSeance['movieId'] = $emid;
+						if ($seance['isSaleAllowed']) $newSeance['purchaseLink'] = $this->params['kPurchaseUrl'].$seance['id'];
+						$this->seances[] = $newSeance;
+					}
+				}
+
+
 
 			}
 		}
 
+		//shortcut
 		$seances = $this->seances;
 
 		// Seance sending
-		if(sizeof($seances)) {
-			for($i = 0; $i<sizeof($seances);$i += 250){
+		if(sizeof($seances)) 
+		{
+			for($i = 0; $i<sizeof($seances);$i += 250)
+			{
 				if($this->params['debug']) echo "afisha.postSeances " .$i . " - " . min(sizeof($seances),($i+250)) . " of total " . sizeof($seances) ."\n";
 				$this->sendData('afisha.postSeances',array_slice($seances,$i,250));
 			}
 		}
+
+		
+		//shortcut
+		$movies = $this->moviesData;
+
+		//Moives media sending
+		if(sizeof($movies)) 
+		{
+			for($i = 0; $i<sizeof($movies);$i += 1)
+			{
+				if($this->params['debug']) echo "afisha.postMovie " .$i." of total " . sizeof($movies) ."\n";
+				$this->sendData('afisha.postMovie',array_slice($movies,$i,1));
+			}
+		}
+
+		//$this->sendData('afisha.postMovie', array_slice($this->moviesData, 0, 1)); //$this->moviesData);
 	}
 
 	
@@ -175,10 +239,13 @@ class afishaCinemaKinohodParser
 		$client->accepted_compression = 'deflate';
 		$res                          = $client->send($msg, 60 * 5, 'http11');
 		if ($res->faultcode()) {
+			if($this->params['debug']) {
 			print "An error occurred: ";
 			print " Code: " . htmlspecialchars($res->faultCode());
-			print " Reason: '" . htmlspecialchars($res->faultString()) . "' \n";
-			die;
+			print " Reason: '" . htmlspecialchars($res->faultString()) . "' \n";	
+			}
+			return $res->val;
+			//die;
 		} else
 			return $res->val;
 	}

@@ -8,6 +8,7 @@ return array (
 	'apiKey'       => '99f4fdf1007620ecc3bf83006d75faa7',
 
 	'kApiUrl' 	  => 'https://kinohod.ru/api/rest/partner/v1/cinemas/',
+	'kApiMediaUrl'=> 'http://kinohod.ru/',
 	'kApiKey'	  => 'f94e3338-3835-343e-afbd-1edb21abbf4b',
 	'kPurchaseUrl'=> 'http://kinohod.ru/api/widget/seance/',
 
