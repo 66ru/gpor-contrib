@@ -14,6 +14,8 @@ class afishaCinemaKinohodParser
 	'kApiKey'	  => '',
 	'kPurchaseUrl' => '',
 
+	'kClientApiKey' => '',
+
 	'debug' 	  => false,
 
 	'accessPlaces' => array(
@@ -112,7 +114,10 @@ class afishaCinemaKinohodParser
 					$newSeance['seanceTime'] = mktime($date['hour'], $date['minute'], $date['second'], $date['month'], $date['day'], $date['year']);
 					$newSeance['placeId'] = $place['ePlaceId'];
 					$newSeance['movieId'] = $this->places[$rPlaceId]['data'][$rMovieKey]['movie']['eMovieId'];
-					if ($seance['isSaleAllowed']) $newSeance['purchaseLink'] = $this->params['kPurchaseUrl'].$seance['id'];
+					if ($seance['isSaleAllowed'])
+						$newSeance['purchaseLink'] = $this->params['kPurchaseUrl'].$seance['id'].'?apikey='.$this->params['kClientApiKey'];
+					else
+						$newSeance['purchaseLink'] = '';
 					$this->seances[] = $newSeance;
 				} 
 
