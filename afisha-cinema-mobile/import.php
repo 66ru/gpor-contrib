@@ -31,7 +31,7 @@ foreach ($days as $num => $day) {
 
 	if ($debug) echo "parse " . $url . "\n";
 
-	$all_cinemas = getFilms($url, $day, &$all_cinemas);
+	$all_cinemas = getFilms($url, $day, $all_cinemas);
 }
 
 if ($debug) {
@@ -206,10 +206,12 @@ function getFilms($url, $dayparse, $all_cinemas)
 					'name'=> $currentFilmTitle,
 				);
 
-				$currentFilm = &$all_cinemas[sizeof($all_cinemas) - 1];
+				$currentFilm = $all_cinemas[sizeof($all_cinemas) - 1];
+				$currentFilmIndex = sizeof($all_cinemas) - 1;
 			}
 			else {
-				$currentFilm = &$all_cinemas[$found];
+				$currentFilm = $all_cinemas[$found];
+				$currentFilmIndex = $found;
 			}
 
 
@@ -217,6 +219,7 @@ function getFilms($url, $dayparse, $all_cinemas)
 			$loadedFilm = getCinemaData($card_Page, $currentFilmHref, $dayparse, $currentFilm, $found);
 
 			$currentFilm = array_merge($currentFilm, $loadedFilm);
+			$all_cinemas[$currentFilmIndex] = $currentFilm;
 		}
 	}
 
@@ -309,10 +312,10 @@ function getCinemaData($pageData, $url_card_film, $dayparse, $foundedFilm, $foun
 
 		$places = array();
 
-		$cinemaData['places'] = getPlacesPage($pageData, $url_card_film, $dayparse, &$places);
+		$cinemaData['places'] = getPlacesPage($pageData, $url_card_film, $dayparse, $places);
 	}
 	else {
-		$foundedFilm['places'] = getPlacesPage($pageData, $url_card_film, $dayparse, &$foundedFilm['places']);
+		$foundedFilm['places'] = getPlacesPage($pageData, $url_card_film, $dayparse, $foundedFilm['places']);
 
 		$cinemaData = $foundedFilm;
 	}
@@ -370,10 +373,11 @@ function getPlaces($pageData, $dayparse, $foundPlaces)
 			}
 		}
 
-		if ($foundPlace == '')
+		if ($foundPlace == '') {
 			$tmp[$place_name] = array();
-		else
-			$tmp[$place_name] = &$foundPlaces[$foundPlace];
+		} else {
+			$tmp[$place_name] = $foundPlaces[$foundPlace];
+		}
 
 		foreach ($seanses as $num => $s) {
 			$seanses[$num] = date('Y-m-d H:i:s', strtotime($dayparse . ' ' . $s));
