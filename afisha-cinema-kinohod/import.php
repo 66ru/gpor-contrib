@@ -1,7 +1,7 @@
 <?php 
 define('DS', '/');
 mb_internal_encoding("UTF-8");
-//date_default_timezone_set('Asia/Yekaterinburg');
+date_default_timezone_set('Asia/Yekaterinburg');
 include_once ('../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 class afishaCinemaKinohodParser
 {
@@ -110,8 +110,8 @@ class afishaCinemaKinohodParser
 				// This prepare seances to send
 				foreach ($rMovie['schedules'] as $seance) {
 					$newSeance = array();
-					$date = date_parse($seance['startTime']);
-					$newSeance['seanceTime'] = mktime($date['hour'], $date['minute'], $date['second'], $date['month'], $date['day'], $date['year']);
+					$startTime = strtotime($seance['startTime']);
+					$newSeance['seanceTime'] = $startTime;
 					$newSeance['placeId'] = $place['ePlaceId'];
 					$newSeance['movieId'] = $this->places[$rPlaceId]['data'][$rMovieKey]['movie']['eMovieId'];
 					if ($seance['isSaleAllowed'])
