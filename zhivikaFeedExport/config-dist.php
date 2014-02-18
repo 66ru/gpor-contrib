@@ -1,8 +1,9 @@
 <?php
 return array (
-	'apiUrl' => 'http://api.66.ws',
+	'apiUrl' => 'http://api.66.ru',
 	'apiKey' => '',
-	'feedUrl' => 'http://66.ru/e/zhivika.xml',
-	'feedPath' => '/data/'
+	'originalFeedUrl' => '',
+	'feedPath' => '',
+	'feedUrl' => ''
 );
 ?>
