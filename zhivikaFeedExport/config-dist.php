@@ -4,6 +4,7 @@ return array (
 	'apiKey' => '',
 	'originalFeedUrl' => '',
 	'feedPath' => '',
-	'feedUrl' => ''
+	'feedUrl' => '',
+	'feedTargetUrl' => '',
 );
 ?>

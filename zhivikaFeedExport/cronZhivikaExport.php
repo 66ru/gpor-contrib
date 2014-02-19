@@ -54,7 +54,7 @@ function uploadZhivikaLinkFeed($config, $fileName) {
 	$method = 'admin.setCustomFile';
 
 	$p2 = array();
-	$p2['name'] = '/feed/latest.xml'; // имя файла. Если файла не существует - он создается, иначе - изменяется.
+	$p2['name'] = $config['feedTargetUrl']; // имя файла. Если файла не существует - он создается, иначе - изменяется.
 	$p2['contentType'] = 'text/xml'; // Тип содержимого
 	$p2['dataFile'] = $config['feedUrl'].$fileName; // ссылка на файл
 
