@@ -38,10 +38,13 @@ $preps = $newXML->createElement('preps');
 $newXML->appendChild($preps);
 
 foreach ($srcXML->Position as $line) {
+	$aptId = (string) $line['IdApt'];
 	$prepId = (string) $line['IdPrep'];
 	$name = (string) $line;
 	$prep = $newXML->createElement('prep', $name);
 	$prep->setAttribute('link', 'http://www.zhivika.ru/plugins/catalog/item/cid/0/item/'.$prepId);
+	$prep->setAttribute('IdPrep', $prepId);
+	$prep->setAttribute('IdApt', $aptId);
 	$preps->appendChild($prep);
 }
 
