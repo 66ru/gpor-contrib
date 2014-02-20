@@ -20,15 +20,17 @@ foreach ($config as $k=>$v)
 $dataDir = $config['feedPath'];
 
 $fileName = $dataDir.'latestZhivikaFeed.xml';
-if (!file_exists($dataDir))
-{
-	if (!mkdir($dataDir, 0777))
-	{
+if (!file_exists($dataDir)) {
+	if (!mkdir($dataDir, 0777)) {
 		die('Can\'t create folder '.$dataDir);
 	}
 }
 
 $xml = simplexml_load_file($config['originalFeedUrl']);
+
+if(!$xml) {
+	die('File empty or not xml');
+}
 
 $srcXML = new SimpleXMLElement($xml->asXML());
 $newXML = new domDocument('1.0', "windows-1251");
@@ -42,9 +44,9 @@ foreach ($srcXML->Position as $line) {
 	$prepId = (string) $line['IdPrep'];
 	$name = (string) $line;
 	$prep = $newXML->createElement('prep', $name);
-	$prep->setAttribute('link', 'http://www.zhivika.ru/plugins/catalog/item/cid/0/item/'.$prepId);
-	$prep->setAttribute('IdPrep', $prepId);
 	$prep->setAttribute('IdApt', $aptId);
+	$prep->setAttribute('IdPrep', $prepId);
+	$prep->setAttribute('link', 'http://www.zhivika.ru/plugins/catalog/item/cid/0/item/'.$prepId);
 	$preps->appendChild($prep);
 }
 
@@ -63,6 +65,6 @@ function uploadZhivikaLinkFeed($config, $fileName) {
 
 	$_xmlRpc = new FeedXmlRpc($config['apiUrl'], $config['apiKey'], $method);
 	if (!$_xmlRpc->send(array($p2))) {
-		var_dump($_xmlRpc->getLastError());
+		echo $_xmlRpc->getLastError();
 	}
 }
