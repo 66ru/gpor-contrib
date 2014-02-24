@@ -33,25 +33,14 @@ if(!$xml) {
 }
 
 $srcXML = new SimpleXMLElement($xml->asXML());
-$newXML = new domDocument('1.0', "windows-1251");
-$newXML->formatOutput = true;
-
-$preps = $newXML->createElement('preps');
-$newXML->appendChild($preps);
 
 foreach ($srcXML->Position as $line) {
-	$aptId = (string) $line['IdApt'];
-	$code = (string) $line['Code086'];
+	/** @var $line SimpleXMLElement */
 	$prepId = (string) $line['IdPrep'];
-	$name = (string) $line;
-	$prep = $newXML->createElement('prep', $name);
-	$prep->setAttribute('IdApt', $aptId);
-	$prep->setAttribute('IdPrep', $code);
-	$prep->setAttribute('link', 'http://www.zhivika.ru/plugins/catalog/item/cid/0/item/'.$prepId);
-	$preps->appendChild($prep);
+	$line->addAttribute('link', 'http://www.zhivika.ru/plugins/catalog/item/cid/0/item/'.$prepId);
 }
 
-$newXML->save($fileName);
+$srcXML->saveXML($fileName);
 
 uploadZhivikaLinkFeed($config, 'latestZhivikaFeed.xml');
 
