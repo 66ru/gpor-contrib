@@ -21,19 +21,21 @@
 </style>
 
 <script type="text/javascript">
-var jsonUrl = 'http://66.ru/json/news/test_drive/latest.json';
-$.getJSON( jsonUrl, function( data ) {
-    if (data && data.length) {
+$(document).ready(function(){
+	var jsonUrl = 'http://66.ru/json/news/test_drive/latest.json';
+	$.getJSON( jsonUrl, function( data ) {
+	    if (data && data.length) {
 
-	function getRandomArbitary(min, max) {
-		return Math.floor(Math.random() * (max - min + 1)) + min;
-	}
+		function getRandomArbitary(min, max) {
+			return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
 
-	testDrive = data[getRandomArbitary(0, data.length-1)];
+		testDrive = data[getRandomArbitary(0, data.length-1)];
 
-	var html = '<div class="testdrive_block"><div class="wrapperBot clearfix"><div class="wrapper"><div class="testdrive_header"><span style="font-weight: bold; line-height: 1.2em;">Тест-драйв:</span><br><a href="' + testDrive['link'] + '">' + testDrive['title'] + '</a></div><a href="' + testDrive['link'] + '"><img style="width:100%; height: 95px; background: url(\'' + testDrive['wideimageurl'] + '\') center 0px" border="0" src="http://t.66.ru/19baa2cf9ec9d1681bc3607af6a3b6986ff5fff2/auto/pixel.gif" alt=""></a></div><div class="gaspromTeaser"><a target="_blank" href="http://www.66.ru/go/eburg.gazprom-neft.ru/" class="gaspromTeaserLogo"></a><p>На тест-драйвах<br>используем топливо</p></div><div class="gaspromOurPlasticCard"><div class="gaspromOurPlasticCardPad"><div class="gaspromOurPlasticCardPic"></div><h3><img alt="" src="http://t.66.ru/auto/gasprom/gaspromBonusH.gif"></h3><a class="gaspromOurPlasticCardLink" target="_blank" href="http://www.66.ru/go/www.gpnbonus.ru/on_the_way/">Как получить<br>бонусную карту?</a></div></div></div></div>';
-	$("#testDriveBlock").html(html);
-	    }
+		var html = '<div class="testdrive_block"><div class="wrapperBot clearfix"><div class="wrapper"><div class="testdrive_header"><span style="font-weight: bold; line-height: 1.2em;">Тест-драйв:</span><br><a href="' + testDrive['link'] + '">' + testDrive['title'] + '</a></div><a href="' + testDrive['link'] + '"><img style="width:100%; height: 95px; background: url(\'' + testDrive['wideimageurl'] + '\') center 0px" border="0" src="http://t.66.ru/19baa2cf9ec9d1681bc3607af6a3b6986ff5fff2/auto/pixel.gif" alt=""></a></div><div class="gaspromTeaser"><a target="_blank" href="http://www.66.ru/go/eburg.gazprom-neft.ru/" class="gaspromTeaserLogo"></a><p>На тест-драйвах<br>используем топливо</p></div><div class="gaspromOurPlasticCard"><div class="gaspromOurPlasticCardPad"><div class="gaspromOurPlasticCardPic"></div><h3><img alt="" src="http://t.66.ru/auto/gasprom/gaspromBonusH.gif"></h3><a class="gaspromOurPlasticCardLink" target="_blank" href="http://www.66.ru/go/www.gpnbonus.ru/on_the_way/">Как получить<br>бонусную карту?</a></div></div></div></div>';
+		$("#testDriveBlock").html(html);
+		    }
+	});
 });
 </script>
 <div id="testDriveBlock"></div>
