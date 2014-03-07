@@ -1,0 +1,207 @@
+<style type="text/css">
+.found_head { border-bottom: 1px solid #ababab; padding-bottom: 7px; }
+.found_head .found_head_left { float: left; font-size: 18px; margin-left: 12px; }
+.found_head .found_head_right { float: right; }
+.found_head .found_head_right .found_head_right_in { color: #666666; float: left; margin-right: 8px; }
+.found_head .found_head_right .found_head_right_in div a { cursor: pointer; color: #0066cc; border-bottom: 1px dotted #0066cc; text-decoration:none; }
+.found_head .found_head_right .found_head_right_in div.left_angle,
+.found_head .found_head_right .found_head_right_in div.right_angle { background: none; display: none; }
+
+.found_head .found_head_right div.current_sorted { position: relative; top: -3px; }
+.found_head .found_head_right div.current_sorted div { height: 24px; width: auto; float: left; }
+.found_head .found_head_right div.current_sorted div a { position: relative; top: 3px; color: white; border-bottom: none; }
+.found_head .found_head_right div.current_sorted div { background: url("../img/sort_criteria.png") -22px 0 no-repeat; }
+.found_head .found_head_right div.current_sorted div.left_angle { width: 10px; display: block; background: url("../img/sort_criteria.png") 0 0 no-repeat; }
+.found_head .found_head_right div.current_sorted div.right_angle { width: 10px; display: block; background: url("../img/sort_criteria.png") -11px 0 no-repeat; }
+
+.found_body_full {width: 100%;}
+.found_body .found_body_left { width: 40%; float: left; }
+.found_body .found_body_right { width: 60%; float: left; }
+.found_body .found_body_right-in { padding-left: 10px; }
+.found_body .found_body_left h2 { margin-left: 10px; padding-left: 40px; height: 40px; line-height: 40px; background-position: left 0;
+background-repeat: no-repeat; background-image: url()}
+.found_body .found_body_left h2.color_red { background-image: url(http://s.66.ru/localStorage/collection/d7/1b/4c/f2/d71b4cf2.png)}
+.found_body .found_body_left h2.color_green { background-image: url(http://s.66.ru/localStorage/collection/41/3b/2b/.p/413b2b.png)}
+.found_body .item_offer { margin-bottom: 0px; }
+.found_body .item_offer_description { margin-bottom: 7px; position:relative; width: 100%; margin-top: 10px; }
+.found_body .item_offer h3, .found_body .item_offer h2 { font-size: 14px; font-weight: normal; margin-left: 10px; }
+.found_body .item_offer .item_offer_left {margin-right: 12px;width: 130px;position: relative;padding-left: 10px;float: none;vertical-align: top;}
+.found_body .item_offer .item_offer_right { vertical-align: top;padding-left: 10px;padding-top: 4px;}
+.found_body .item_offer .item_offer_right-bot {height: 20px;padding-left: 10px;padding-bottom: 3px;line-height: 18px;vertical-align: bottom;}
+.found_body .item_offer .item_offer_right h3 { margin: 0 0 0 0; line-height: 21px; }
+.found_body .item_offer .item_offer_right h3 a { text-decoration: none; border-bottom: 1px dashed #037DD3; color: #037dd3; font-size: 15px; font-weight: normal; }
+.found_body .item_offer_active .item_offer_right h3 a { text-decoration: none; border-bottom: none; color: #000;}
+
+.found_body .item_offer .wrap_data { padding: 0 11px 6px 11px; background: #f1f5e8; }
+.found_body .item_offer .data { width: 100%; }
+.found_body .item_offer .data th,
+.found_body .item_offer .data td { background: #f1f5e8; text-align: center; }
+.found_body .item_offer .data td { padding: 5px 0; }
+.found_body .item_offer .data td.price { padding-left: 5px ; padding-right: 5px; }
+.found_body .item_offer .data td.square { padding-left: 5px ; padding-right: 5px; }
+.found_body .item_offer .data td.align-left { text-align: left; }
+.found_body .item_offer .data th { font-size: 11px; color: #8a8f7e; padding: 6px 0 4px 0; }
+.found_body .item_offer .data span.no-sales { color: #8a8f7e; }
+.found_body .item_offer .data span.star { color: #BA0707; }
+.found_body .item_offer .data tr { border-bottom: 1px solid white; }
+.found_body .item_offer .data td a { text-decoration: none; border-bottom: 1px solid #037DD3; }
+.found_body .item_offer .data tr.last a { text-decoration: none; border-bottom: 1px solid #037DD3; font-weight: bold;  }
+.found_body .item_offer .announce { background-color: #eeeeee; padding: 6px 11px; line-height: 1.4em; }
+
+.item_offer { margin-bottom: 10px; border:#fff solid 1px;}
+.item_offer__sale-stage { padding-left: 9px;}
+.item_offer_active {background: #E5EFCC; overflow: hidden; border:#678E0F solid 1px; }
+.item_offer_description { margin-bottom: 7px; padding-top: 7px; }
+.item_offer h3 { font-size: 14px; font-weight: bold; margin-left: 11px; }
+.item_offer .item_offer_left { margin-right: 12px; float: left; width: 130px; }
+.item_offer .item_offer_right {  }
+.item_offer .item_offer_right h3 { position: relative; top: -3px; margin-bottom: 5px; }
+.item_offer .item_offer_right h3 a { text-decoration: none; border-bottom: 1px solid #037DD3; color: #037dd3; font-size: 15px; font-weight: bold; }
+.item_offer .item_offer_right p { line-height: 1.3; margin-bottom: 5px; }
+.item_offer .item_offer_right p a { color: #037dd3; text-decoration: none; border-bottom: 1px solid #037DD3; }
+.item_offer .wrap_data { padding: 0 11px 6px 11px; background: #f1f5e8; }
+.item_offer .data { width: 100%; }
+.item_offer .data th,
+.item_offer .data td { background: #f1f5e8; text-align: left; }
+.item_offer .data td.price { width:80px; white-space: nowrap; }
+.item_offer .data td.square { width:80px; white-space: nowrap; }
+.item_offer .data td.align-left { text-align: left; }
+.item_offer .data td.name { line-height: 1.2em; }
+.item_offer .data td { padding: 5px 0; }
+.item_offer .data th { font-size: 11px; color: #8a8f7e; padding: 6px 0 4px 0; }
+.item_offer .data tr { border-bottom: 1px solid white; }
+.item_offer .data td a { text-decoration: none; border-bottom: 1px solid #037DD3; }
+.item_offer .data tr.last a { text-decoration: none; border-bottom: 1px solid #037DD3; font-weight: bold;  }
+
+.item_offer h3 b { font-weight: normal; color: #484744; }
+.item_offer h3 b.orange { font-weight: bold; color: #f17e00; }
+.item_offer h3 u { text-decoration: none; font-weight: normal }
+
+.found_body .item_offer .item_offer_address {margin: 0; padding: 0;}
+
+.item_offer .stage-deadline {margin: 0 0 8px 11px;}
+.item_offer .stage-deadline .key {}
+.item_offer .stage-deadline .value {padding-left: 8px; font-weight: bold; color: #F17E00}
+
+.search_form {
+    background: none repeat scroll 0 0 #779F1A;
+    margin-bottom: 16px;
+    padding: 16px 20px 20px;
+}
+
+.gazprom-search__left {
+    vertical-align: top;
+    width: 150px;
+}
+.gazprom-search__right {
+    margin-bottom: -6px;
+    position: relative;
+    top: -2px;
+    vertical-align: top;
+    color: #FFFFFF;
+}
+
+.controlBox input.subm {
+    font-weight: bold;
+    padding: 2px 18px;
+}
+.controlBox input.short {
+    width: 40px;
+}
+.controlBox {
+    margin-right: 20px;
+    position: relative;
+}
+.controlBox span {
+    position: relative;
+}
+.controlBox select, .controlBox input {
+    font-size: 13px;
+    padding: 2px 1px 2px 2px;
+}
+.gazprom-filter_item {
+    float: left;
+    cursor: pointer;
+    height: 24px;
+}
+.filter-item_fuel {
+    margin-left: 10px;
+    width: 40px;
+    font-size: 12px;
+}
+.filter-item_service {
+    width: 150px;
+    font-size: 11px;
+    padding-top: 10px;
+}
+.filter-selected img {
+    background-color: #A0BC60;
+}
+.filter-item_fuel.filter-selected {
+    background-color: #A0BC60;
+}
+</style>
+
+
+<div class="context" style="padding-left:10px;padding-right: 290px; font-size: 2em; margin-bottom: 10px;">
+    <h2>Карта заправочных станций</h2>
+</div>
+
+<script type="text/javascript" src="http://66.ru/auto/gasstations/map.js"></script>
+<script src="http://api-maps.yandex.ru/2.0/?load=package.full&lang=ru-RU&ns=YMaps&mode=release" type="text/javascript"></script>
+<script type="text/javascript">
+    $.data(document, 'yandexDefaultLatitude', '56.837982');
+    $.data(document, 'yandexDefaultLongitude', '60.59734');
+    $.data(document, 'yandexDefaultZoom', '12');
+    $.data(document, 'yandexPeopleMaps', '');
+    $.data(document, 'portal.city', 'Екатеринбург');
+</script>
+
+<div class="search_form context rc5" style="display:none;">
+    <form action="" method="get" class="gazprom-search-form">
+        <div class="inline-block gazprom-search__left">
+            <fieldset>
+                <div style="color: #FFFFFF; font-size: 18px;line-height: 24px;margin: -6px 0 9px;">Фильтр</div>
+            </fieldset>
+        </div>
+
+        <div class="inline-block gazprom-search__right">
+            <fieldset class="gazprom-search__left_top fuel-filter-wrapper"></fieldset>
+            <fieldset class="gazprom-search__left_top service-filter-wrapper"></fieldset>
+        </div>
+    </form>
+</div>
+<div class="found_head context" id="itemsList">
+    <div class="found_body context">
+        <div class="found_body_left" style="">
+        </div>
+        <div class="found_body_right">
+            <div class="found_body_right-in">
+                <div id="ya-map-search" style="position: fixed; display: none;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function () {
+    $("#itemsList").gazprom_map_items({
+        'mapId' : 'ya-map-search',
+        'listClass' : 'found_body_left',
+        'filterClass': 'search_form',
+        'fuelFilterClass': 'fuel-filter-wrapper',
+        'serviceFilterClass': 'service-filter-wrapper',
+        'containerClass' : 'found_body',
+        'itemClass' : 'item_offer',
+        'activeItemClass' : 'item_offer_active',
+        'lat' : $.data(document, 'yandexDefaultLatitude'),
+        'lng' : $.data(document, 'yandexDefaultLongitude'),
+        'pmap' : $.data(document, 'yandexPeopleMaps'),
+        'scale' : 12,
+        'enableScroll' : true,
+        'listFeed': 'http://66.ru/json/auto/gazpromStations.json',
+        'infoFeed': 'http://66.ru/json/auto/gazpromInfo.json'
+    });
+});
+</script>
