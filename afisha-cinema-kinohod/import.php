@@ -5,203 +5,261 @@ date_default_timezone_set('Asia/Yekaterinburg');
 include_once ('../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 class afishaCinemaKinohodParser
 {
-	private $params = array (
+    private $params = array(
 
-	'apiUrl'       => '',
-	'apiKey'       => '',
+        'apiUrl'       => '',
+        'apiKey'       => '',
 
-	'kApiUrl' 	  => '',
-	'kApiKey'	  => '',
-	'kPurchaseUrl' => '',
+        'kApiUrl'     => '',
+        'kApiKey'     => '',
+        'kPurchaseUrl' => '',
 
-	'kClientApiKey' => '',
+        'kClientApiKey' => '',
 
-	'debug' 	  => false,
+        'debug'       => false
+    );
 
-	'accessPlaces' => array(
-		
-		)
-	);
+    private $places = array();
+    private $movies = array();
+    private $seances = array();
 
-	private $places = array();
-	private $seances = array();
+    private function loadParams()
+    {
+        if (!is_file('config.php')) {
+            echo "missing config.php";
+            die;
+        }
+        $this->params = array_merge($this->params, include 'config.php');
 
-	private function loadParams()
-	{
-		if (!is_file('config.php')) {
-			echo "missing config.php";
-			die;
-		}
-		$this->params = array_merge($this->params, include 'config.php');
+        foreach ($this->params as $key => $param) {
+            if (!isset($param)) {
+                echo 'missing ' . $key . 'param in config file';
+                die;
+            }
+        }
+    }
 
-		foreach ($this->params as $key => $param) {
-			if (!isset($param)) {
-				echo 'missing ' . $key . 'param in config file';
-				die;
-			}
-		}
-	}
+    /**
+     * Загружает список объектов с кинохода
+     * @param string $type Доступны значения 'cinemas', 'movies'
+     * @return array
+    */
+    public function loadList($type)
+    {
+        if (!$this->params['kCityId']) {
+            return array();
+        }
+        $url = $this->params['kApiUrl'] . $type . '/?city=' . $this->params['kCityId'] . '&apikey=' . $this->params['kApiKey'];
+        $headers = get_headers($url);
+        if (substr($headers[0], 9, 3) != '200') {
+            return false;
+        }
 
-	public function loadPlace($id,$dateString) 
-	{
-		$url = $this->params['kApiUrl'].$id.'/schedules?date='.$dateString.'&apikey='.$this->params['kApiKey'];
-		$headers = get_headers($url);
-		if (substr($headers[0], 9, 3) == '200')
-		{
-			$result = file_get_contents($url);
-			$result = json_decode($result,1); 
-			return $result;
-		}
-		else 
-			return false;	
-	}
+        $result = file_get_contents($url);
+        $result = json_decode($result, 1);
 
-	public function run($dateString)
-	{
-		$this->loadParams();
-		$existingMovies = $this->sendData('afisha.listMovies');
-		$existingPlaces = $this->sendData("afisha.listPlaces");
-		
-		// This load cinemas(places) listed in config with its movies with schedules from kinohod
-		// and matches it with existing cinemas(places)
-		foreach ($this->params['accessPlaces'] as $rPlaceName => $rPlaceId) 
-		{
-			$tmp = array('ePlaceId'=>0,'data'=>$this->loadPlace($rPlaceId,$dateString));
-				
-			if ($tmp['data']) 
-			{
-				$this->places[$rPlaceId] = $tmp;
-				foreach ($existingPlaces as $ePlace) 
-				{
-					if ($this->matchName($tmp['data'][0]['cinema']['title'], $ePlace['name'])) // 0 is here 'cause we take only first movie to get cinema's title
-						$this->places[$rPlaceId]['ePlaceId'] = $ePlace['id'];
-					if ($ePlace['synonym']) 
-						foreach(unserialize($ePlace['synonym']) as $syn)
-							if ($this->matchName($tmp['data'][0]['cinema']['title'], $syn))
-								$this->places[$rPlaceId]['ePlaceId'] = $ePlace['id'];
-				}
-			}
-			else 
-			{
-				if($this->params['debug']) echo('Error loading '.$rPlaceName.' @ '.$dateString."\n");	
-			}
-		}
+        return $result; 
+    }
 
-		//var_dump($existingMovies);
+    /**
+     * Загрузка расписаний кинотеатра
+     * @param int placeId
+     * @param string $dateString
+    */
+    public function loadSchedules($placeId, $dateString) 
+    {
+        $url = $this->params['kApiUrl'] . 'cinemas/' . $placeId . '/schedules?date=' . $dateString . '&apikey=' . $this->params['kApiKey'];
+        $headers = get_headers($url);
+        if (substr($headers[0], 9, 3) == '200') {
+            $result = file_get_contents($url);
+            $result = json_decode($result, 1); 
+            return $result;
+        }
+        else 
+            return false;   
+    }
 
-		
-		foreach ($this->places as $rPlaceId => $place) 
-		{
-			foreach ($place['data'] as $rMovieKey => $rMovie) 
-			{	
-				// This matches loaded movies from each loaded cinema with existing movies
-				foreach ($existingMovies as $eMovie) 
-				{
-					if ($this->matchName($rMovie['movie']['title'],$eMovie['title'])) 
-						$this->places[$rPlaceId]['data'][$rMovieKey]['movie']['eMovieId'] = $eMovie['id'];
-					if ($this->matchName($rMovie['movie']['originalTitle'],$eMovie['originalTitle'])) 
-						$this->places[$rPlaceId]['data'][$rMovieKey]['movie']['eMovieId'] = $eMovie['id'];
-					if ($eMovie['synonym'])
-						foreach(unserialize($eMovie['synonym']) as $syn)
-							if ($this->matchName($rMovie['movie']['title'],$syn))
-								$this->places[$rPlaceId]['data'][$rMovieKey]['movie']['eMovieId'] = $eMovie['id'];
-				}
+    public function run($dateString)
+    {
+        $this->loadParams();
 
-				// This prepare seances to send
-				foreach ($rMovie['schedules'] as $seance) {
-					$newSeance = array();
-					$startTime = strtotime($seance['startTime']);
-					$newSeance['seanceTime'] = $startTime;
-					$newSeance['placeId'] = $place['ePlaceId'];
-					$newSeance['movieId'] = $this->places[$rPlaceId]['data'][$rMovieKey]['movie']['eMovieId'];
-					if ($seance['isSaleAllowed'])
-						$newSeance['purchaseLink'] = $this->params['kPurchaseUrl'].$seance['id'].'?apikey='.$this->params['kClientApiKey'];
-					else
-						$newSeance['purchaseLink'] = '';
-					$this->seances[] = $newSeance;
-				} 
+        $this->places = $this->loadList('cinemas'); // список кинотеатров города
+        $existingPlaces = $this->sendData("afisha.listPlaces");
 
-			}
-		}
+        // Формируем массив кинотеатров, которые нужно будет создать на gpor
+        $placesToSend = array();
+        foreach ($this->places as $key => $place) {
+            if (isset($this->params['disabledPlaces'][$place['title']])) {
+                if ($this->params['debug']) echo('Place "' . $place['title'] . '" disabled.' . PHP_EOL);   
+                continue;
+            }
+            $found = false;
+            foreach($existingPlaces as $eKey => $ePlace) {
+                if ($found) break;
+                if ($this->matchName($place['title'], $ePlace['name']) || $this->matchName($place['shortTitle'], $ePlace['name'])) {
+                    $this->places[$key]['ePlaceId'] = $ePlace['id'];
+                    unset($existingPlaces[$eKey]);
+                    $found = true;
+                    break;
+                }
+                if ($ePlace['synonym']) {
+                    foreach (unserialize($ePlace['synonym']) as $syn) {
+                        if ($this->matchName($place['title'], $syn) || $this->matchName($place['shortTitle'], $syn)) {
+                            $this->places[$key]['ePlaceId'] = $ePlace['id'];
+                            unset($existingPlaces[$eKey]);
+                            $found = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!$found) {
+                $placesToSend[] = array('name' => $place['title']);
+            }
+        }
 
-		$seances = $this->seances;
+        // Отправляем новые кинотеатры на gpor
+        if (!empty($placesToSend)) {
+            $sendedPlaces = $this->sendData('afisha.postPlace', $placesToSend);
+            // Проставляем созданным кинотеатрам корректные внешние идентификаторы
+            foreach ($sendedPlaces as $ePlace) {
+                foreach ($this->places as $key => $place) {
+                    if ($this->matchName($place['title'], $ePlace['name'])) {
+                        $this->places[$key]['ePlaceId'] = $ePlace['id'];
+                    }
+                }
+            }
+        }
 
-		// Seance sending
-		if(sizeof($seances)) {
-			for($i = 0; $i<sizeof($seances);$i += 250){
-				if($this->params['debug']) echo "afisha.postSeances " .$i . " - " . min(sizeof($seances),($i+250)) . " of total " . sizeof($seances) ."\n";
-				$this->sendData('afisha.postSeances',array_slice($seances,$i,250));
-			}
-		}
-	}
+        // Формируем массив фильмов для загрузки на gpor
+        $this->movies = $this->loadList('movies');
+        $existingMovies = $this->sendData('afisha.listMovies');
+        $movieIdsArray = array(); // Массив соответствий индентификаторов фильма (kinohod => gpor)
 
-	
-	private function getFileData($name, $params = array())
-	{
-		
-		$filedata = file_get_contents($this->getUrl($name, $params));
-		if(!$filedata) return false;
-		
-		return json_decode($filedata, 1);
-	}
+        $moviesToSend = array();
+        foreach ($this->movies as $key => $movie) {
+            $found = false;
+            foreach ($existingMovies as $eKey => $eMovie) {
+                if ($found) break;
+                if ($this->matchName($movie['title'], $eMovie['title']) || $this->matchName($movie['originalTitle'], $eMovie['originalTitle'])) {
+                    $movieIdsArray[$movie['id']] = $eMovie['id'];
+                    unset($existingMovies[$eKey]);
+                    $found = true;
+                    break;
+                }
+                if ($eMovie['synonym']) {
+                    foreach (unserialize($eMovie['synonym']) as $syn) {
+                        if ($this->matchName($movie['title'], $syn) || $this->matchName($movie['originalTitle'], $syn)) {
+                            $movieIdsArray[$movie['id']] = $eMovie['id'];
+                            unset($existingMovies[$eKey]);
+                            $found = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!$found) {
+                $moviesToSend[] = array(
+                    'name' => $movie['title'],
+                    'text' => $movie['annotationFull'],
+                    'genre' => implode(', ', $movie['genres']),
+                    'year' => $movie['productionYear'],
+                    'director' => implode(', ', $movie['directors']),
+                    'starring' => implode(', ', $movie['actors']),
+                    'country' => implode(', ', $movie['countries']),
+                    'duration' => $movie['duration']
+                );
+            }
+        }
 
+        // Отправляем новые фильмы на gpor
+        if (!empty($moviesToSend)) {
+            $sendedMovies = $this->sendData('afisha.postMovie', $moviesToSend);
+            // Проставляем в массив соответсивий идентификаторов загруженные значения
+            foreach ($sendedMovies as $eMovie) {
+                foreach ($this->movies as $key => $movie) {
+                    if ($this->matchName($movie['title'], $eMovie['title'])) {
+                        $movieIdsArray[$movie['id']] = $eMovie['id'];
+                    }
+                }
+            }
+        }
 
-	private function getUrl($name, $params = array())
-	{
-		if (!array_key_exists($name, $this->params['urls'])) return false;
+        // Формируем массивы сеансов
+        $schedulesToSend = array();
+        foreach ($this->places as $place) {
+            // пропускаем кинотеатр, если его по каким-то причинам нет на гпоре
+            $placeId = isset($place['ePlaceId']) ? $place['ePlaceId'] : false;
+            if (!$placeId) continue;
 
-		$tpl = $this->params['urls'][$name];
+            $dataList = $this->loadSchedules($place['id'], $dateString);
+            foreach($dataList as $data) {
+                // Пропускаем сеанс, если такого фильма на гпоре нет
+                $movieId = isset($movieIdsArray[$data['movie']['id']]) ? $movieIdsArray[$data['movie']['id']] : false;
+                if (!$movieId) continue;
 
-		foreach ($params as $key => $param) {
-			$tpl = preg_replace('|{' . $key . '}|', $param, $tpl);
-		}
-		return $tpl;
-	}
+                foreach ($data['schedules'] as $schedule) {
+                    $newSeance = array();
+                    $startTime = strtotime($schedule['startTime']);
+                    $newSeance['seanceTime'] = $startTime;
+                    $newSeance['placeId'] = $placeId;
+                    $newSeance['movieId'] = $movieId;
+                    if ($schedule['isSaleAllowed'])
+                        $newSeance['purchaseLink'] = $this->params['kPurchaseUrl'] . $schedule['id'] . '?apikey=' . $this->params['kClientApiKey'];
+                    else
+                        $newSeance['purchaseLink'] = '';
+                    $schedulesToSend[] = $newSeance;
+                }
+            }
+        }
 
-	/*
-	 * $data = array('string' => 'abc', 'struct' => array())
-	 * */
+        // Отправка сеансов
+        if(sizeof($schedulesToSend)) {
+            for($i = 0; $i < sizeof($schedulesToSend); $i += 250){
+                $this->sendData('afisha.postSeances', array_slice($schedulesToSend, $i, 250));
+            }
+        }
+    }
 
+    public function sendData($name, $params = array())
+    {
+        $client                           = new xmlrpc_client($this->params['apiUrl']);
+        $client->request_charset_encoding = 'UTF-8';
+        $client->return_type              = 'phpvals';
+        $client->debug                    = 0;
+        $msg                              = new xmlrpcmsg($name);
+        $p1                               = new xmlrpcval($this->params['apiKey'], 'string');
+        $msg->addparam($p1);
 
-	public function sendData($name, $params = array())
-	{
-		$client                           = new xmlrpc_client($this->params['apiUrl']);
-		$client->request_charset_encoding = 'UTF-8';
-		$client->return_type              = 'phpvals';
-		$client->debug                    = 0;
-		$msg                              = new xmlrpcmsg($name);
-		$p1                               = new xmlrpcval($this->params['apiKey'], 'string');
-		$msg->addparam($p1);
+        if ($params) {
+            $p2 = php_xmlrpc_encode($params);
+            $msg->addparam($p2);
+        }
+        $client->accepted_compression = 'deflate';
+        $res                          = $client->send($msg, 60 * 5, 'http11');
+        if ($res->faultcode()) {
+            print "An error occurred: ";
+            print " Code: " . htmlspecialchars($res->faultCode());
+            print " Reason: '" . htmlspecialchars($res->faultString()) . "' \n";
+            die;
+        } else
+            return $res->val;
+    }
 
-		if ($params) {
-			$p2 = php_xmlrpc_encode($params);
-			$msg->addparam($p2);
-		}
-		$client->accepted_compression = 'deflate';
-		$res                          = $client->send($msg, 60 * 5, 'http11');
-		if ($res->faultcode()) {
-			print "An error occurred: ";
-			print " Code: " . htmlspecialchars($res->faultCode());
-			print " Reason: '" . htmlspecialchars($res->faultString()) . "' \n";
-			die;
-		} else
-			return $res->val;
-	}
-
-	private function matchName($a, $b)
-	{
-		$a = mb_strtolower($a);
-		$b = mb_strtolower($b);
-		$a = preg_replace('|[^\p{L}\p{Nd}]|u', '', $a);
-		$b = preg_replace('|[^\p{L}\p{Nd}]|u', '', $b);
-		if (($a == $b)&&($a!='')) return true;
-		return false;
-	}
+    private function matchName($a, $b)
+    {
+        $a = mb_strtolower($a);
+        $b = mb_strtolower($b);
+        $a = preg_replace('|[^\p{L}\p{Nd}]|u', '', $a);
+        $b = preg_replace('|[^\p{L}\p{Nd}]|u', '', $b);
+        if (($a == $b) && ($a!='')) 
+            return true;
+        return false;
+    }
 }
 
 
-for ($i=0;$i<7;$i++) //for a week
-{
-	$p = new afishaCinemaKinohodParser();
-	$p->run(date('dmY', strtotime("+".$i." days")));	
+for ($i = 0; $i < 1; $i++) {
+    $p = new afishaCinemaKinohodParser();
+    $p->run(date('dmY', strtotime("+" . $i . " days")));    
 }

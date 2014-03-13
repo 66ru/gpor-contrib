@@ -1,7 +1,5 @@
 <?php
-/**
 
- */
 return array (
 
 	'apiUrl'       => '', // http://api.domain.ws
@@ -11,10 +9,7 @@ return array (
 	'kApiKey'	  => '',
 	'kPurchaseUrl'=> '', // http://kinohod.ru/api/widget/seance/
 	'kClientApiKey' => '',
+	'kCityId' => false, 
 
 	'debug' 	  => false,
-
-	'accessPlaces' => array(
-		//'Салют'                        => 495, //hunman readable name and cinema id on kinohod.ru
-		)
 );
