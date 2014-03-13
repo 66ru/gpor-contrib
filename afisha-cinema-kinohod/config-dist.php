@@ -9,7 +9,7 @@ return array (
 	'kApiKey'	  => '',
 	'kPurchaseUrl'=> '', // http://kinohod.ru/api/widget/seance/
 	'kClientApiKey' => '',
-	'kCityId' => false, 
+	'kCityId' => false, // see https://kinohod.ru/api/rest/partner/v1/cities/?apikey={ kApiKey }
 
 	'debug' 	  => false,
 );

@@ -214,8 +214,8 @@ class afishaCinemaKinohodParser
         }
 
         // Отправка сеансов
-        if(sizeof($schedulesToSend)) {
-            for($i = 0; $i < sizeof($schedulesToSend); $i += 250){
+        if (sizeof($schedulesToSend)) {
+            for ($i = 0; $i < sizeof($schedulesToSend); $i += 250){
                 $this->sendData('afisha.postSeances', array_slice($schedulesToSend, $i, 250));
             }
         }
