@@ -120,6 +120,7 @@ class afishaCinemaKinohodParser
 
         // Отправляем новые кинотеатры на gpor
         if (!empty($placesToSend)) {
+            if ($this->params['debug']) echo('Send new places to gpor.' . PHP_EOL);   
             $sendedPlaces = $this->sendData('afisha.postPlace', $placesToSend);
             // Проставляем созданным кинотеатрам корректные внешние идентификаторы
             foreach ($sendedPlaces as $ePlace) {
@@ -174,6 +175,7 @@ class afishaCinemaKinohodParser
 
         // Отправляем новые фильмы на gpor
         if (!empty($moviesToSend)) {
+            if ($this->params['debug']) echo('Send new movies to gpor.' . PHP_EOL); 
             $sendedMovies = $this->sendData('afisha.postMovie', $moviesToSend);
             // Проставляем в массив соответсивий идентификаторов загруженные значения
             foreach ($sendedMovies as $eMovie) {
@@ -216,6 +218,7 @@ class afishaCinemaKinohodParser
         // Отправка сеансов
         if (sizeof($schedulesToSend)) {
             for ($i = 0; $i < sizeof($schedulesToSend); $i += 250){
+                    if($this->params['debug']) echo "afisha.postSeances " .$i . " - " . min(sizeof($schedulesToSend),($i+250)) . " of total " . sizeof($schedulesToSend) ."\n";
                 $this->sendData('afisha.postSeances', array_slice($schedulesToSend, $i, 250));
             }
         }
@@ -259,7 +262,7 @@ class afishaCinemaKinohodParser
 }
 
 
-for ($i = 0; $i < 1; $i++) {
+for ($i = 0; $i < 7; $i++) {
     $p = new afishaCinemaKinohodParser();
     $p->run(date('dmY', strtotime("+" . $i . " days")));    
 }

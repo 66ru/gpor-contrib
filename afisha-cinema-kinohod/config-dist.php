@@ -5,7 +5,7 @@ return array (
 	'apiUrl'       => '', // http://api.domain.ws
 	'apiKey'       => '',
 
-	'kApiUrl' 	  => '', // https://kinohod.ru/api/rest/partner/v1/cinemas/
+	'kApiUrl' 	  => '', // https://kinohod.ru/api/rest/partner/v1/
 	'kApiKey'	  => '',
 	'kPurchaseUrl'=> '', // http://kinohod.ru/api/widget/seance/
 	'kClientApiKey' => '',
