@@ -13,7 +13,7 @@ class afishaCinemaKinohodParser
         'kApiUrl'     => '',
         'kApiKey'     => '',
         'kPurchaseUrl' => '',
-
+        'kPurchaseUrlMobile' => '',
         'kClientApiKey' => '',
 
         'debug'       => false
@@ -206,10 +206,15 @@ class afishaCinemaKinohodParser
                     $newSeance['seanceTime'] = $startTime;
                     $newSeance['placeId'] = $placeId;
                     $newSeance['movieId'] = $movieId;
-                    if ($schedule['isSaleAllowed'])
+                    $newSeance['minPrice'] = $schedule['minPrice'];
+                    $newSeance['maxPrice'] = $schedule['maxPrice'];
+                    if ($schedule['isSaleAllowed']) {
                         $newSeance['purchaseLink'] = $this->params['kPurchaseUrl'] . $schedule['id'] . '?apikey=' . $this->params['kClientApiKey'];
-                    else
+                        $newSeance['purchaseLinkMobile'] = $this->params['kPurchaseUrlMobile'] . $schedule['id'] . '?apiKey=' . $this->params['kClientApiKey'];
+                    } else {
                         $newSeance['purchaseLink'] = '';
+                        $newSeance['purchaseLinkMobile'] = '';
+                    }
                     $schedulesToSend[] = $newSeance;
                 }
             }
