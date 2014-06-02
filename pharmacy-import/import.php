@@ -144,14 +144,14 @@ function sendDrugstoreToGpor($apt)
     print 'Drugstore ' . $apt['code'] . ' uploaded' . PHP_EOL;
 }
 
-function makeProductsJSON($apt, $byeLinkPrefix, $reserveLinkPrefix)
+function makeProductsJSON($apt_id, $byeLinkPrefix, $reserveLinkPrefix)
 {
     global $db, $params;
 
     // fetching drugs
     $result = mysql_query("SELECT * FROM `aptdrugpresent` `adp`
         INNER JOIN `drug_list` `dl` ON `adp`.`dcode` = `dl`.`drug_code`
-        WHERE `adp`.`scode`=" . $apt['apt_code']);
+        WHERE `adp`.`scode`=" . $apt_id);
 
     if (!$result || !mysql_num_rows($result)) {
         return false;
@@ -162,7 +162,7 @@ function makeProductsJSON($apt, $byeLinkPrefix, $reserveLinkPrefix)
     while ($row = mysql_fetch_assoc($result)) {
         $product_list[] = array(
             'drug_code' => $row['dcode'],
-            'price' => $row['price'],
+            'price' => $row['price'] / 100,
             'byeLink' => $byeLinkPrefix . $row['dcode'],
             'reserveLink' => $reserveLinkPrefix . $row['dcode'],
             'updated' => $row['cdate']
@@ -170,7 +170,10 @@ function makeProductsJSON($apt, $byeLinkPrefix, $reserveLinkPrefix)
     }
 
     // save drugs feed
-    $filename = 'pharmacyFeed_' . $apt['apt_code'] . '.json';
+    $filename = 'pharmacyFeed_' . $apt_id . '.json';
+    if (!is_dir($params['jsonPath'])) {
+        mkdir($params['jsonPath'], 0777, true);
+    }
     $path = $params['jsonPath'] . $filename;
     $url = $params['jsonUrl'] . $filename;
     file_put_contents($path, json_encode($product_list));
