@@ -31,10 +31,8 @@ class PharmacyImport
     */
     private function init()
     {
-        if (!is_file('config.php')) {
+        if (!is_file('config.php'))
             die('missing config.php');
-            die;
-        }
         $this->params = array_merge($this->params, include 'config.php');
 
         foreach ($this->params as $key => $param) {
@@ -57,9 +55,12 @@ class PharmacyImport
     {
         $this->init();
 
-        $this->importSQLDump();
+        $imported = $this->importSQLDump();
 
-        $this->sendDataToGpor();
+        // Отправляем все данные на гпор только если пришел новый файл экспорта
+        if ($imported) {
+            $this->sendDataToGpor();
+        }
 
         foreach ($this->params['feedList'] as $name => $feed) {
             $status = $this->parseFeed($feed);
@@ -71,6 +72,7 @@ class PharmacyImport
 
     /**
      * Импорт дампа БД по фтп и разворачивание на локальной бд
+     * @return bool
     */
     private function importSQLDump()
     {
@@ -93,6 +95,8 @@ class PharmacyImport
                 unlink($file);
             }
         }
+
+        return $status;
     }
 
     /**
@@ -105,9 +109,9 @@ class PharmacyImport
         while ($row = mysql_fetch_assoc($result)) {
             $product = array(
                 'code' => $row['drug_code'],
-                'name' => $row['drug_name'],
-                'name_short' => $row['drug_name_lat'],
-                'description' => $row['opis']
+                'name' => iconv('windows-1251', 'UTF-8', $row['drug_name']),
+                'name_short' => iconv('windows-1251', 'UTF-8', $row['drug_name_lat']),
+                'description' => iconv('windows-1251', 'UTF-8', $row['opis'])
             );
             $this->sendObjectToGpor('postProduct', $product);
         }
@@ -248,7 +252,7 @@ class PharmacyImport
         }
         $path = $this->params['jsonPath'] . $filename;
         $url = $this->params['jsonUrl'] . $filename;
-        file_put_contents($path, json_encode($product_list));
+        file_put_contents($path, json_encode(array('list' => $product_list, 'updated' => time())));
 
         return $url;
     }
