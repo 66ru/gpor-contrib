@@ -111,7 +111,8 @@ class PharmacyImport
                 'code' => $row['drug_code'],
                 'name' => iconv('windows-1251', 'UTF-8', $row['drug_name']),
                 'name_short' => iconv('windows-1251', 'UTF-8', $row['drug_name_lat']),
-                'description' => iconv('windows-1251', 'UTF-8', $row['opis'])
+                'description' => iconv('windows-1251', 'UTF-8', $row['opis']),
+                'updated' => $row['_updated']
             );
             $this->sendObjectToGpor('postProduct', $product);
         }
