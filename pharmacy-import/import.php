@@ -64,9 +64,9 @@ class PharmacyImport
         $imported = $this->importSQLDump();
 
         // Отправляем все данные на гпор только если пришел новый файл экспорта
-        //if ($imported) {
+        if ($imported) {
             $this->sendDataToGpor();
-        //}
+        }
 
         foreach ($this->params['feedList'] as $name => $feed) {
             $status = $this->parseFeed($feed);
@@ -111,7 +111,6 @@ class PharmacyImport
     private function sendDataToGpor()
     {
         // Отправляем лекарства
-<<<<<<< HEAD
         $offset = 0;
         do {
             $result = mysql_query("SELECT `drug_code`, `drug_name`, `drug_name_lat`, `opis`, `_updated` FROM {$this->db}.drug_list LIMIT {$offset}, " . self::PRODUCTS_LIMIT);
@@ -129,19 +128,6 @@ class PharmacyImport
                 $this->sendObjectsToGpor('postProducts', $product_list);
             $offset += self::PRODUCTS_LIMIT;
         } while (mysql_num_rows($result));
-=======
-        $result = mysql_query("SELECT `drug_code`, `drug_name`, `drug_name_lat`, `opis`, `_updated` FROM {$this->db}.drug_list");
-        while ($row = mysql_fetch_assoc($result)) {
-            $product = array(
-                'code' => $row['drug_code'],
-                'name' => iconv('windows-1251', 'UTF-8', $row['drug_name']),
-                'name_short' => iconv('windows-1251', 'UTF-8', $row['drug_name_lat']),
-                'description' => iconv('windows-1251', 'UTF-8', $row['opis']),
-                'updated' => $row['_updated']
-            );
-            $this->sendObjectToGpor('postProduct', $product);
-        }
->>>>>>> 0976176fea2be2d31c6768392c6e99c87bc82b29
 
         // Для каждой аптеки создаем фид и вместе с ним отправляем
         $offset = 0;
