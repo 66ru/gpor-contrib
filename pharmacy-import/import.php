@@ -105,7 +105,7 @@ class PharmacyImport
     private function sendDataToGpor()
     {
         // Отправляем лекарства
-        $result = mysql_query("SELECT `drug_code`, `drug_name`, `drug_name_lat`, `opis` FROM {$this->db}.drug_list");
+        $result = mysql_query("SELECT `drug_code`, `drug_name`, `drug_name_lat`, `opis`, `_updated` FROM {$this->db}.drug_list");
         while ($row = mysql_fetch_assoc($result)) {
             $product = array(
                 'code' => $row['drug_code'],
