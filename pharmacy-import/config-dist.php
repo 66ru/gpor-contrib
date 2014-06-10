@@ -12,6 +12,8 @@ return array (
     'mysqlHost' => '',
     'mysqlUser' => '',
     'mysqlPassword' => '',
-    'mysqlDBName' => ''
+    'mysqlDBName' => '',
+
+    'debug' => false
 );
 ?>

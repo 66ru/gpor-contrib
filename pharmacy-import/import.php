@@ -5,6 +5,10 @@ include_once ('../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 
 class PharmacyImport
 {
+    // Лимиты на отправку данных
+    const PRODUCTS_LIMIT = 100;
+    const DRUGSTORE_LIMIT = 100;
+
     private $params = array(
         'apiUrl' => '',
         'apiKey' => '',
@@ -17,7 +21,9 @@ class PharmacyImport
         'mysqlHost' => '',
         'mysqlUser' => '',
         'mysqlPassword' => '',
-        'mysqlDBName' => ''
+        'mysqlDBName' => '',
+
+        'debug' => false
     );
 
     /**
@@ -36,7 +42,7 @@ class PharmacyImport
         $this->params = array_merge($this->params, include 'config.php');
 
         foreach ($this->params as $key => $param) {
-            if ($param == '')
+            if ($param === '')
                 die('Param "' . $key . '"  not found in config.php. See config-dist.php.' . PHP_EOL);
         }
 
@@ -58,13 +64,13 @@ class PharmacyImport
         $imported = $this->importSQLDump();
 
         // Отправляем все данные на гпор только если пришел новый файл экспорта
-        if ($imported) {
+        //if ($imported) {
             $this->sendDataToGpor();
-        }
+        //}
 
         foreach ($this->params['feedList'] as $name => $feed) {
             $status = $this->parseFeed($feed);
-            if (!$status) {
+            if (!$status && $this->params['debug']) {
                 print 'Error parse feed - ' . $name . PHP_EOL;
             }
         }
@@ -105,32 +111,44 @@ class PharmacyImport
     private function sendDataToGpor()
     {
         // Отправляем лекарства
-        $result = mysql_query("SELECT `drug_code`, `drug_name`, `drug_name_lat`, `opis` FROM {$this->db}.drug_list");
-        while ($row = mysql_fetch_assoc($result)) {
-            $product = array(
-                'code' => $row['drug_code'],
-                'name' => iconv('windows-1251', 'UTF-8', $row['drug_name']),
-                'name_short' => iconv('windows-1251', 'UTF-8', $row['drug_name_lat']),
-                'description' => iconv('windows-1251', 'UTF-8', $row['opis']),
-                'updated' => $row['_updated']
-            );
-            $this->sendObjectToGpor('postProduct', $product);
-        }
+        $offset = 0;
+        do {
+            $result = mysql_query("SELECT `drug_code`, `drug_name`, `drug_name_lat`, `opis`, `_updated` FROM {$this->db}.drug_list LIMIT {$offset}, " . self::PRODUCTS_LIMIT);
+            $product_list = array();
+            while ($row = mysql_fetch_assoc($result)) {
+                $product_list[$row['drug_code']] = array(
+                    'code' => (int)$row['drug_code'],
+                    'name' => mb_convert_encoding($row['drug_name'], 'UTF-8', 'windows-1251'),
+                    'name_short' => mb_convert_encoding($row['drug_name_lat'], 'UTF-8', 'windows-1251'),
+                    'description' => mb_convert_encoding($row['opis'], 'UTF-8', 'windows-1251'),
+                    'updated' => $row['_updated']
+                );
+            }
+            if (!empty($product_list))
+                $this->sendObjectsToGpor('postProducts', $product_list);
+            $offset += self::PRODUCTS_LIMIT;
+        } while (mysql_num_rows($result));
 
         // Для каждой аптеки создаем фид и вместе с ним отправляем
-        $result = mysql_query("SELECT `apt_code`, `apt_short`, `apt_add`, `phone`, `week`, `saturday`, `sunday` FROM {$this->db}.apts");
-        while ($row = mysql_fetch_assoc($result)) {
-            $feedUrl = $this->makeProductsJSON($row['apt_code']);
-            $drugstore = array(
-                'code' => $row['apt_code'],
-                'name' => iconv('windows-1251', 'UTF-8', $row['apt_short']),
-                'address' => iconv('windows-1251', 'UTF-8', $row['apt_add']),
-                'phones' => iconv('windows-1251', 'UTF-8', $row['phone']),
-                'worktime' => $this->parseWorktime($row),
-                'feed' => $feedUrl
-            );
-            $this->sendObjectToGpor('postDrugstore', $drugstore);
-        }
+        $offset = 0;
+        do {
+            $result = mysql_query("SELECT `apt_code`, `apt_short`, `apt_add`, `phone`, `week`, `saturday`, `sunday` FROM {$this->db}.apts LIMIT {$offset}, " . self::DRUGSTORE_LIMIT);
+            $drugstore_list = array();
+            while ($row = mysql_fetch_assoc($result)) {
+                $feedUrl = $this->makeProductsJSON($row['apt_code']);
+                $drugstore_list[$row['apt_code']] = array(
+                    'code' => (int)$row['apt_code'],
+                    'name' => mb_convert_encoding($row['apt_short'], 'UTF-8', 'windows-1251'),
+                    'address' => mb_convert_encoding($row['apt_add'], 'UTF-8', 'windows-1251'),
+                    'phones' => mb_convert_encoding($row['phone'], 'UTF-8', 'windows-1251'),
+                    'worktime' => $this->parseWorktime($row),
+                    'feed' => $feedUrl
+                );
+            }
+            if (!empty($drugstore_list))
+                $this->sendObjectsToGpor('postDrugstores', $drugstore_list);
+            $offset += self::DRUGSTORE_LIMIT;
+        } while (mysql_num_rows($result));
     }
 
     /**
@@ -144,6 +162,9 @@ class PharmacyImport
         if (!$xml) {
             return false;
         }
+
+        if ($this->params['debug'])
+            print 'Parse feed ' . $feed['url'] . PHP_EOL;
 
         $simple = new SimpleXMLElement($xml->asXML());
         $apt_ids_list = array();
@@ -193,6 +214,7 @@ class PharmacyImport
         }
 
         $apt_ids_list = array_unique($apt_ids_list);
+        $drugstore_list = array();
         foreach ($apt_ids_list as $apt_id) {
             $feedUrl = $this->makeProductsJSON($apt_id, $feed['byeLinkPrefix'], $feed['reserveLinkPrefix']);
             $result = mysql_query("SELECT * FROM {$this->db}.apts WHERE `apt_code`=" . $apt_id);
@@ -201,15 +223,18 @@ class PharmacyImport
             }
 
             $apt = mysql_fetch_assoc($result);
-            $apt_array = array(
-                'code' => $apt['apt_code'],
-                'name' => iconv('windows-1251', 'UTF-8', $apt['apt_short']),
-                'address' => iconv('windows-1251', 'UTF-8', $apt['apt_add']),
-                'phones' => iconv('windows-1251', 'UTF-8', $apt['phone']),
+            $drugstore_list[$apt['apt_code']] = array(
+                'code' => (int)$apt['apt_code'],
+                'name' => mb_convert_encoding($apt['apt_short'], 'UTF-8', 'windows-1251'),
+                'address' => mb_convert_encoding($apt['apt_add'], 'UTF-8', 'windows-1251'),
+                'phones' => mb_convert_encoding($apt['phone'], 'UTF-8', 'windows-1251'),
                 'worktime' => $this->parseWorktime($apt),
                 'feed' => $feedUrl
             );
-            $this->sendObjectToGpor('postDrugstore', $apt_array);
+        }
+
+        if (!empty($drugstore_list)) {
+            $this->sendObjectsToGpor('postDrugstores', $drugstore_list);
         }
 
         return true;
@@ -237,7 +262,7 @@ class PharmacyImport
         $product_list = array();
         while ($row = mysql_fetch_assoc($result)) {
             $product_list[] = array(
-                'drug_code' => $row['dcode'],
+                'drug_code' => (int)$row['dcode'],
                 'price' => $row['price'] / 100,
                 'byeLink' => ($byeLinkPrefix ? $byeLinkPrefix . $row['dcode'] : false),
                 'reserveLink' => ($reserveLinkPrefix ? $reserveLinkPrefix . $row['dcode'] : false),
@@ -245,6 +270,9 @@ class PharmacyImport
                 'updated' => $row['cdate'],
             );
         }
+
+        if ($this->params['debug'])
+            print 'Make JSON file for drugstore ' . $apt_id . ' of ' . count($product_list) . ' products' . PHP_EOL;
 
         // save drugs feed
         $filename = 'pharmacyFeed_' . $apt_id . '.json';
@@ -259,10 +287,10 @@ class PharmacyImport
     }
 
     /**
-     * Отправляет аптеку по АПИ
+     * Отправляет массив данных по АПИ
      * @param array $drugstore
     */
-    private function sendObjectToGpor($method, $object)
+    private function sendObjectsToGpor($method, $objects)
     {
         $client = new xmlrpc_client($this->params['apiUrl']);
         $client->return_type = 'phpvals';
@@ -271,13 +299,19 @@ class PharmacyImport
         $p0 = new xmlrpcval($this->params['apiKey'], 'string');
         $message->addparam($p0);
 
-        $p1 = php_xmlrpc_encode($object);
+        $p1 = php_xmlrpc_encode($objects);
         $message->addparam($p1);
+
+        if ($this->params['debug'])
+            print 'Make request `pharmacy.' . $method . '` of ' . count($objects) . ' objects...';
 
         $resp = $client->send($message, 0, 'http11');
 
         if (is_object($resp) && $resp->errno)
             die('Error uploading data: ' . $resp->errstr . PHP_EOL);
+
+        if ($this->params['debug'])
+            print 'SUCCESS' . PHP_EOL;
     }
 
     /**
