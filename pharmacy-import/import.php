@@ -6,6 +6,7 @@ include_once ('../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 class PharmacyImport
 {
     // Лимиты на отправку данных
+    const RUBRICS_LIMIT = 100;
     const PRODUCTS_LIMIT = 100;
     const DRUGSTORE_LIMIT = 100;
 
@@ -110,14 +111,32 @@ class PharmacyImport
     */
     private function sendDataToGpor()
     {
+        // Отправляем рубрики
+        $offset = 0;
+        do {
+            $result = mysql_query("SELECT `phr_group_code`, `phr_group_name`, `parent` FROM {$this->db}.phr_group LIMIT {$offset}, " . self::RUBRICS_LIMIT);
+            $rubric_list = array();
+            while($row = mysql_fetch_assoc($result)) {
+                $rubric_list[$row['phr_group_code']] = array(
+                    'code' => $row['phr_group_code'],
+                    'name' => mb_convert_encoding($row['phr_group_name'], 'UTF-8', 'windows-1251'),
+                    'parent' => $row['parent']
+                );
+            }
+            if (!empty($rubric_list))
+                $this->sendObjectsToGpor('postRubrics', $rubric_list);
+            $offset += self::RUBRICS_LIMIT;
+        } while (mysql_num_rows($result));
+
         // Отправляем лекарства
         $offset = 0;
         do {
-            $result = mysql_query("SELECT `drug_code`, `drug_name`, `drug_name_lat`, `opis`, `_updated` FROM {$this->db}.drug_list LIMIT {$offset}, " . self::PRODUCTS_LIMIT);
+            $result = mysql_query("SELECT `drug_code`, `phr_group_code`, `drug_name`, `drug_name_lat`, `opis`, `_updated` FROM {$this->db}.drug_list LIMIT {$offset}, " . self::PRODUCTS_LIMIT);
             $product_list = array();
             while ($row = mysql_fetch_assoc($result)) {
                 $product_list[$row['drug_code']] = array(
                     'code' => (int)$row['drug_code'],
+                    'rubric_code' => (int)$row['phr_group_code'],
                     'name' => mb_convert_encoding($row['drug_name'], 'UTF-8', 'windows-1251'),
                     'name_short' => mb_convert_encoding($row['drug_name_lat'], 'UTF-8', 'windows-1251'),
                     'description' => mb_convert_encoding($row['opis'], 'UTF-8', 'windows-1251'),
