@@ -15,6 +15,7 @@ class PharmacyImport
         'apiKey' => '',
         'ftpExport' => '',
         'feedList' => array(),
+        'rubricJSONUrl' => '',
 
         'jsonPath' => '',
         'jsonUrl' => '',
@@ -112,22 +113,9 @@ class PharmacyImport
     private function sendDataToGpor()
     {
         // Отправляем рубрики
-        $offset = 0;
-        do {
-            $result = mysql_query("SELECT `phr_group_code`, `phr_group_name`, `parent` FROM {$this->db}.phr_group LIMIT {$offset}, " . self::RUBRICS_LIMIT);
-            $rubric_list = array();
-            while($row = mysql_fetch_assoc($result)) {
-                $rubric_list[$row['phr_group_code']] = array(
-                    'code' => $row['phr_group_code'],
-                    'name' => mb_convert_encoding($row['phr_group_name'], 'UTF-8', 'windows-1251'),
-                    'parent' => $row['parent']
-                );
-            }
-            if (!empty($rubric_list))
-                $this->sendObjectsToGpor('postRubrics', $rubric_list);
-            $offset += self::RUBRICS_LIMIT;
-        } while (mysql_num_rows($result));
-
+        $this->sendRubrics();
+        return;
+        
         // Отправляем лекарства
         $offset = 0;
         do {
@@ -168,6 +156,32 @@ class PharmacyImport
                 $this->sendObjectsToGpor('postDrugstores', $drugstore_list);
             $offset += self::DRUGSTORE_LIMIT;
         } while (mysql_num_rows($result));
+    }
+
+    /**
+     * Парсит json с рубриками и отправляет их на гпор
+    */
+    private function sendRubrics()
+    {
+        $headers = get_headers($this->params['rubricJSONUrl']);
+        if (substr($headers[0], 9, 3) != '200') {
+            return false;
+        }
+
+        $result = file_get_contents($this->params['rubricJSONUrl']);
+        $result = json_decode($result, 1);
+
+        $rubric_list = array();
+        foreach ($result as $row) {
+            $rubric_list[$row['id']] = array(
+                'code' => $row['id'],
+                'name' => $row['label'],
+                'parent' => $row['parentId']
+            );
+        }
+
+        if (!empty($rubric_list))
+            $this->sendObjectsToGpor('postRubrics', $rubric_list);
     }
 
     /**
