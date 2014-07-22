@@ -6,7 +6,6 @@ include_once ('../_lib/xmlrpc-3.0.0.beta/xmlrpc.inc');
 class PharmacyImport
 {
     // Лимиты на отправку данных
-    const RUBRICS_LIMIT = 100;
     const PRODUCTS_LIMIT = 100;
     const DRUGSTORE_LIMIT = 100;
 
