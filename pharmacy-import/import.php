@@ -113,7 +113,6 @@ class PharmacyImport
     {
         // Отправляем рубрики
         $this->sendRubrics();
-        return;
         
         // Отправляем лекарства
         $offset = 0;
