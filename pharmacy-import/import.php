@@ -110,10 +110,7 @@ class PharmacyImport
      * Отправляет все аптеки и лекарства по АПИ на гпор
     */
     private function sendDataToGpor()
-    {
-        // Отправляем рубрики
-        $this->sendRubrics();
-        
+    {        
         // Отправляем лекарства
         $offset = 0;
         do {
@@ -133,6 +130,9 @@ class PharmacyImport
                 $this->sendObjectsToGpor('postProducts', $product_list);
             $offset += self::PRODUCTS_LIMIT;
         } while (mysql_num_rows($result));
+
+        // Отправляем рубрики
+        $this->sendRubrics();
 
         // Для каждой аптеки создаем фид и вместе с ним отправляем
         $offset = 0;
