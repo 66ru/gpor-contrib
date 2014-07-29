@@ -14,6 +14,7 @@ class PharmacyImport
         'apiKey' => '',
         'ftpExport' => '',
         'feedList' => array(),
+        'rubricJSONUrl' => '',
 
         'jsonPath' => '',
         'jsonUrl' => '',
@@ -109,15 +110,16 @@ class PharmacyImport
      * Отправляет все аптеки и лекарства по АПИ на гпор
     */
     private function sendDataToGpor()
-    {
+    {        
         // Отправляем лекарства
         $offset = 0;
         do {
-            $result = mysql_query("SELECT `drug_code`, `drug_name`, `drug_name_lat`, `opis`, `_updated` FROM {$this->db}.drug_list LIMIT {$offset}, " . self::PRODUCTS_LIMIT);
+            $result = mysql_query("SELECT `drug_code`, `phr_group_code`, `drug_name`, `drug_name_lat`, `opis`, `_updated` FROM {$this->db}.drug_list LIMIT {$offset}, " . self::PRODUCTS_LIMIT);
             $product_list = array();
             while ($row = mysql_fetch_assoc($result)) {
                 $product_list[$row['drug_code']] = array(
                     'code' => (int)$row['drug_code'],
+                    'rubric_code' => (int)$row['phr_group_code'],
                     'name' => mb_convert_encoding($row['drug_name'], 'UTF-8', 'windows-1251'),
                     'name_short' => mb_convert_encoding($row['drug_name_lat'], 'UTF-8', 'windows-1251'),
                     'description' => mb_convert_encoding($row['opis'], 'UTF-8', 'windows-1251'),
@@ -128,6 +130,9 @@ class PharmacyImport
                 $this->sendObjectsToGpor('postProducts', $product_list);
             $offset += self::PRODUCTS_LIMIT;
         } while (mysql_num_rows($result));
+
+        // Отправляем рубрики
+        $this->sendRubrics();
 
         // Для каждой аптеки создаем фид и вместе с ним отправляем
         $offset = 0;
@@ -149,6 +154,32 @@ class PharmacyImport
                 $this->sendObjectsToGpor('postDrugstores', $drugstore_list);
             $offset += self::DRUGSTORE_LIMIT;
         } while (mysql_num_rows($result));
+    }
+
+    /**
+     * Парсит json с рубриками и отправляет их на гпор
+    */
+    private function sendRubrics()
+    {
+        $headers = get_headers($this->params['rubricJSONUrl']);
+        if (substr($headers[0], 9, 3) != '200') {
+            return false;
+        }
+
+        $result = file_get_contents($this->params['rubricJSONUrl']);
+        $result = json_decode($result, 1);
+
+        $rubric_list = array();
+        foreach ($result as $row) {
+            $rubric_list[$row['id']] = array(
+                'code' => $row['id'],
+                'name' => $row['label'],
+                'parent' => $row['parentId']
+            );
+        }
+
+        if (!empty($rubric_list))
+            $this->sendObjectsToGpor('postRubrics', $rubric_list);
     }
 
     /**
