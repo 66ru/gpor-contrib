@@ -99,7 +99,7 @@ class PharmacyImport
             unlink($zipPath);
 
             foreach (glob($path . '*.sql') as $file) {
-                shell_exec('/usr/bin/mysql -f -h ' . $this->params['mysqlHost'] . ' -u ' . $this->params['mysqlUser'] . ' --password=' . $this->params['mysqlPassword'] . ' ' . $this->params['mysqlDBName'] . ' < ' . $file);
+                shell_exec('/usr/bin/mysql -f -h ' . $this->params['mysqlHost'] . ' -u ' . $this->params['mysqlUser'] . ' --password=' . $this->params['mysqlPassword'] . ' --default-character-set=cp1251 ' . $this->params['mysqlDBName'] . ' < ' . $file);
                 unlink($file);
             }
         }
