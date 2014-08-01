@@ -49,6 +49,7 @@ class PharmacyImport
 
         $this->db = $this->params['mysqlDBName'];
         $status = mysql_connect($this->params['mysqlHost'], $this->params['mysqlUser'], $this->params['mysqlPassword']);
+        mysql_set_charset ('cp1251');
         if (!$status) {
             die('Failed to connect to mysql server, check config.php' . PHP_EOL);
         }
@@ -65,7 +66,7 @@ class PharmacyImport
         $imported = $this->importSQLDump();
 
         // Отправляем все данные на гпор только если пришел новый файл экспорта
-        if ($imported) {
+        if ($imported || $this->params['debug']) {
             $this->sendDataToGpor();
         }
 
