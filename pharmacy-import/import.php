@@ -24,7 +24,7 @@ class PharmacyImport
         'mysqlPassword' => '',
         'mysqlDBName' => '',
 
-        'debug' => false
+        'debug' => true
     );
 
     /**
@@ -67,7 +67,7 @@ class PharmacyImport
 
         // Отправляем все данные на гпор только если пришел новый файл экспорта
         if ($imported || $this->params['debug']) {
-            $this->sendDataToGpor();
+              $this->sendDataToGpor();
         }
 
         foreach ($this->params['feedList'] as $name => $feed) {
@@ -123,7 +123,7 @@ class PharmacyImport
                     'rubric_code' => (int)$row['phr_group_code'],
                     'name' => mb_convert_encoding($row['drug_name'], 'UTF-8', 'windows-1251'),
                     'name_short' => mb_convert_encoding($row['drug_name_lat'], 'UTF-8', 'windows-1251'),
-                    'description' => mb_convert_encoding($row['opis'], 'UTF-8', 'windows-1251'),
+                    'description' => self::normalize(mb_convert_encoding($row['opis'], 'UTF-8', 'windows-1251')),
                     'updated' => $row['_updated']
                 );
             }
@@ -210,7 +210,9 @@ class PharmacyImport
                 $apt_scode_id = $apt_id;
                 $apt_dcode_id = (string)$line['Code086'];
                 $prep_id = (string)$line['IdPrep'];
-                $prep = mysql_query("SELECT price 
+                $buyLink = (string)$line['link'];
+                print($buyLink."\n");
+                $prep = mysql_query("SELECT price, url 
                     FROM {$this->db}.aptdrugpresent 
                     WHERE scode = '{$apt_scode_id}' AND dcode = '{$apt_dcode_id}';");
                 $apt_prep_old = mysql_fetch_assoc($prep);
@@ -229,14 +231,14 @@ class PharmacyImport
 
                 $sql = false;
                 if($apt_prep_old && $apt_prep_old['price']) {
-                    if ($apt_prep_old['price'] != $apt_price) {
+                    if ($apt_prep_old['price'] != $apt_price || $apt_prep_old['url'] != $buyLink) {
                         $sql = "UPDATE {$this->db}.aptdrugpresent 
-                            SET price = '{$apt_price}'
+                            SET price = '{$apt_price}', `url` = '{$buyLink}'
                             WHERE scode = '{$apt_scode_id}' AND dcode = '{$apt_dcode_id}'";
                     }
                 } else {
                     $sql = "INSERT INTO {$this->db}.aptdrugpresent 
-                        VALUES ('{$apt_dcode_id}', '{$apt_scode_id}', 0, 1, '{$apt_price}', NOW(), '.', '', 1, 0, '', 4, '') ";
+                        VALUES ('{$apt_dcode_id}', '{$apt_scode_id}', 0, 1, '{$apt_price}', NOW(), '.', '', 1, 0, '', 4, '{$buyLink}') ";
                 }
 
                 if ($sql) {
@@ -296,15 +298,16 @@ class PharmacyImport
             $product_list[] = array(
                 'drug_code' => (int)$row['dcode'],
                 'price' => $row['price'] / 100,
-                'byeLink' => ($byeLinkPrefix ? $byeLinkPrefix . $row['dcode'] : false),
-                'reserveLink' => ($reserveLinkPrefix ? $reserveLinkPrefix . $row['dcode'] : false),
+                'byeLink' => ($byeLinkPrefix ? $row['url'] : false),
+                'reserveLink' => ($reserveLinkPrefix ? $row['url'] : false),
                 'online_store' => $byeLinkPrefix || $reserveLinkPrefix,
                 'updated' => $row['cdate'],
             );
         }
 
-        if ($this->params['debug'])
+        if ($this->params['debug']) {
             print 'Make JSON file for drugstore ' . $apt_id . ' of ' . count($product_list) . ' products' . PHP_EOL;
+        }
 
         // save drugs feed
         $filename = 'pharmacyFeed_' . $apt_id . '.json';
@@ -339,8 +342,9 @@ class PharmacyImport
 
         $resp = $client->send($message, 0, 'http11');
 
-        if (is_object($resp) && $resp->errno)
+        if (is_object($resp) && $resp->errno) {
             die('Error uploading data: ' . $resp->errstr . PHP_EOL);
+        }
 
         if ($this->params['debug'])
             print 'SUCCESS' . PHP_EOL;
@@ -388,6 +392,17 @@ class PharmacyImport
         }
 
         return $result;
+    }
+
+    public static function normalize($str, $xml = true)
+    {
+        $res = html_entity_decode( strval($str), ENT_QUOTES );
+        if ($xml) {
+            $pattern = '/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u';
+            $res = preg_replace($pattern, '', $res);
+        }
+
+        return $res;
     }
 }
 
