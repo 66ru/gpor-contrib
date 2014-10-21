@@ -231,11 +231,11 @@ class PharmacyImport
 
                 $sql = false;
                 if($apt_prep_old && $apt_prep_old['price']) {
-                    if ($apt_prep_old['price'] != $apt_price || $apt_prep_old['url'] != $buyLink) {
+//                    if ($apt_prep_old['price'] != $apt_price || $apt_prep_old['url'] != $buyLink) {
                         $sql = "UPDATE {$this->db}.aptdrugpresent 
-                            SET price = '{$apt_price}', `url` = '{$buyLink}'
+                            SET price = '{$apt_price}', `url` = '{$buyLink}', `cdate` = NOW()
                             WHERE scode = '{$apt_scode_id}' AND dcode = '{$apt_dcode_id}'";
-                    }
+//                    }
                 } else {
                     $sql = "INSERT INTO {$this->db}.aptdrugpresent 
                         VALUES ('{$apt_dcode_id}', '{$apt_scode_id}', 0, 1, '{$apt_price}', NOW(), '.', '', 1, 0, '', 4, '{$buyLink}') ";
@@ -343,6 +343,7 @@ class PharmacyImport
         $resp = $client->send($message, 0, 'http11');
 
         if (is_object($resp) && $resp->errno) {
+            var_dump($resp);
             die('Error uploading data: ' . $resp->errstr . PHP_EOL);
         }
 
