@@ -70,13 +70,12 @@ class afishaCinemaKinohodParser
     {
         $url = $this->params['kApiUrl'] . 'cinemas/' . $placeId . '/schedules?date=' . $dateString . '&apikey=' . $this->params['kApiKey'];
         $headers = get_headers($url);
-        if (substr($headers[0], 9, 3) == '200') {
-            $result = file_get_contents($url);
-            $result = json_decode($result, 1); 
-            return $result;
-        }
-        else 
-            return false;   
+        if (substr($headers[0], 9, 3) != '200')
+            return false;
+
+        $result = file_get_contents($url);
+        $result = json_decode($result, 1); 
+        return $result;
     }
 
     public function run($dateString)
@@ -90,12 +89,14 @@ class afishaCinemaKinohodParser
         $placesToSend = array();
         foreach ($this->places as $key => $place) {
             if (isset($this->params['disabledPlaces'][$place['title']])) {
-                if ($this->params['debug']) echo('Place "' . $place['title'] . '" disabled.' . PHP_EOL);   
+                if ($this->params['debug'])
+                    echo 'Place "' . $place['title'] . '" disabled.' . PHP_EOL;
                 continue;
             }
             $found = false;
             foreach($existingPlaces as $eKey => $ePlace) {
-                if ($found) break;
+                if ($found)
+                    break;
                 if ($this->matchName($place['title'], $ePlace['name']) || $this->matchName($place['shortTitle'], $ePlace['name'])) {
                     $this->places[$key]['ePlaceId'] = $ePlace['id'];
                     unset($existingPlaces[$eKey]);
@@ -120,7 +121,8 @@ class afishaCinemaKinohodParser
 
         // Отправляем новые кинотеатры на gpor
         if (!empty($placesToSend)) {
-            if ($this->params['debug']) echo('Send new places to gpor.' . PHP_EOL);   
+            if ($this->params['debug'])
+                echo 'Send new places to gpor.' . PHP_EOL;
             $sendedPlaces = $this->sendData('afisha.postPlace', $placesToSend);
             // Проставляем созданным кинотеатрам корректные внешние идентификаторы
             foreach ($sendedPlaces as $ePlace) {
@@ -141,7 +143,8 @@ class afishaCinemaKinohodParser
         foreach ($this->movies as $key => $movie) {
             $found = false;
             foreach ($existingMovies as $eKey => $eMovie) {
-                if ($found) break;
+                if ($found)
+                    break;
                 if ($this->matchName($movie['title'], $eMovie['title']) || $this->matchName($movie['originalTitle'], $eMovie['originalTitle'])) {
                     $movieIdsArray[$movie['id']] = $eMovie['id'];
                     unset($existingMovies[$eKey]);
@@ -175,7 +178,9 @@ class afishaCinemaKinohodParser
 
         // Отправляем новые фильмы на gpor
         if (!empty($moviesToSend)) {
-            if ($this->params['debug']) echo('Send new movies to gpor.' . PHP_EOL); 
+            if ($this->params['debug'])
+                echo 'Send new movies to gpor.' . PHP_EOL;
+
             $sendedMovies = $this->sendData('afisha.postMovie', $moviesToSend);
             // Проставляем в массив соответсивий идентификаторов загруженные значения
             foreach ($sendedMovies as $eMovie) {
@@ -192,17 +197,21 @@ class afishaCinemaKinohodParser
         foreach ($this->places as $place) {
             // пропускаем кинотеатр, если его по каким-то причинам нет на гпоре
             $placeId = isset($place['ePlaceId']) ? $place['ePlaceId'] : false;
-            if (!$placeId) continue;
+            if (!$placeId)
+                continue;
 
             $dataList = $this->loadSchedules($place['id'], $dateString);
             foreach($dataList as $data) {
                 // Пропускаем сеанс, если такого фильма на гпоре нет
                 $movieId = isset($movieIdsArray[$data['movie']['id']]) ? $movieIdsArray[$data['movie']['id']] : false;
-                if (!$movieId) continue;
+                if (!$movieId)
+                    continue;
 
                 foreach ($data['schedules'] as $schedule) {
                     $newSeance = array();
                     $startTime = strtotime($schedule['startTime']);
+                    $newSeance['is3d'] = isset($schedule['is3d']) && $schedule['is3d'] ? 1 : 0;
+                    $newSeance['isImax'] = isset($schedule['isImax']) && $schedule['isImax'] ? 1 : 0;
                     $newSeance['seanceTime'] = $startTime;
                     $newSeance['placeId'] = $placeId;
                     $newSeance['movieId'] = $movieId;
@@ -222,8 +231,9 @@ class afishaCinemaKinohodParser
 
         // Отправка сеансов
         if (sizeof($schedulesToSend)) {
-            for ($i = 0; $i < sizeof($schedulesToSend); $i += 250){
-                    if($this->params['debug']) echo "afisha.postSeances " .$i . " - " . min(sizeof($schedulesToSend),($i+250)) . " of total " . sizeof($schedulesToSend) ."\n";
+            for ($i = 0; $i < sizeof($schedulesToSend); $i += 250) {
+                if ($this->params['debug'])
+                    echo "afisha.postSeances " .$i . " - " . min(sizeof($schedulesToSend),($i+250)) . " of total " . sizeof($schedulesToSend) ."\n";
                 $this->sendData('afisha.postSeances', array_slice($schedulesToSend, $i, 250));
             }
         }
