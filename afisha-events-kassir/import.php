@@ -279,8 +279,12 @@ class AfishaEventsKassir
 		$newEventsCount = 0;
 		$newSeancesCount = 0;
 
+		$index = 0;
+		$totalEvents = count($this->_kassirEventsData['events']);
+
 		foreach ($this->_kassirEventsData['events'] as $eventIdKassir => &$eventKassir)
 		{
+			$this->output("\t".$index++." from ".$totalEvents);
 			if (empty($eventKassir['title']))
 				continue;
 
