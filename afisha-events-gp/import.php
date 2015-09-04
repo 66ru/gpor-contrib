@@ -88,9 +88,24 @@ class AfishaEventsGp
 	{
 		$this->output(__METHOD__);
 
-		$arr = $this->sendApiRequest('afisha.listEvents');
-		$this->output("\t\tTotalEvents: ".count($arr));
-		return $arr;
+		$offset = 0;
+		$limit = 200;
+
+		$result = array();
+		$arr = array();
+
+		while(true) {
+			$arr = $this->sendApiRequest('afisha.listEventsLimit', array('limit' => $limit, 'offset' => $offset));
+			if (empty($arr)) {
+				break;
+			}
+
+			$result = array_merge($result, $arr);
+			$offset += $limit;
+		}
+
+		$this->output("\t\tTotalEvents: ".count($result));
+		return $result;
 	}
 
 
