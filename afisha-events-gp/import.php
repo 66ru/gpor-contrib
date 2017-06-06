@@ -126,7 +126,7 @@ class AfishaEventsGp
 	/**
 	 * Передать данные на Gpor
 	 */
-	private function sendGporEvent( $event )
+	private function sendGporEvent( $event, $isNew = true)
 	{
 		$this->output(__METHOD__);
 
@@ -134,9 +134,13 @@ class AfishaEventsGp
 		$placeIdGpor = $this->getGporExternalId($gpPlaceId);
 
 		$eventData = $event;
-		unset($eventData['id']);
+		if ($isNew) {
+			unset($eventData['id']);
+			$eventData['status'] = 20;
+		}
 		$eventData['eventPlaceId'] = $placeIdGpor;
-		$eventData['status'] = 20;
+		if ($placeIdGpor == 2) // TELE-CLUB
+			$eventData['tags'][] = 'TELE-CLUB';
 
 		$res = $this->sendApiRequest('afisha.postEvent', $eventData);
 		return $res;
@@ -269,7 +273,7 @@ Array
 			    'type' => $loc['@attributes']['type'],
 			    'ageRestrictions' => isset($loc['age_restricted']) ? $loc['age_restricted'] : '',
 			    'duration' => '',
-			    'tags' => $tags,
+			    'tags' => $this->getTags($tags),
 			    'description' => isset($loc['text']) ? $loc['text'] : '',
 			    'placeId' => '',
 			    'siteBooking' => '',
@@ -313,6 +317,9 @@ Array
 )
 */			
 			$locData = $loc['@attributes'];
+			if (!isset($locData['time'])) {
+				continue;
+			}
 			$id = (int)$locData['id'];
 			$eventId = (int)$locData['event'];
 			$placeId = (int)$locData['place'];
@@ -451,6 +458,8 @@ Array
 
 			if (!$found)
 			{
+				if ($found)
+					$eventgp['id'] = $found['id'];
 				if (count($eventgp['seances']) >= 10) {
 					echo $eventgp['title'] .' skipped' . "\n";
 					// TODO: делать интервальным
@@ -464,6 +473,14 @@ Array
 			}
 			else
 			{
+				/*
+				// раскомментировать, если надо проапдейтить данные событий
+				$this->output( "\tUpdate event ['".$eventgp['title']."']" );
+				unset($eventgp['image']);
+				$eventgp['id'] = $found['id'];
+				$this->_gporEventsData['events'][] = $this->sendGporEvent($eventgp, false);
+				*/
+
 				// интервальные события пропускаем
 				if (count($eventgp['seances']) >= 10) {
 					echo $eventgp['title'] .' skipped' . "\n";
@@ -597,6 +614,37 @@ Array
 		if ($a == $b)
 			return true;
 		return false;
+	}
+
+	function getTags($tags)
+	{
+		$res = array();
+
+		$replacments = array(
+			'языки' => 'Тренинги', // jazyki
+			'лекция' => 'Тренинги', // lekcija
+			'драма' => 'Театр', // drama
+			'мастер-класс' => 'Тренинги', // master-klass
+			'балет' => 'Театр', // balet
+			'фестиваль' => 'Концерты', // festival
+			'мюзикл' => 'Театр', // mjuzikl
+			'сказка' => 'Детям', // skazka
+//			'кинопоказ' => '', // kinopokaz
+//			кинематограф
+//			'игры' => '', // igry
+			'встреча' => 'Тренинги', // vstrecha
+			'трагедия' => 'Театр', // tragedija
+			'шоу' => 'Концерты', // shou
+			'опера' => 'Театр', // opera
+		);
+
+		foreach ($tags as $tag) {
+			if (isset($replacments[$tag]))
+				$res[] = $replacments[$tag];
+			$res[] = $tag;
+		}
+		$res = array_unique($res);
+		return $res;
 	}
 
 

@@ -19,6 +19,34 @@ foreach ($config as $k=>$v)
 
 $dataDir = $config['feedPath'];
 
+	$method = 'admin.setCustomFile';
+
+	$p2 = array();
+	$p2['name'] = '/e/skidki/addresses.json'; // имя файла. Если файла не существует - он создается, иначе - изменяется.
+	$p2['contentType'] = 'text/json'; // Тип содержимого
+	$p2['dataFile'] = 'http://s.66.ru/misc/skidki/addresses.json'; // ссылка на файл
+
+	$_xmlRpc = new FeedXmlRpc($config['apiUrl'], $config['apiKey'], $method);
+	if (!$_xmlRpc->send(array($p2))) {
+		echo $_xmlRpc->getLastError();
+	}
+
+	$method = 'admin.setCustomFile';
+
+	$p2 = array();
+	$p2['name'] = '/e/skidki/companies.json'; // имя файла. Если файла не существует - он создается, иначе - изменяется.
+	$p2['contentType'] = 'text/json'; // Тип содержимого
+	$p2['dataFile'] = 'http://s.66.ru/misc/skidki/companies.json'; // ссылка на файл
+
+	$_xmlRpc = new FeedXmlRpc($config['apiUrl'], $config['apiKey'], $method);
+	if (!$_xmlRpc->send(array($p2))) {
+		echo $_xmlRpc->getLastError();
+	}
+
+
+echo 'ok';
+die();
+
 $fileName = $dataDir.'latestZhivikaFeed.xml';
 if (!file_exists($dataDir)) {
 	if (!mkdir($dataDir, 0777)) {

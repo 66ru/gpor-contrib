@@ -211,7 +211,7 @@ class PharmacyImport
                 $apt_dcode_id = (string)$line['Code086'];
                 $prep_id = (string)$line['IdPrep'];
                 $buyLink = (string)$line['link'];
-                print($buyLink."\n");
+                //print($buyLink."\n");
                 $prep = mysql_query("SELECT price, url 
                     FROM {$this->db}.aptdrugpresent 
                     WHERE scode = '{$apt_scode_id}' AND dcode = '{$apt_dcode_id}';");
@@ -284,8 +284,12 @@ class PharmacyImport
     private function makeProductsJSON($apt_id, $byeLinkPrefix = false, $reserveLinkPrefix = false)
     {
         // fetching drugs
+        /*
         $result = mysql_query("SELECT `adp`.*, `dl`.`drug_code` FROM `aptdrugpresent` `adp`
             INNER JOIN `drug_list` `dl` ON `adp`.`dcode` = `dl`.`drug_code`
+            WHERE `adp`.`scode`=" . $apt_id);
+        */
+        $result = mysql_query("SELECT `adp`.* FROM `aptdrugpresent` `adp`
             WHERE `adp`.`scode`=" . $apt_id);
 
         if (!$result || !mysql_num_rows($result)) {
